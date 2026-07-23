@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【構成ラフv3・B案：フレーム固定】かまくら個室ビストロ KAMAKURA</title>
+<!--
+  ■ B案（代替案）：かまくらフレーム常時固定パターン（2026/07/23 MTGで提案された代替演出）
+  ・画面に「かまくら型のフレーム」が常時固定され、フレーム内の情報だけがスクロールで切り替わる
+  ・背景の個室写真も固定（A案と同じ D21A8066.jpg 仮アサイン）
+  ・掲載内容・文言・プレースホルダー・要確認表記は A案（index.html）と同一
+  ・予約CTA＝エビカ予約フォームURLへのリンク遷移（href="#" 差し込み待ち）
+-->
+<style>
+  :root{
+    --ochre:#C9A96A; --ochre-pale:#F3EBDA; --ink:#3A342B; --paper:#FDFBF7;
+    --annot:#8A6FBF; --annot-bg:#F2EDFA; --line:#D8CFBE; --snow:#F6F1E7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;
+    color:var(--ink);line-height:1.7;background:var(--snow);overflow:hidden}
+  .docbar{position:fixed;top:0;left:0;right:0;z-index:30;background:var(--ink);color:#fff;
+    padding:10px 16px;font-size:12px;letter-spacing:.05em}
+  .docbar b{color:var(--ochre)}
+  /* 固定背景：かまくら個室写真（仮：D21A8066.jpg） */
+  .bgfix{position:fixed;inset:0;z-index:0;background:#1c170f url("https://drive.google.com/thumbnail?id=1HZLTqKwJqp0nQ3glkr3kZ7kdA1-_i7-T&sz=w1600") center/cover no-repeat}
+  .bgfix::after{content:"";position:absolute;inset:0;background:rgba(28,23,15,.3)}
+  /* かまくらフレーム：ドーム型の開口部以外を雪色でマスクし、常時画面に固定 */
+  .kframe{position:fixed;z-index:10;pointer-events:none;
+    left:50%;transform:translateX(-50%);top:84px;bottom:24px;width:min(680px,92vw);
+    border-radius:46% 46% 20px 20px / 30% 30% 20px 20px;
+    box-shadow:0 0 0 9999px var(--snow), inset 0 0 0 10px #fff, inset 0 0 60px rgba(58,52,43,.25)}
+  .kframe .fname{position:absolute;right:14px;bottom:12px;background:rgba(58,52,43,.75);color:#fff;
+    font-size:10px;padding:2px 8px;border-radius:3px;letter-spacing:.05em}
+  .klabel{position:fixed;z-index:11;left:50%;transform:translateX(-50%);bottom:2px;
+    font-size:11px;color:#9c8557;letter-spacing:.12em;pointer-events:none}
+  /* フレーム内スクローラー：情報パネルだけが切り替わる */
+  .scroller{position:fixed;z-index:5;left:50%;transform:translateX(-50%);top:84px;bottom:24px;
+    width:min(680px,92vw);overflow-y:auto;scroll-snap-type:y mandatory;
+    border-radius:46% 46% 20px 20px / 30% 30% 20px 20px;-webkit-overflow-scrolling:touch}
+  .panel{min-height:100%;scroll-snap-align:start;display:flex;align-items:flex-end;justify-content:center;
+    padding:22vh 6vw 7vh}
+  .panel-card{width:100%;max-width:520px;background:rgba(253,251,247,.94);padding:26px 24px;
+    box-shadow:0 8px 32px rgba(0,0,0,.25);max-height:62vh;overflow-y:auto}
+  .panel-card.dark{background:rgba(28,23,15,.62);color:#fff;text-align:center}
+  .panel-card.dark .hero-sub{color:#EDE4D2}
+  .tag{display:inline-block;background:var(--annot-bg);color:var(--annot);border:1px solid var(--annot);
+    border-radius:3px;font-size:11px;padding:2px 10px;letter-spacing:.08em;margin-bottom:10px}
+  .why{margin-top:18px;padding:10px 14px;background:var(--annot-bg);border-left:3px solid var(--annot);
+    font-size:12px;color:#5c4d85;text-align:left}
+  .why b{font-weight:700}
+  .eyebrow{font-size:11px;letter-spacing:.3em;color:var(--ochre);margin-bottom:8px;font-weight:700}
+  h2{font-size:21px;font-weight:700;letter-spacing:.04em;margin-bottom:10px}
+  h3{font-size:15px;font-weight:700;margin-bottom:4px}
+  p.body{font-size:13.5px;color:#5c554a}
+  .panel-card.dark p.body{color:#EDE4D2}
+  .hero-copy{font-size:28px;font-weight:700;letter-spacing:.08em;margin:8px 0 4px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .hero-sub{font-size:13px;letter-spacing:.06em}
+  .hero-badge{display:inline-block;font-size:11px;color:#fff;border:1px solid var(--ochre);background:rgba(58,52,43,.45);
+    padding:3px 12px;border-radius:999px;letter-spacing:.12em}
+  .cta{display:inline-block;background:var(--ochre);color:#fff;padding:12px 36px;border-radius:999px;
+    font-weight:700;font-size:14px;letter-spacing:.1em;margin-top:16px;text-decoration:none}
+  .cta.ghost{background:transparent;color:var(--ochre);border:1.5px solid var(--ochre)}
+  .imgslot{position:relative;background:#EFE8DA;overflow:hidden}
+  .imgslot img{width:100%;height:100%;display:block;object-fit:cover}
+  .fname{position:absolute;right:6px;bottom:6px;background:rgba(58,52,43,.75);color:#fff;
+    font-size:10px;padding:2px 8px;border-radius:3px;letter-spacing:.05em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .card{border:1px solid var(--line);background:#fff}
+  .card .txt{padding:10px 12px}
+  .card .txt p{font-size:12px;color:#6b6355}
+  .price{font-size:13px;font-weight:700;color:var(--ochre);margin-top:4px}
+  .review{border:1px solid var(--line);background:#fff;padding:12px 14px;margin-top:10px}
+  .review .stars{color:var(--ochre);font-size:13px;letter-spacing:.15em}
+  .review p{font-size:12.5px;color:#5c554a;margin-top:6px}
+  .review .meta{font-size:10.5px;color:#9a917f;margin-top:6px}
+  .video-slot{position:relative;height:200px;background:#000;margin-top:14px}
+  .video-slot iframe{width:100%;height:100%;border:none;display:block}
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:var(--ochre-pale);font-weight:700;width:36%}
+  .map-ph{height:110px;border:2px dashed var(--ochre);background:var(--ochre-pale);display:flex;
+    align-items:center;justify-content:center;color:#9c8557;font-size:12px;margin-top:10px}
+  @media(max-width:640px){
+    .kframe,.scroller{top:96px;bottom:16px;width:94vw}
+    .panel{padding:18vh 4vw 5vh}
+    .hero-copy{font-size:22px}
+    .panel-card{max-height:66vh;padding:20px 16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="docbar">
+  【構成ラフ v3・<b>B案：かまくらフレーム固定</b>】KAMAKURA ／ 紫＝<b>制作メモ（本番非表示）</b> ／
+  フレームは常時固定・中の情報だけがスクロールで切り替わる ／ ⚠ 画像はDrive経由表示（要Googleログイン）
+</div>
+
+<div class="bgfix" aria-hidden="true"></div>
+
+<!-- かまくらフレーム（常時固定・開口部から個室写真が見える） -->
+<div class="kframe" aria-hidden="true"><span class="fname">D21A8066.jpg（仮・固定背景）</span></div>
+<div class="klabel">▲ かまくらフレーム＝常時固定（本番はイラスト／写真フレームに差し替え可・要確認）</div>
+
+<div class="scroller">
+
+  <!-- P1. HERO -->
+  <div class="panel">
+    <div class="panel-card dark">
+      <span class="tag">P1｜HERO：かまくら個室＝世界観の主役</span><br>
+      <span class="hero-badge">新宿駅1分・錦糸町｜全席かまくら個室</span>
+      <div class="hero-copy">その夜が、物語になる。</div>
+      <p class="hero-sub">かまくら個室で過ごす、特別体験。</p><br>
+      <a class="cta" href="#" data-note="エビカ予約フォームURL差し込み待ち">個室を予約する</a>
+      <div class="why"><b>B案の狙い：</b>かまくらフレームを画面に常時固定し、開口部の奥に個室写真、手前の情報パネルだけがスクロールで切り替わる。「ずっとかまくらの中にいる」没入感を演出。</div>
+    </div>
+  </div>
+
+  <!-- P2. 共感 -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P2｜共感</span>
+      <div class="eyebrow">FOR YOUR SPECIAL NIGHT</div>
+      <h2>「いつもと違う夜」を、探していませんか。</h2>
+      <p class="body">記念日、大切な人とのデート、頑張った自分へのごほうび。せっかくなら、写真に残したくなる夜を。KAMAKURAは、料理を「食べる」だけでなく「体験する」お店です。</p>
+      <div class="why"><b>なぜこの訴求か：</b>購買心理フローの「悩み・欲求への共感」。欲求を代弁して自分ごと化させる。</div>
+    </div>
+  </div>
+
+  <!-- P3. 体験（個室・世界観） -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P3｜解決手段：かまくら個室の世界観</span>
+      <div class="eyebrow">EXPERIENCE</div>
+      <h2>かまくら個室で過ごす、特別体験。</h2>
+      <p class="body">見る・香る・味わう・撮る・語らう。五感すべてで愉しむ、ふたりだけのかまくら空間。</p>
+      <div class="grid2">
+        <div class="imgslot" style="height:120px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=1HZLTqKwJqp0nQ3glkr3kZ7kdA1-_i7-T&sz=w800" alt="D21A8066.jpg">
+          <span class="fname">D21A8066.jpg（仮）</span>
+        </div>
+        <div class="imgslot" style="height:120px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=1Pk9IKqUpKuJxV8T9uLCd28D1dht3jBRz&sz=w800" alt="260212_21778.jpg">
+          <span class="fname">260212_21778.jpg（仮・要確認）</span>
+        </div>
+      </div>
+      <div class="why"><b>v3変更：</b>個室・世界観に一本化。燃えるハンバーグはMENUパネルへ移動。</div>
+    </div>
+  </div>
+
+  <!-- P4. 動画（1枠・個室優先） -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P4｜動画：個室・空間の紹介（1枠のみ）</span>
+      <div class="eyebrow">MOVIE</div>
+      <h2>かまくら個室を、動画で。</h2>
+      <p class="body">※内容は「個室・空間の紹介」を最優先（料理中心の動画は使わない）。</p>
+      <!-- 動画は1枠のみ。260603.mp4仮アサイン。今後AI生成PV風動画（個室・空間紹介）に差し替え予定。 -->
+      <div class="video-slot">
+        <iframe src="https://drive.google.com/file/d/1t99fszjGQXlMYIJXpQK4Go8epbCDeFOB/preview" allow="autoplay" title="個室・空間紹介動画（260603.mp4・仮）"></iframe>
+        <span class="fname" style="z-index:2">260603.mp4（仮・AI生成PVに差し替え予定）</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- P5. MENU（差し替え容易構造） -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P5｜MENU：料理はここに集約（更新容易構造）</span>
+      <div class="eyebrow">MENU</div>
+      <h2>撮りたくなる、話したくなる料理。</h2>
+      <!-- ▼カードは img src / alt / fname / 料理名 / .price の差し替えのみで更新完結 -->
+      <div class="grid2">
+        <div class="card"><div class="imgslot" style="height:100px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=1HtZn7K2EU3angSXKVc0w7vsA2XXpDO5c&sz=w600" alt="260212_21335.jpg">
+          <span class="fname">260212_21335.jpg（仮）</span>
+        </div><div class="txt"><h3>燃えるハンバーグ</h3><div class="price">¥X,XXX（要確認）</div></div></div>
+        <div class="card"><div class="imgslot" style="height:100px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=1C6r8-_VMJl7N_2aW32jcfHeOVjEvGACv&sz=w600" alt="260212_21386.jpg">
+          <span class="fname">260212_21386.jpg（仮）</span>
+        </div><div class="txt"><h3>和牛の生ハム</h3><div class="price">¥X,XXX（要確認）</div></div></div>
+        <div class="card"><div class="imgslot" style="height:100px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=1HaqLGl9fSzQSSckUpOvaUylYqVHL8gcG&sz=w600" alt="260212_21542.jpg">
+          <span class="fname">260212_21542.jpg（仮）</span>
+        </div><div class="txt"><h3>お通しのマカロン</h3><div class="price">¥X,XXX（要確認）</div></div></div>
+        <div class="card"><div class="imgslot" style="height:100px">
+          <img loading="lazy" src="https://drive.google.com/thumbnail?id=19YFJbBFkFZZYn9HEsqbrT-JUITet2XlV&sz=w600" alt="260212_21609.jpg">
+          <span class="fname">260212_21609.jpg（仮）</span>
+        </div><div class="txt"><h3>アニバーサリーBOX</h3><div class="price">¥X,XXX（要確認）</div></div></div>
+      </div>
+      <div class="why"><b>v3変更：</b>写真＋料理名＋価格のカード構造。<b>※写真と料理名の対応・価格は要確認。</b></div>
+    </div>
+  </div>
+
+  <!-- P6. 口コミ（選定・固定） -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P6｜信頼：Google口コミ（選定・固定表示）</span>
+      <div class="eyebrow">REVIEWS</div>
+      <h2>Googleの口コミから。</h2>
+      <!-- 選定された高評価のみ固定表示。以下3件はダミー本文・差し替え前提。 -->
+      <div class="review"><div class="stars">★★★★★</div><p>（ダミー本文）かまくらの個室が想像以上の非日常感。記念日利用で大満足。※実口コミに差し替え</p><div class="meta">Googleクチコミ｜要確認</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>（ダミー本文）個室で周りを気にせず話せて、演出も楽しい。デートにおすすめ。※実口コミに差し替え</p><div class="meta">Googleクチコミ｜要確認</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>（ダミー本文）雰囲気が良く、サプライズ対応も丁寧。また行きたい。※実口コミに差し替え</p><div class="meta">Googleクチコミ｜要確認</div></div>
+    </div>
+  </div>
+
+  <!-- P7. 料金・アクセス -->
+  <div class="panel">
+    <div class="panel-card">
+      <span class="tag">P7｜料金・アクセス</span>
+      <div class="eyebrow">PLAN / ACCESS</div>
+      <h2>料金・店舗</h2>
+      <table>
+        <tr><th>ディナーコース</th><td>¥X,XXX〜（要確認）</td></tr>
+        <tr><th>記念日プラン</th><td>¥X,XXX〜（要確認）</td></tr>
+        <tr><th>飲み放題</th><td>要確認</td></tr>
+      </table>
+      <div class="map-ph">【地図】新宿店（駅1分・住所要確認）</div>
+      <div class="map-ph">【地図】錦糸町店（住所・営業時間 要確認）</div>
+    </div>
+  </div>
+
+  <!-- P8. 最終CTA -->
+  <div class="panel">
+    <div class="panel-card dark">
+      <span class="tag">P8｜行動喚起：最終CTA</span>
+      <h2 style="margin-top:6px">今夜の物語を、予約する。</h2>
+      <p class="body">かまくら個室は数に限りがあります。記念日・週末はお早めに。</p>
+      <div>
+        <!-- 予約はエビカ予約フォームへのリンク遷移（埋め込みなし） -->
+        <a class="cta" href="#" data-note="エビカ予約フォームURL差し込み待ち">ネット予約（24時間受付）</a>
+        <a class="cta ghost" href="#" data-note="LINE URL要確認">LINEで相談する</a>
+      </div>
+      <div class="why"><b>v3変更：</b>予約導線はエビカ予約フォームURLへのリンク遷移型（URL差し込み待ち）。LINE導線可否は要確認。</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
