@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>億万鳥者 新宿本殿｜今までにない「億万長者」気分を味わえるアミューズメント居酒屋</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100D08;
+    --panel:#1A150D;
+    --line-2:#3A3020;
+    --gold:#D9AE52;
+    --gold-2:#EBCB84;
+    --cream:#F2ECDD;
+    --muted:#A99B7E;
+    --red:#B94236;
+    --disp:"Shippori Mincho",serif;
+    --body:"Zen Kaku Gothic New",sans-serif;
+    --mono:"Roboto Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);background:var(--bg);color:var(--cream);line-height:1.8;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  a{color:inherit;text-decoration:none}
+  img{display:block;width:100%;height:100%;object-fit:cover}
+
+  /* ===== 固定ヘッダー（予約導線は常時表示：MD絶対条件） ===== */
+  header{position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    height:56px;padding:0 16px;
+    background:linear-gradient(180deg,rgba(16,13,8,.75),rgba(16,13,8,0));
+    transition:background .4s}
+  header.solid{background:rgba(16,13,8,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-2)}
+  .brand{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
+    text-shadow:0 1px 8px rgba(0,0,0,.6)}
+  .hd-cta{font-family:var(--body);font-weight:700;font-size:13px;color:#150f04;
+    background:var(--gold);padding:9px 18px;border-radius:999px;
+    box-shadow:0 6px 18px -8px rgba(217,174,82,.6)}
+
+  /* ===== ローディング ===== */
+  #loader{position:fixed;inset:0;z-index:100;background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    transition:opacity .6s;pointer-events:none}
+  #loader.done{opacity:0}
+  #loader .lg{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:.2em;color:var(--gold-2)}
+  #loader .bar{width:180px;height:2px;background:var(--line-2);overflow:hidden;border-radius:2px}
+  #loader .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .2s}
+  #loader .pct{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+
+  /* ===== FVスクラブ（指示書準拠：sticky + canvas） ===== */
+  .scrub-wrap{height:560vh;position:relative}
+  .scrub-sticky{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
+  .scrub-sticky canvas{position:absolute;inset:0;width:100%;height:100%}
+  /* PC時のアンビエント背景：CSSガウスぼかし（GPU合成）。scaleでぼかしの縁滲みを画面外へ */
+  #scrubBg{filter:blur(30px) brightness(.55) saturate(1.08);transform:scale(1.18);display:none}
+
+  /* 画面端の締め（コピー可読性のためのビネット） */
+  .scrub-veil{position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(16,13,8,.55) 0%,rgba(16,13,8,0) 22%),
+      linear-gradient(0deg,rgba(16,13,8,.6) 0%,rgba(16,13,8,0) 26%)}
+  /* コピー表示中のみ現れる可読性担保レイヤー（濃度は実フレーム輝度からの逆算値） */
+  .stage-scrim{position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,rgba(16,13,8,.42) 0%,rgba(16,13,8,.3) 50%,rgba(16,13,8,0) 80%)}
+
+  /* ===== オーバーレイ各ステージ ===== */
+  .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;padding:0 24px}
+  .stage.on{pointer-events:auto}
+
+  /* Stage1：タイトル（画面下寄せ） */
+  .st-title{align-items:flex-end;justify-content:flex-start;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .st-title .in{max-width:480px}
+  .kicker{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    color:var(--gold-2);border:1px solid rgba(217,174,82,.45);border-radius:999px;
+    padding:5px 13px;background:rgba(16,13,8,.55);margin-bottom:14px}
+  .main-catch{font-family:var(--disp);font-weight:800;color:#fff;
+    font-size:min(8vw,45px);line-height:1.45;letter-spacing:.08em;
+    text-shadow:0 0 3px rgba(16,13,8,.9), 0 0 8px rgba(16,13,8,.85),
+    0 1px 16px rgba(16,13,8,.7), 0 0 36px rgba(16,13,8,.45)}
+  .main-catch em{font-style:normal;color:var(--gold-2)}
+
+  /* ===== FV：メインキャッチの一文字出現（読み込み完了後に1回だけ） =====
+     参考動画のフレーム解析に合わせた値：
+       ・不透明度 0→1（イージングは easeOutQuad 相当）
+       ・上方向へ 6px の微小移動のみ（ぼかし・回転・縦マスクは不使用＝実測どおり）
+       ・1文字あたり 520ms                                                   */
+  .main-catch .fvch{display:inline-block;opacity:0;transform:translateY(6px);
+    will-change:opacity,transform}
+  .main-catch.fv-in .fvch{opacity:1;transform:none;
+    transition:opacity 520ms cubic-bezier(.5,1,.89,1),
+               transform 520ms cubic-bezier(.5,1,.89,1)}
+  @media (prefers-reduced-motion: reduce){
+    .main-catch .fvch{opacity:1;transform:none;transition:none;will-change:auto}
+  }
+
+  /* Stage中間：横書きコピー */
+  .st-v{justify-content:flex-start;padding:0 8vw}
+  .st-v .in{font-family:var(--disp);font-weight:800;color:#fff;
+    font-size:min(7.4vw,38px);line-height:1.8;letter-spacing:.12em;
+    text-shadow:0 0 3px rgba(16,13,8,.9), 0 0 8px rgba(16,13,8,.85),
+    0 1px 16px rgba(16,13,8,.7), 0 0 36px rgba(16,13,8,.45)}
+  .st-v .in em{font-style:normal;color:var(--gold-2)}
+
+  /* ===== CVボタン ===== */
+  .cv-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;justify-content:inherit}
+  .st-final .cv-row{justify-content:center}
+  .btn-g{display:inline-block;font-weight:700;font-size:14.5px;color:#150f04;
+    background:var(--gold);padding:14px 30px;border-radius:12px;
+    box-shadow:0 10px 28px -10px rgba(217,174,82,.65)}
+  .btn-o{display:inline-block;font-weight:700;font-size:14.5px;color:var(--gold-2);
+    border:1px solid rgba(217,174,82,.6);padding:13px 30px;border-radius:12px;
+    background:rgba(16,13,8,.5)}
+  .catch{font-family:var(--disp);font-weight:700;font-size:16.5px;margin-top:12px;
+    text-shadow:0 1px 12px rgba(0,0,0,.85)}
+  .catch em{font-style:normal;color:var(--gold-2)}
+
+  /* ===== 本編セクション共通 ===== */
+  .sec{padding:84px 0;border-bottom:1px solid var(--line-2)}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--gold);
+    text-transform:uppercase;display:block;margin-bottom:10px}
+  .sec h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,5.4vw,34px);
+    line-height:1.5;margin-bottom:18px;letter-spacing:.04em}
+  .sec h2 em{font-style:normal;color:var(--gold-2)}
+  .lead{font-size:14px;color:#fff;line-height:2.1;margin-bottom:28px}
+
+  .rev{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+  .rev.vis{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){ .rev{opacity:1;transform:none;transition:none} }
+
+  /* コンセプト：ギャラリー */
+  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .gallery figure{aspect-ratio:3/4;overflow:hidden;border-radius:10px;
+    border:1px solid rgba(217,174,82,.25)}
+  .gallery img{transition:transform .6s}
+  .gallery figure:hover img{transform:scale(1.05)}
+
+
+  /* 動画 */
+  .movie-frame{border-radius:12px;overflow:hidden;border:1px solid rgba(217,174,82,.35);
+    background:#000;aspect-ratio:16/9;margin:0 auto}
+  .movie-frame video,.movie-frame iframe{display:block;width:100%;height:100%;border:0}
+  .movie-frame video{object-fit:contain}
+
+  /* メニューカード（横スワイプ・scroll-snap） */
+  .cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:6px 24px 18px;-webkit-overflow-scrolling:touch;
+    max-width:1080px;margin:0 auto}
+  .cards::-webkit-scrollbar{height:6px}
+  .cards::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
+  .card{flex:0 0 78%;max-width:320px;scroll-snap-align:center;
+    background:var(--panel);border:1px solid rgba(217,174,82,.3);border-radius:14px;overflow:hidden}
+  .card figure{aspect-ratio:4/3;overflow:hidden}
+  .card .ph-box{display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+    background:repeating-linear-gradient(45deg,#1A150D,#1A150D 12px,#171208 12px,#171208 24px)}
+  .card-b{padding:16px 18px 20px}
+  .card h3{font-family:var(--disp);font-weight:800;font-size:18px;margin-bottom:6px;color:var(--gold-2)}
+  .card p{font-size:12.5px;color:#fff;line-height:1.8;margin-bottom:10px}
+  .price{font-family:var(--mono);font-size:14px;color:var(--cream)}
+  .price i{font-style:normal;font-size:9px;color:var(--red);margin-left:8px}
+  /* 自動送りのトゥイーンを html{scroll-behavior:smooth} と競合させない */
+  .cards{scroll-behavior:auto}
+  /* 中央カードの拡大演出：transformはJSが毎フレーム計算（スワイプ中も追従） */
+  /* ===== スタック型カルーセル（録画実測：カードが重なり、縁だけ覗く） ===== */
+  .cards.deck{display:grid;justify-items:center;align-items:start;
+    overflow:hidden;scroll-snap-type:none;
+    padding:18px 24px 58px;max-width:520px;margin:0 auto;
+    touch-action:pan-y;overscroll-behavior-x:contain;
+    cursor:grab;user-select:none;-webkit-user-select:none}
+  .cards.deck.dragging{cursor:grabbing}
+  .cards.deck .card{grid-area:1/1;width:min(100%,320px);flex:none;max-width:none;
+    will-change:transform;transform-origin:center bottom;
+    box-shadow:0 12px 26px -14px rgba(0,0,0,.7)}
+  .cards.deck img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+  @media (prefers-reduced-motion: reduce){
+    .cards.deck .card{box-shadow:none}
+  }
+  /* カルーセル送りボタン */
+  .car-nav{display:flex;justify-content:center;gap:16px;margin-top:6px}
+  .car-btn{width:52px;height:52px;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-2);background:rgba(16,13,8,.55);
+    border:1px solid rgba(217,174,82,.55);
+    transition:background .25s,transform .15s,box-shadow .25s;
+    -webkit-tap-highlight-color:transparent}
+  .car-btn:hover{background:rgba(217,174,82,.16);
+    box-shadow:0 0 22px -6px rgba(217,174,82,.55)}
+  .car-btn:active{transform:scale(.92)}
+  @media (prefers-reduced-motion: reduce){
+    .cards.fx .card{transform:none!important;will-change:auto}
+  }
+
+  /* レビュー */
+  .dummy-note{font-size:11px;color:var(--red);line-height:1.8;margin-bottom:22px;
+    border:1px dashed rgba(185,66,54,.5);border-radius:8px;padding:10px 14px}
+  .reviews{display:grid;gap:12px}
+  .rv{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:18px 20px}
+  .rv .stars{color:var(--gold);letter-spacing:.2em;font-size:13px}
+  .rv p{font-size:13.5px;line-height:1.9;margin:8px 0}
+  .rv cite{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+  /* アクセス */
+  .map{border-radius:12px;overflow:hidden;border:1px solid rgba(217,174,82,.3);margin-bottom:22px}
+  .map iframe{display:block;width:100%;height:320px;border:0;filter:grayscale(.2) sepia(.15)}
+  .info div{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:13.5px}
+  .info dt{flex:0 0 84px;color:var(--gold-2);font-weight:700}
+  .info dd a{text-decoration:underline;text-underline-offset:3px}
+
+  /* フッター＋固定CVバー */
+  footer{padding:56px 0 130px;text-align:center}
+  .f-brand{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.14em}
+  .f-brand small{display:block;font-size:10px;letter-spacing:.3em;color:var(--gold-2);margin-top:6px}
+  .f-copy{font-size:12px;color:#fff;margin:14px 0 20px}
+  .f-note{font-family:var(--mono);font-size:10px;color:#6d6250;line-height:1.8}
+  .cvbar{position:fixed;left:0;right:0;bottom:0;z-index:60;
+    display:flex;gap:10px;justify-content:center;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(16,13,8,.94);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line-2);
+    transform:translateY(110%);transition:transform .4s ease}
+  .cvbar.show{transform:none}
+  .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:13.5px}
+
+  /* スクロール誘導 */
+  .cue{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--gold-2);opacity:.9}
+  .cue i{display:block;width:1px;height:38px;background:linear-gradient(180deg,var(--gold),transparent);
+    animation:cue 1.8s ease-in-out infinite}
+  @keyframes cue{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
+    55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+  /* ===== E5: スクロール連動イメージエクスパンド ===== */
+  .xp-wrap{height:220vh;position:relative;border-bottom:1px solid var(--line-2)}
+  .xp-sticky{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
+  .xp-clip{position:absolute;inset:0;overflow:hidden;will-change:clip-path}
+  .xp-clip img{width:100%;height:100%;object-fit:cover;will-change:transform}
+  .xp-frame{position:absolute;pointer-events:none;border:1px solid rgba(217,174,82,.75);
+    box-shadow:0 0 40px -8px rgba(217,174,82,.35);will-change:top,left,right,bottom,opacity}
+  .xp-scrim{position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:radial-gradient(ellipse 78% 46% at 50% 50%,rgba(16,13,8,.38) 0%,rgba(16,13,8,.26) 60%,rgba(16,13,8,0) 88%)}
+  .xp-copy{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);color:#fff;
+    text-align:center;padding:0 24px;opacity:0;pointer-events:none;
+    font-family:var(--disp);font-weight:800;font-size:clamp(22px,6vw,34px);
+    letter-spacing:.14em;line-height:1.8;
+    text-shadow:0 0 3px rgba(16,13,8,.9), 0 0 8px rgba(16,13,8,.85),
+    0 1px 16px rgba(16,13,8,.7), 0 0 36px rgba(16,13,8,.45)}
+  .xp-copy em{font-style:normal;color:var(--gold-2)}
+  @media (prefers-reduced-motion: reduce){
+    .xp-wrap{height:auto}
+    .xp-sticky{position:static;height:70vh}
+    .xp-frame{display:none}
+    .xp-copy{opacity:1}
+    #xpC1{display:none}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cue i{animation:none}
+  }
+  /* 文節単位の折返し制御（ビルド時分かち書き。BudouX方式の静的版） */
+  .seg{white-space:nowrap}
+  @media (max-width:480px){ #concept .lead br{display:none} }
+
+  /* ===== E1: 見出し一文字ずつ出現＋金グリント ===== */
+  .sec h2 .ch{display:inline-block;opacity:0;transform:translateY(.55em) rotate(4deg);
+    transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1)}
+  .sec h2.chars-in .ch{opacity:1;transform:none;
+    animation:glint 1.1s ease both}
+  @keyframes glint{
+    0%,55%{text-shadow:none}
+    72%{color:#F7E7BC;text-shadow:0 0 16px rgba(235,203,132,.9),0 0 34px rgba(217,174,82,.5)}
+    100%{text-shadow:none}
+  }
+
+  /* ===== E2: 一億円カウントアップ ===== */
+  .cost{margin:4px 0 26px;padding:18px 22px;border:1px solid rgba(217,174,82,.35);
+    border-radius:12px;background:linear-gradient(160deg,rgba(217,174,82,.08),rgba(16,13,8,0));
+    display:inline-block}
+  .cost-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted)}
+  .cost-num{font-family:var(--mono);font-weight:700;font-size:clamp(28px,7.4vw,44px);
+    color:var(--gold-2);letter-spacing:.02em;line-height:1.3;
+    text-shadow:0 0 26px rgba(217,174,82,.35);font-variant-numeric:tabular-nums}
+  .cost-tag{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.1em;color:var(--cream)}
+
+  /* ===== E3: 画像の襖開きリビール ===== */
+  .fus{clip-path:inset(0 50% 0 50%);transform:scale(1.06);
+    transition:clip-path 1s cubic-bezier(.22,1,.36,1),transform 1.2s ease}
+  .fus.vis{clip-path:inset(0 0 0 0);transform:scale(1)}
+  .gallery figure:nth-child(2).fus{transition-delay:.12s}
+  .gallery figure:nth-child(3).fus{transition-delay:.2s}
+  .gallery figure:nth-child(4).fus{transition-delay:.3s}
+
+  /* ===== E4: 小判アンビエント（背面固定レイヤー・無限ループ） ===== */
+  .koban{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+  .kb{position:absolute;top:-80px;width:44px;height:30px;opacity:0;
+    animation:kbfall var(--dur,7s) linear var(--dly,0s) infinite}
+  .kb svg{width:100%;height:100%;filter:drop-shadow(0 4px 10px rgba(217,174,82,.35))}
+  @keyframes kbfall{
+    0%{opacity:0;transform:translateY(0) rotate(0) rotateY(0)}
+    6%{opacity:var(--op,.5)}
+    86%{opacity:var(--op,.5)}
+    100%{opacity:0;transform:translateY(112vh) rotate(var(--rot,200deg)) rotateY(720deg)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .sec h2 .ch{opacity:1;transform:none;transition:none;animation:none}
+    .fus{clip-path:none;transform:none;transition:none}
+    .kb{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <div class="brand">億万鳥者</div>
+  <a class="hd-cta" href="#" data-ebica>ご予約</a>
+</header>
+
+<div id="loader">
+  <div class="lg">億万鳥者</div>
+  <div class="bar"><i id="ldBar"></i></div>
+  <div class="pct" id="ldPct">0%</div>
+</div>
+
+<!-- ===== FV：スクロールスクラブ ===== -->
+<div class="scrub-wrap" id="scrubWrap">
+  <div class="scrub-sticky">
+    <canvas id="scrubBg"></canvas>
+    <canvas id="scrubCv"></canvas>
+    <div class="scrub-veil"></div>
+    <div class="stage-scrim" id="stageScrim"></div>
+
+    <!-- Stage1 0.00-0.28：メインキャッチ -->
+    <div class="stage st-title" data-in="0" data-out="0.28">
+      <div class="in">
+        <h1 class="main-catch">一億円で、<br>居酒屋<em>建ててみた。</em></h1>
+      </div>
+    </div>
+
+    <!-- Stage3 0.38-0.54：内装・料理シーン -->
+    <div class="stage st-v" data-in="0.38" data-out="0.54">
+      <div class="in">料理も空間も、<br><em>億万長者仕様。</em></div>
+    </div>
+
+    <!-- Stage4 0.62-0.78：スパークラー・乾杯シーン -->
+    <div class="stage st-v" data-in="0.62" data-out="0.78">
+      <div class="in">『億万長者様』と<br>呼ばれて、<em>乾杯。</em></div>
+    </div>
+
+    <!-- Stage5 0.86-1.0：クロージング -->
+    <div class="stage st-v" data-in="0.86" data-out="1.01">
+      <div class="in">今までにない、<br><em>「億万長者」体験</em>を。</div>
+    </div>
+
+    <div class="cue" id="cue"><span>SCROLL</span><i></i></div>
+  </div>
+</div>
+
+<!-- ===== 2. コンセプト紹介 ===== -->
+<section class="sec" id="concept">
+  <div class="wrap">
+    <span class="eyebrow">Concept</span>
+    <h2 class="rev"><span class="seg">「億万鳥者」と</span><span class="seg">呼ばれ、</span><em><span class="seg">乾杯。</span></em></h2>
+    <div class="cost rev">
+      <span class="cost-label">総工費</span>
+      <div class="cost-num">¥<span id="costNum">0</span></div>
+      <span class="cost-tag">一億円で、居酒屋建ててみた。</span>
+    </div>
+    <p class="lead rev"><span class="seg">外観、</span><span class="seg">内観、</span><span class="seg">料理、</span><span class="seg">接客まで──</span><span class="seg">すべてが</span><span class="seg">億万長者仕様。</span><br>
+    <span class="seg">一歩</span><span class="seg">足を</span><span class="seg">踏み入れれば、</span><span class="seg">そこは</span><span class="seg">金色に</span><span class="seg">輝く</span><span class="seg">非日常。</span><br>
+    <span class="seg">上品な</span><span class="seg">和空間を</span><span class="seg">感じる</span><span class="seg">伝統組子の</span><span class="seg">個室で、</span><br>
+    <span class="seg">今宵、</span><span class="seg">あなたは</span><span class="seg">『億万長者様』として</span><span class="seg">もてなされる。</span></p>
+    <div class="gallery">
+      <figure><img src="assets/gallery_hall.webp" alt="金の設えのテーブル席" loading="lazy"></figure>
+      <figure><img src="assets/gallery_neon.webp" alt="億万鳥者の縦看板" loading="lazy"></figure>
+      <figure><img src="assets/gallery_room.webp" alt="伝統組子の個室" loading="lazy"></figure>
+      <figure><img src="assets/gallery_food.webp" alt="貴族に献上するレバニラ" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. 店舗プロモーション動画 ===== -->
+<section class="sec" id="movie">
+  <div class="wrap">
+    <span class="eyebrow">Movie</span>
+    <h2 class="rev"><span class="seg">1分で</span><span class="seg">わかる、</span><em><span class="seg">億万鳥者。</span></em></h2>
+    <div class="movie-frame rev" id="movieFrame">
+      <video src="assets/pv_h264.mp4" poster="assets/gallery_logo.webp" controls playsinline preload="metadata"></video>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5. おすすめメニュー（横スワイプ・カード型） ===== -->
+<section class="sec" id="menu">
+  <div class="wrap">
+    <span class="eyebrow">Menu</span>
+    <h2 class="rev"><span class="seg">豪華すぎる、</span><em><span class="seg">和牛創作料理。</span></em></h2>
+  </div>
+  <div class="cards rev">
+    <article class="card">
+      <figure><img src="assets/menu_burger.webp" alt="億万バーガー" loading="lazy"></figure>
+      <div class="card-b">
+        <h3>億万バーガー</h3>
+        <p><span class="seg">肉塊と</span><span class="seg">ベーコンが</span><span class="seg">羽ばたく、</span><span class="seg">規格外の</span><span class="seg">億万級バーガー。</span></p>
+        <span class="price">¥1,880</span>
+      </div>
+    </article>
+    <article class="card">
+      <figure><img src="assets/menu_namaham.webp" alt="Ａ５和牛の生ハムてんこ盛り" loading="lazy"></figure>
+      <div class="card-b">
+        <h3>Ａ５和牛の生ハムてんこ盛り</h3>
+        <p><span class="seg">卓上を</span><span class="seg">覆い尽くす、</span><span class="seg">A5和牛の</span><span class="seg">絨毯。</span><span class="seg">レギュラーサイズ。</span></p>
+        <span class="price">¥2,480</span>
+      </div>
+    </article>
+    <article class="card">
+      <figure><img src="assets/menu_rebanira.webp" alt="貴族に献上するレバニラ" loading="lazy"></figure>
+      <div class="card-b">
+        <h3>貴族に献上するレバニラ</h3>
+        <p><span class="seg">濃厚レバーに</span><span class="seg">黄金の</span><span class="seg">卵黄を</span><span class="seg">ふたつ。</span><span class="seg">献上級の</span><span class="seg">味わい。</span></p>
+        <span class="price">¥1,780</span>
+      </div>
+    </article>
+    <article class="card">
+      <figure><img src="assets/menu_momo.webp" alt="もも串" loading="lazy"></figure>
+      <div class="card-b">
+        <h3>もも</h3>
+        <p><span class="seg">炭火が</span><span class="seg">引き出す</span><span class="seg">鶏の旨み。</span><span class="seg">一串から、</span><span class="seg">億万気分。</span></p>
+        <span class="price">¥290</span>
+      </div>
+    </article>
+    <article class="card">
+      <figure><img src="assets/menu_yukke.webp" alt="A4和牛の億万長者ユッケ" loading="lazy"></figure>
+      <div class="card-b">
+        <h3>A4和牛の億万長者ユッケ</h3>
+        <p><span class="seg">A4和牛を</span><span class="seg">惜しみなく。</span><span class="seg">黄金に</span><span class="seg">輝く一皿。</span></p>
+        <span class="price">¥1,680</span>
+      </div>
+    </article>
+  </div>
+  <div class="car-nav" id="menuNav" hidden>
+    <button type="button" class="car-btn" id="menuPrev" aria-label="前のメニューを表示">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" class="car-btn" id="menuNext" aria-label="次のメニューを表示">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ===== 5.5 スクロール連動イメージエクスパンド ===== -->
+<div class="xp-wrap" id="xpWrap">
+  <div class="xp-sticky">
+    <div class="xp-clip" id="xpClip">
+      <img src="assets/gallery_room.webp" alt="伝統組子の個室" id="xpImg">
+    </div>
+    <div class="xp-frame" id="xpFrame"></div>
+    <div class="xp-scrim" id="xpScrim"></div>
+    <div class="xp-copy" id="xpC1">この襖の先は、<em>別世界。</em></div>
+    <div class="xp-copy" id="xpC2">ようこそ、<em>億万長者様。</em></div>
+  </div>
+</div>
+
+<!-- ===== 6. 口コミ・レビュー ===== -->
+<section class="sec" id="review">
+  <div class="wrap">
+    <span class="eyebrow">Review</span>
+    <h2 class="rev"><span class="seg">億万長者たちの</span><em><span class="seg">声。</span></em></h2>
+    <div class="reviews rev" id="rvBox"></div>
+  </div>
+</section>
+
+<!-- ===== 7. 最新情報（SNS連携） ===== -->
+<section class="sec" id="sns">
+  <div class="wrap">
+    <span class="eyebrow">Follow Us</span>
+    <h2 class="rev"><span class="seg">最新情報は</span><span class="seg"><em>Instagram</em>で。</span></h2>
+    <p class="lead rev">限定イベント・新メニューをいち早くお届けします。</p>
+    <!-- Instagram: 確認済みURL反映済。フィード埋め込みは連携方式の選定後に実装 -->
+    <a class="btn-o rev" href="#" data-insta style="display:inline-block">@okumanchoja_shinjuku をフォロー</a>
+  </div>
+</section>
+
+<!-- ===== 8. アクセス・店舗情報 ===== -->
+<section class="sec" id="access">
+  <div class="wrap">
+    <span class="eyebrow">Access</span>
+    <h2 class="rev"><span class="seg">新宿・歌舞伎町の</span><span class="seg"><em>本殿</em>へ。</span></h2>
+    <div class="map rev">
+      <!-- 店名クエリでピン指定（周辺店舗ピンの混在を回避） -->
+      <iframe src="https://www.google.com/maps?q=%E4%B8%80%E5%84%84%E5%86%86%E3%81%A7%E5%B1%85%E9%85%92%E5%B1%8B%E5%BB%BA%E3%81%A6%E3%81%A6%E3%81%BF%E3%81%9F%E3%80%82%E5%84%84%E4%B8%87%E9%B3%A5%E8%80%85%20%E6%96%B0%E5%AE%BF%E6%9C%AC%E6%AE%BF&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="億万鳥者 新宿本殿 地図"></iframe>
+    </div>
+    <dl class="info rev">
+      <div><dt>店名</dt><dd>億万鳥者 新宿本殿</dd></div>
+      <div><dt>住所</dt><dd>東京都新宿区新宿3-36-12 杉忠ビル 4F</dd></div>
+      <div><dt>アクセス</dt><dd>JR新宿駅 東南口・新南口 徒歩1分／西武新宿駅 徒歩4分</dd></div>
+      <div><dt>営業時間</dt><dd>16:00 〜 23:00（月〜日）</dd></div>
+      <div><dt>TEL</dt><dd><a href="tel:0367099757" data-tel>03-6709-9757</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ===== 9. フッター ===== -->
+<footer>
+  <div class="wrap">
+    <div class="f-brand">億万鳥者<small>OKUMANCHO-JA SHINJUKU HONDEN</small></div>
+    <p class="f-copy">今までにない「億万長者」気分を味わえるアミューズメント居酒屋</p>
+    <small class="f-note">© IFREADINING Inc.</small>
+  </div>
+</footer>
+
+<!-- 常時固定CVバー（FV通過後に表示） -->
+<div class="cvbar" id="cvbar">
+  <a class="btn-g" href="#" data-ebica>席を予約する</a>
+  <a class="btn-o" href="tel:0000000000" data-tel>電話で予約する</a>
+</div>
+
+<!-- 小判アンビエント：全ページ背面に無限ループ（FV中はcanvasの背後で不可視） -->
+<div class="koban" id="koban" aria-hidden="true"></div>
+
+<script>
+;(function(){
+  'use strict';
+  var N=235;
+  // 端末に応じてフレームセットを選択（スマホ=720px幅／PC・タブレット=1080px幅=元動画原寸）
+  var FRAME_DIR=(window.innerWidth<=560)?'frames720':'frames1080';
+  var SCRUB_FRAMES=[];
+  for(var i=0;i<N;i++){ SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(i).padStart(3,'0')+'.webp'); }
+
+  var wrap=document.getElementById('scrubWrap'),cv=document.getElementById('scrubCv');
+  var ctx=cv.getContext('2d');
+  var bmps=new Array(N);
+  var useBmp=('createImageBitmap' in window);
+  var loaded=0;
+  var ldBar=document.getElementById('ldBar'),ldPct=document.getElementById('ldPct'),loader=document.getElementById('loader');
+  var loaderHidden=false;
+
+  function onLoaded(){
+    loaded++;
+    var p=Math.round(loaded/N*100);
+    if(ldBar){ldBar.style.width=p+'%';}
+    if(ldPct){ldPct.textContent=p+'%';}
+    // 8刻みの粗いカバー（約30枚）が揃った時点で開始
+    if(!loaderHidden && loaded>=Math.ceil(N/8)){
+      loaderHidden=true;
+      loader.classList.add('done');
+      setTimeout(function(){loader.style.display='none';},700);
+    }
+  }
+  function load(i){
+    if(bmps[i]!==undefined)return;
+    bmps[i]=null;
+    var im=new Image();
+    im.onload=function(){
+      if(useBmp){
+        createImageBitmap(im).then(function(b){bmps[i]=b; onLoaded(); if(i===0)render(0,true);});
+      } else {
+        bmps[i]=im; onLoaded(); if(i===0)render(0,true);
+      }
+    };
+    im.onerror=function(){ onLoaded(); };
+    im.src=SCRUB_FRAMES[i];
+  }
+  // (a) 優先読み込み: 8→4→2→1
+  var order=[];
+  [8,4,2,1].forEach(function(st){ for(var i=0;i<N;i+=st){ if(order.indexOf(i)===-1) order.push(i); } });
+  order.forEach(function(idx,k){ setTimeout(function(){load(idx);}, k*9); });
+
+  function nearest(i){
+    if(bmps[i]) return bmps[i];
+    for(var d=1;d<N;d++){
+      if(i-d>=0 && bmps[i-d]) return bmps[i-d];
+      if(i+d<N && bmps[i+d]) return bmps[i+d];
+    }
+    return null;
+  }
+  var last=-1;
+  // アンビエント背景canvas（ぼかすので内部解像度は控えめでよい＝軽い）
+  var bg=document.getElementById('scrubBg'), bgctx=bg.getContext('2d');
+  var bgOn=false;
+  function size(){ var d=Math.min(window.devicePixelRatio||1,2);
+    cv.width=cv.clientWidth*d; cv.height=cv.clientHeight*d;
+    var bs=Math.min(1,720/cv.clientWidth); // 背景は最大720px幅相当で十分
+    bg.width=Math.round(cv.clientWidth*bs); bg.height=Math.round(cv.clientHeight*bs);
+    last=-1; }
+  size(); window.addEventListener('resize',function(){size(); render(cur,true);});
+
+  function isLandscape(){ return cv.width > cv.height*1.05; }
+
+  function drawCover(c,im,alpha){
+    var iw=im.width||im.naturalWidth, ih=im.height||im.naturalHeight;
+    var cw=c.canvas.width,ch=c.canvas.height;
+    var s=Math.max(cw/iw,ch/ih),dw=iw*s,dh=ih*s;
+    c.globalAlpha=alpha;
+    c.drawImage(im,(cw-dw)/2,(ch-dh)/2,dw,dh);
+  }
+  function drawContain(im,alpha){
+    var iw=im.width||im.naturalWidth, ih=im.height||im.naturalHeight;
+    var cw=cv.width,ch=cv.height;
+    var s=Math.min(cw/iw,ch/ih),dw=iw*s,dh=ih*s;
+    ctx.globalAlpha=alpha;
+    ctx.drawImage(im,(cw-dw)/2,(ch-dh)/2,dw,dh);
+  }
+  function drawPanelLines(){
+    var iw=1080, ih=1920;
+    var cw=cv.width,ch=cv.height;
+    var s=Math.min(cw/iw,ch/ih),dw=iw*s;
+    var x0=(cw-dw)/2, x1=x0+dw;
+    ctx.globalAlpha=0.5;
+    ctx.fillStyle='#D9AE52';
+    ctx.fillRect(Math.round(x0)-1,0,1,ch);
+    ctx.fillRect(Math.round(x1),0,1,ch);
+    ctx.globalAlpha=1;
+  }
+  function drawOne(im,alpha){
+    if(isLandscape()){ drawContain(im,alpha); }
+    else{ drawCover(ctx,im,alpha); }
+  }
+  function render(f,force){
+    if(!force && Math.abs(f-last)<0.004) return;
+    var i0=Math.max(0,Math.min(N-1,Math.floor(f)));
+    var i1=Math.min(N-1,i0+1);
+    var t=Math.min(Math.max(f-i0,0),1);
+    var a=bmps[i0]||nearest(i0);
+    if(!a) return;
+    var land=isLandscape();
+    if(land!==bgOn){ bg.style.display=land?'block':'none'; bgOn=land; }
+    if(land){
+      bgctx.globalAlpha=1;
+      drawCover(bgctx,a,1);
+      ctx.clearRect(0,0,cv.width,cv.height); // パネル外を透過させ背景ぼかしを見せる
+    }
+    drawOne(a,1);
+    var b=bmps[i1];
+    if(b && i1!==i0 && t>0.02) drawOne(b,t);
+    ctx.globalAlpha=1;
+    if(land){ drawPanelLines(); }
+    last=f;
+  }
+
+  // オーバーレイ制御
+  var stages=[].slice.call(document.querySelectorAll('.stage')).map(function(el){
+    return {el:el, a:parseFloat(el.dataset.in), b:parseFloat(el.dataset.out)};
+  });
+  var cue=document.getElementById('cue');
+  var hd=document.getElementById('hd');
+  function ease(x){ return x*x*(3-2*x); } // smoothstep
+  var stageScrim=document.getElementById('stageScrim');
+  function updateOverlays(prog){
+    var fade=0.045; // ステージ端のフェード幅
+    var maxO=0;
+    stages.forEach(function(s){
+      var o=0;
+      if(prog>=s.a-fade && prog<=s.b+fade){
+        var fin=Math.min(Math.max((prog-(s.a-fade))/fade,0),1);
+        var fout=Math.min(Math.max(((s.b+fade)-prog)/fade,0),1);
+        o=ease(Math.min(fin,fout));
+      }
+      s.el.style.opacity=o;
+      s.el.classList.toggle('on',o>0.5);
+      if(o>maxO)maxO=o;
+    });
+    if(stageScrim){ stageScrim.style.opacity=maxO; }
+    if(cue){ cue.style.opacity=(prog<0.04)?0.9:0; cue.style.transition='opacity .4s'; }
+    if(hd){ hd.classList.toggle('solid',prog>0.97); }
+  }
+
+  var cur=0;
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function loop(){
+    var r=wrap.getBoundingClientRect(), vh=window.innerHeight;
+    var prog=Math.min(Math.max(-r.top/(r.height-vh),0),1);
+    var target=prog*(N-1);
+    if(reduced){ cur=target; }
+    else{
+      cur+=(target-cur)*0.09;
+      if(Math.abs(target-cur)<0.01) cur=target;
+    }
+    render(cur,false);
+    updateOverlays(prog);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+<script>
+;(function(){
+  'use strict';
+  // ============================================================
+  // ★★★ 差し替え箇所はここに集約 ★★★
+  var CONFIG={
+    EBICA_URL:'https://tabelog.com/tokyo/A1304/A130401/13270920/', // ★暫定：食べログ予約ページ。Ebica URL入手後に差し替え
+    TEL:'0367099757',         // 店舗電話（食べログ掲載: 03-6709-9757）
+    INSTAGRAM_URL:'https://www.instagram.com/okumanchoja_shinjuku/',
+    YOUTUBE_ID:''            // ★要差替：YouTube動画ID（例:'dQw4w9WgXcQ'）。設定するとYouTube埋め込みに自動切替
+  };
+  // YouTube ID設定時はプレーヤーを差し替え（未設定時はローカル動画を16:9枠で再生）
+  if(CONFIG.YOUTUBE_ID){
+    var mf=document.getElementById('movieFrame');
+    if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
+      +'?rel=0" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'; }
+  }
+  // ============================================================
+  document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
+  document.querySelectorAll('[data-tel]').forEach(function(a){ a.href='tel:'+CONFIG.TEL; });
+  document.querySelectorAll('[data-insta]').forEach(function(a){ a.href=CONFIG.INSTAGRAM_URL; });
+
+  // セクション出現アニメーション
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } });
+    },{threshold:0,rootMargin:'0px 0px 40px 0px'});
+    document.querySelectorAll('.rev').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rev').forEach(function(el){ el.classList.add('vis'); });
+  }
+
+  // 固定CVバー：FVスクラブ通過後に表示
+  var cvbar=document.getElementById('cvbar');
+  var wrap=document.getElementById('scrubWrap');
+  function onScroll(){
+    var passed=window.scrollY > (wrap.offsetTop + wrap.offsetHeight - window.innerHeight*1.2);
+    cvbar.classList.toggle('show',passed);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== E1: 見出しの一文字分割＋出現 =====
+  function splitChars(el){
+    el.classList.remove('rev');
+    (function walk(node){
+      [].slice.call(node.childNodes).forEach(function(ch){
+        if(ch.nodeType===3){
+          var frag=document.createDocumentFragment();
+          ch.textContent.split('').forEach(function(c){
+            if(c===' '){ frag.appendChild(document.createTextNode(' ')); return; }
+            var s=document.createElement('span'); s.className='ch'; s.textContent=c;
+            frag.appendChild(s);
+          });
+          node.replaceChild(frag,ch);
+        } else if(ch.nodeType===1 && ch.tagName!=='BR'){ walk(ch); }
+      });
+    })(el);
+    [].slice.call(el.querySelectorAll('.ch')).forEach(function(s,i){
+      s.style.transitionDelay=(i*45)+'ms';
+      s.style.animationDelay=(500+i*45)+'ms';
+    });
+  }
+  var h2s=[].slice.call(document.querySelectorAll('.sec h2'));
+  if(!reduced && 'IntersectionObserver' in window){
+    h2s.forEach(splitChars);
+    var ioH=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('chars-in'); ioH.unobserve(e.target); } });
+    },{threshold:0.2});
+    h2s.forEach(function(h){ ioH.observe(h); });
+  }
+
+  // ===== E0: FVメインキャッチ 一文字出現（読み込み完了後に1回だけ） =====
+  // 参考動画（cargox-mobile）の実測値に合わせた設定。数値はここだけで調整可。
+  (function(){
+    var el=document.querySelector('.main-catch');
+    if(!el) return;
+
+    var FV={
+      BASE:20,          // 開始遅延(ms)
+      LINE_GAP:100,     // 行と行のズレ(ms)　実測100〜130
+      SWEEP:340,        // 1行を端から端まで掃引しきる時間(ms)　実測333〜433
+      DELAY:1620,       // ★ローダー完了からエフェクト開始までの待ち(ms)
+                        //   ローダーは .done付与後 0.7秒かけて消えるので、
+                        //   画面が完全に出てから約0.9秒後に文字が動き出す
+      MAX_WAIT:6000,    // ローダー完了を待つ上限(ms)。超えたら待たずに進む
+      DIR:['ltr','rtl'] // 1行目=左→右、2行目=右→左（実測どおり方向を反転）
+                        // ※全行を左→右に揃えたい場合は ['ltr'] に変更
+    };
+
+    if(reduced){ el.classList.add('fv-in'); return; }
+
+    // <br>を境に行を分けながら1文字ずつspan化する（<em>の入れ子と色は保持）
+    var lines=[[]], li=0;
+    (function walk(node){
+      [].slice.call(node.childNodes).forEach(function(ch){
+        if(ch.nodeType===3){
+          var frag=document.createDocumentFragment();
+          ch.textContent.split('').forEach(function(c){
+            if(c===' '){ frag.appendChild(document.createTextNode(' ')); return; }
+            var s=document.createElement('span');
+            s.className='fvch'; s.textContent=c;
+            frag.appendChild(s); lines[li].push(s);
+          });
+          node.replaceChild(frag,ch);
+        } else if(ch.nodeType===1){
+          if(ch.tagName==='BR'){ li++; lines[li]=[]; }
+          else walk(ch);
+        }
+      });
+    })(el);
+
+    lines.forEach(function(chars,i){
+      var n=chars.length; if(!n) return;
+      var dir=FV.DIR[i%FV.DIR.length];
+      chars.forEach(function(s,k){
+        var pos=(dir==='rtl')?(n-1-k):k;
+        var d=FV.BASE + i*FV.LINE_GAP + (n>1 ? pos/(n-1)*FV.SWEEP : 0);
+        s.style.transitionDelay=Math.round(d)+'ms';
+      });
+    });
+
+    var played=false;
+    function play(){
+      if(played) return; played=true;
+      el.classList.add('fv-in');
+      setTimeout(function(){
+        [].slice.call(el.querySelectorAll('.fvch')).forEach(function(s){
+          s.style.willChange='auto';
+        });
+      },1800);
+    }
+
+    // ローディング終了に同期して FV.DELAY だけ待ってから再生する。
+    // 「ローダー完了」と「上限待ち(MAX_WAIT)」のどちらか早い方を起点にし、
+    // そこから必ず FV.DELAY 待つ（保険が先に発火して早回しにならないようにする）。
+    var loader=document.getElementById('loader');
+    function arm(){ setTimeout(play,FV.DELAY); }
+    if(!loader || loader.classList.contains('done')){ arm(); }
+    else if('MutationObserver' in window){
+      var armed=false;
+      var mo=new MutationObserver(function(){
+        if(armed || !loader.classList.contains('done')) return;
+        armed=true; mo.disconnect(); arm();
+      });
+      mo.observe(loader,{attributes:true,attributeFilter:['class']});
+      setTimeout(function(){ if(armed) return; armed=true; mo.disconnect(); arm(); },FV.MAX_WAIT);
+    } else {
+      setTimeout(arm,1200);
+    }
+  })();
+
+  // ===== E6: メニューのスタック型カルーセル（横スワイプで画面外へ退場） =====
+  // 録画実測準拠：中央にカード1枚、その真下に次カードの縁が2層覗く
+  // （深い層ほど下に12pxずつずれ、少し縮小）。横スワイプで最前面カードが
+  // 指に1:1追従し、離すとそのまま横へ画面外に飛んで退場。下の山から
+  // 次のカードが最前面へ昇格する。左右どちらへのスワイプでも「次へ」進む
+  // （録画と同挙動）。‹ボタンで前のカードが横から戻ってくる。無限ループ。
+  (function(){
+    var cards=document.querySelector('.cards');
+    var nav=document.getElementById('menuNav');
+    var btnPrev=document.getElementById('menuPrev'), btnNext=document.getElementById('menuNext');
+    if(!cards || !nav) return;
+    var items=[].slice.call(cards.querySelectorAll('.card'));
+    var N=items.length;
+    if(N<2) return;
+
+    var MENU={
+      DUR:600,         // ボタン送りの遷移時間(ms)
+      SWIPE_DUR:380,   // スワイプ後の飛び切り/戻り時間(ms)
+      SWIPE_DIST:40,   // 送りと判定する最小ドラッグ距離(px)
+      SWIPE_VEL:0.35,  // 送りと判定する最小速度(px/ms)
+      STACK_Y:12,      // 下の山の1層あたりの下方向オフセット(px)　実測≒12px
+      STACK_S:0.045,   // 下の山の1層あたりの縮小量　実測: 奥ほど幅が狭い
+      STACK_SHOW:2     // 縁を見せる層の数
+    };
+
+    cards.classList.add('deck');
+    nav.hidden=false;
+
+    // 状態：base＝最前面カード、dx＝最前面カードの横位置(px)
+    var base=0, dx=0;
+    function exitDist(){ return cards.clientWidth/2 + items[0].offsetWidth/2 + 24; }
+    function render(){
+      var q=Math.min(Math.abs(dx)/(items[0].offsetWidth*0.9),1); // 山の昇格進行
+      for(var k=0;k<N;k++){
+        var i=(base+k)%N, st=items[i].style;
+        if(k===0){
+          st.transform='translateX('+dx.toFixed(1)+'px)';
+          st.zIndex='100';
+        } else {
+          var lv=Math.min(Math.max(k-q,0),MENU.STACK_SHOW); // 前面が抜けるほど山が1段ずつ繰り上がる
+          st.transform='translateY('+(MENU.STACK_Y*lv).toFixed(1)+'px) scale('+(1-MENU.STACK_S*lv).toFixed(4)+')';
+          st.zIndex=String(90-k*10);
+        }
+      }
+    }
+
+    // ---- トゥイーン（dxを動かす）----
+    var raf=null;
+    function ease(t){ return 1-Math.pow(1-t,2); } // easeOutQuad（FVと同一）
+    function stopTween(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
+    function tweenDx(to,dur,done){
+      stopTween();
+      if(dur<=0||reduced){ dx=to; render(); done&&done(); return; }
+      var from=dx, delta=to-from, t0=null;
+      if(Math.abs(delta)<0.5){ dx=to; render(); done&&done(); return; }
+      raf=requestAnimationFrame(function step(ts){
+        if(t0===null) t0=ts;
+        var p=Math.min((ts-t0)/dur,1);
+        dx=from+delta*ease(p); render();
+        if(p<1){ raf=requestAnimationFrame(step); }
+        else{ raf=null; done&&done(); }
+      });
+    }
+    function throwOut(dir,dur){ // 最前面を横へ飛ばして次へ
+      tweenDx(dir*exitDist(),dur,function(){
+        base=(base+1)%N; dx=0; render();
+      });
+    }
+    function flyBack(dur){ // 前のカードが横から戻ってきて最前面に載る
+      stopTween();
+      base=(base-1+N)%N;
+      dx=-exitDist(); render();
+      tweenDx(0,dur);
+    }
+    btnNext.addEventListener('click',function(){ stopTween(); if(dx!==0){dx=0;} throwOut(-1,MENU.DUR); });
+    btnPrev.addEventListener('click',function(){ flyBack(MENU.DUR); });
+
+    // ---- スワイプ（最前面カードが1:1追従、離すとその方向へ画面外に退場）----
+    var drag=null;
+    cards.addEventListener('dragstart',function(e){ e.preventDefault(); });
+    cards.addEventListener('pointerdown',function(e){
+      if(e.button!==undefined && e.button!==0) return;
+      stopTween();
+      drag={id:e.pointerId,x:e.clientX,base0:dx,
+            lastX:e.clientX,lastT:performance.now(),vel:0,moved:false};
+    });
+    cards.addEventListener('pointermove',function(e){
+      if(!drag||e.pointerId!==drag.id) return;
+      var d=e.clientX-drag.x;
+      if(!drag.moved && Math.abs(d)>4){
+        drag.moved=true;
+        cards.classList.add('dragging');
+        try{ cards.setPointerCapture(drag.id); }catch(_){}
+      }
+      if(drag.moved){
+        var now=performance.now(), dt=now-drag.lastT;
+        if(dt>0){ drag.vel=0.8*drag.vel+0.2*((e.clientX-drag.lastX)/dt); }
+        drag.lastX=e.clientX; drag.lastT=now;
+        dx=drag.base0+d; render();
+      }
+    });
+    function endDrag(e){
+      if(!drag||(e.pointerId!==undefined&&e.pointerId!==drag.id)) return;
+      var d=drag; drag=null;
+      if(!d.moved) return;
+      cards.classList.remove('dragging');
+      try{ cards.releasePointerCapture(d.id); }catch(_){}
+      var v=d.vel;
+      if(dx>MENU.SWIPE_DIST||v>MENU.SWIPE_VEL){ throwOut(1,MENU.SWIPE_DUR); }        // 右へ退場→次
+      else if(dx<-MENU.SWIPE_DIST||v<-MENU.SWIPE_VEL){ throwOut(-1,MENU.SWIPE_DUR); }// 左へ退場→次
+      else { tweenDx(0,MENU.SWIPE_DUR); }                                            // 閾値未満は中央へ戻る
+    }
+    cards.addEventListener('pointerup',endDrag);
+    cards.addEventListener('pointercancel',endDrag);
+
+    window.addEventListener('resize',render);
+    render();
+  })();
+
+  // ===== E2: 一億円カウントアップ =====
+  var costEl=document.getElementById('costNum');
+  if(costEl){
+    var TARGET=100000000, ran=false;
+    function runCount(){
+      if(ran)return; ran=true;
+      if(reduced){ costEl.textContent=TARGET.toLocaleString('ja-JP'); return; }
+      var t0=null, DUR=1700;
+      function step(ts){
+        if(!t0)t0=ts;
+        var p=Math.min((ts-t0)/DUR,1);
+        var e=1-Math.pow(1-p,3); // easeOutCubic
+        costEl.textContent=Math.round(TARGET*e).toLocaleString('ja-JP');
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    if('IntersectionObserver' in window){
+      var ioC=new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ runCount(); ioC.disconnect(); } });
+      },{threshold:0.25});
+      ioC.observe(costEl);
+    } else { runCount(); }
+  }
+
+  // ===== E3: 襖開きリビール（ギャラリー・メニュー写真） =====
+  // 画面下端の60px手前で先行発火＝「スペースだけあって中身が見えない」帯域を作らない
+  var figs=[].slice.call(document.querySelectorAll('.gallery figure,.card figure'));
+  figs.forEach(function(f){ f.classList.add('fus'); });
+  if('IntersectionObserver' in window){
+    var ioF=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('vis'); ioF.unobserve(e.target); } });
+    },{threshold:0,rootMargin:'0px 0px 60px 0px'});
+    figs.forEach(function(f){ ioF.observe(f); });
+  } else {
+    figs.forEach(function(f){ f.classList.add('vis'); });
+  }
+
+  // ===== E5: スクロール連動イメージエクスパンド =====
+  var xpWrap=document.getElementById('xpWrap');
+  if(xpWrap && !reduced){
+    var xpClip=document.getElementById('xpClip'),
+        xpImg=document.getElementById('xpImg'),
+        xpFrame=document.getElementById('xpFrame'),
+        xpC1=document.getElementById('xpC1'),
+        xpC2=document.getElementById('xpC2');
+    var xpLast=-1;
+    function xpEase(x){ return x*x*(3-2*x); }
+    function xpTick(){
+      var r=xpWrap.getBoundingClientRect(), vh=window.innerHeight;
+      if(r.bottom>0 && r.top<vh){ // 画面内のときだけ計算
+        var p=Math.min(Math.max(-r.top/(r.height-vh),0),1);
+        if(Math.abs(p-xpLast)>0.001){
+          xpLast=p;
+          var e=xpEase(p);
+          // 額装(上下28%/左右30%)→全画面(0%)へ開く
+          var v=(28*(1-e)).toFixed(2), h=(30*(1-e)).toFixed(2);
+          var rad=(14*(1-e)).toFixed(1);
+          xpClip.style.clipPath='inset('+v+'% '+h+'% '+v+'% '+h+'% round '+rad+'px)';
+          xpImg.style.transform='scale('+(1.18-0.18*e)+')';
+          // 金縁はクリップと同じ矩形を追従し、開き切る手前で消える
+          xpFrame.style.top=v+'%'; xpFrame.style.bottom=v+'%';
+          xpFrame.style.left=h+'%'; xpFrame.style.right=h+'%';
+          xpFrame.style.borderRadius=rad+'px';
+          xpFrame.style.opacity=String(Math.max(0,1-p*1.6));
+          // コピー切替: 前半C1、後半C2
+          var o1=Math.max(0,1-p*2.4), o2=Math.max(0,Math.min(1,(p-0.62)*3.2));
+          xpC1.style.opacity=String(o1);
+          xpC2.style.opacity=String(o2);
+          var xs=document.getElementById('xpScrim');
+          if(xs){ xs.style.opacity=String(Math.max(o1,o2)); }
+        }
+      }
+      requestAnimationFrame(xpTick);
+    }
+    requestAnimationFrame(xpTick);
+  } else if(xpWrap && reduced){
+    document.getElementById('xpC2').style.opacity='1';
+    document.getElementById('xpScrim').style.opacity='1';
+  }
+
+  // ===== E6: ダミーレビュー自動生成エンジン（テンプレート組み立て型） =====
+  // 設計: 観点×小観点×言い回し×文骨格の掛け算で毎ロード別の文を組み立てる。
+  // 重複はセッション内履歴と照合して自動再生成。※デモLP用の生成表示。本番公開に転用する場合は実レビューへ差し替えること。
+  var rvBox=document.getElementById('rvBox');
+  if(rvBox){
+    // 観点 → 小観点 → 言い回しプール（完結した一文単位で管理）
+    var RV_POOL={
+      '演出・接客':{
+        '入店演出':['入店した瞬間から世界観が完成されていて圧倒された','暖簾をくぐった瞬間に非日常が始まる','入口からもう金ピカで、期待値が一気に上がった'],
+        '億万長者様呼び':['「億万長者様」と呼ばれるたびに笑ってしまうけど悪い気はしない','注文のたびの「億万長者様」コールが癖になる','店員さんに億万長者様と呼ばれて、途中から本当にその気になっていた'],
+        '盛り上げ':['スタッフさんの盛り上げが絶妙で、終始楽しい空気だった','演出の間の取り方がうまくて、テーブル全体が沸いた','スタッフの皆さんのテンションに引っ張られて大盛り上がりだった'],
+        'サプライズ':['誕生日のお祝い演出が豪華で、主役が本気で喜んでいた','サプライズをお願いしたら想像の3倍派手で最高だった','お祝い演出の派手さは今まで行った店で一番かもしれない']
+      },
+      '料理':{
+        'ユッケ':['億万長者ユッケは黄身を割る瞬間がハイライト','A4和牛のユッケがとろけるほど濃厚だった','ユッケの見た目の豪華さに全員がスマホを構えた'],
+        '生ハム':['A5和牛の生ハムてんこ盛りはテーブルが肉で覆われる衝撃のビジュアル','生ハムてんこ盛りは量も味も文句なし','和牛生ハムの脂の甘さが忘れられない'],
+        'バーガー':['億万バーガーはベーコンがはみ出す規格外サイズで食べ応え抜群','億万バーガーを頼んだら想像を超えるボリュームで歓声が上がった'],
+        'レバニラ':['貴族に献上するレバニラは名前負けしない上品な味','レバニラに黄身が2つ乗っていて背徳感がすごい'],
+        '焼き鳥':['焼き鳥は炭火の香りがしっかりしていて普通に美味しい','締めに頼んだもも串が意外なほど本格派だった']
+      },
+      'ドリンク演出':{
+        '運試しサワー':['運試しサワーで大吉を引いて特大サイズが来た','おみくじでサワーのサイズが決まる演出が楽しすぎる','運試しサワーは小さくても盛り上がるのでずるい'],
+        'ルーレット':['億万ルーレットで割引が当たってテンションが上がった','ルーレット演出があるおかげで会計まで楽しい'],
+        '乾杯':['乾杯の掛け声から全力で、最初から笑いっぱなしだった','乾杯の演出だけでこの店に来た価値があった']
+      },
+      '空間':{
+        '組子個室':['伝統組子の個室が想像以上に上質で落ち着けた','個室の組子細工が美しくて写真を撮りまくった','個室なので周りを気にせず騒げるのがありがたい'],
+        '金の内装':['店内どこを見ても金色で、いい意味で現実感がない','金の内装は写真映えが半端じゃない'],
+        '雰囲気':['派手なのに安っぽくならない絶妙なバランスだった','ギラギラしているのに居心地がいい不思議な空間']
+      },
+      '利用シーン':{
+        'デート':['デートで利用したが、会話が途切れる暇がなかった','デート利用にちょうどいい非日常感だった'],
+        '宴会':['送別会で利用したら主役も参加者も大満足だった','会社の飲み会で使ったら普段静かな人まで笑っていた'],
+        '女子会':['女子会で行ったら全員のカメラロールが金色になった']
+      },
+      'アクセス・コスパ':{
+        '立地':['新宿駅から徒歩1分なので集合が楽だった','駅近なので終電ギリギリまで楽しめた'],
+        'コスパ':['この演出と料理でこの価格なら十分納得','思ったより値段が良心的で驚いた']
+      }
+    };
+    var RV_OPENERS=['','','先日訪問。','初めて利用しました。','2回目の訪問です。','友人に勧められて来店。','SNSで見つけて気になっていたお店。'];
+    var RV_CONNECTORS=['。','。そして','。あと','。ちなみに','。何より'];
+    var RV_CLOSERS=['','','また行きたい。','リピート確定です。','次は別のメニューも試したい。','人を連れて行きたくなるお店。','機会があればまた利用します。'];
+    var RV_PERSONA_AGE=['20代','20代','30代','30代','40代'];
+    var RV_PERSONA_GEN=['女性','男性'];
+    var rvHistory=[];
+    function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+    function buildReview(){
+      // 観点を2〜3個重複なしで選ぶ
+      var keys=Object.keys(RV_POOL).slice();
+      var n=2+Math.floor(Math.random()*2);
+      var parts=[];
+      for(var i=0;i<n;i++){
+        var k=keys.splice(Math.floor(Math.random()*keys.length),1)[0];
+        var subs=RV_POOL[k];
+        var sk=pick(Object.keys(subs));
+        parts.push(pick(subs[sk]));
+      }
+      var body=pick(RV_OPENERS)+parts[0];
+      for(var j=1;j<parts.length;j++){ body+=pick(RV_CONNECTORS).replace('。','。 ').trim()+parts[j]; }
+      body+='。'+pick(RV_CLOSERS);
+      return body;
+    }
+    function uniqueReview(){
+      for(var t=0;t<12;t++){                 // 重複時は自動再生成（最大12回）
+        var r=buildReview();
+        if(rvHistory.indexOf(r)===-1){ rvHistory.push(r); return r; }
+      }
+      return buildReview();
+    }
+    function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    function renderReviews(){
+      var out='';
+      for(var i=0;i<3;i++){
+        var stars=(Math.random()<0.6)?'★★★★★':'★★★★☆';
+        var cite=pick(RV_PERSONA_AGE)+'・'+pick(RV_PERSONA_GEN);
+        // 本LPはデモ用。本番公開に転用する場合は生成レビューを実レビューに差し替えること（景表法・ステマ規制）
+        out+='<blockquote class="rv"><span class="stars">'+stars+'</span>'
+          +'<p>'+esc(uniqueReview())+'</p><cite>'+cite+'</cite></blockquote>';
+      }
+      rvBox.innerHTML=out;
+    }
+    renderReviews();
+  }
+
+  // ===== E4: 小判アンビエント（背面固定・無限ループ） =====
+  var kbWrap=document.getElementById('koban');
+  if(kbWrap && !reduced){
+    var KBSVG='<svg viewBox="0 0 44 30" xmlns="http://www.w3.org/2000/svg">'
+      +'<ellipse cx="22" cy="15" rx="21" ry="14" fill="#D9AE52"/>'
+      +'<ellipse cx="22" cy="15" rx="21" ry="14" fill="none" stroke="#EBCB84" stroke-width="1.6"/>'
+      +'<ellipse cx="22" cy="15" rx="14" ry="8.6" fill="none" stroke="#B98F3E" stroke-width="1.2"/>'
+      +'<rect x="19.5" y="6" width="5" height="6" rx="1" fill="#B98F3E"/>'
+      +'</svg>';
+    for(var i=0;i<12;i++){
+      (function(){
+        var d=document.createElement('i'); d.className='kb';
+        var depth=Math.random(); // 0=奥 1=手前
+        function rnd(){ d.style.left=(2+Math.random()*96)+'%'; }
+        rnd();
+        d.style.setProperty('--dly',(Math.random()*8)+'s');
+        d.style.setProperty('--dur',(6+ (1-depth)*8 +Math.random()*3)+'s'); // 奥ほどゆっくり
+        d.style.setProperty('--rot',(120+Math.random()*260)+'deg');
+        d.style.setProperty('--op',(0.22+depth*0.33).toFixed(2));           // 奥ほど薄く
+        var sc=0.35+depth*0.85; d.style.width=(44*sc)+'px'; d.style.height=(30*sc)+'px';
+        if(depth<0.45){ d.style.filter='blur('+((0.45-depth)*3).toFixed(1)+'px)'; } // 奥はぼかして被写界深度
+        d.innerHTML=KBSVG;
+        d.addEventListener('animationiteration',rnd); // 周回ごとに横位置を変えて単調さを回避
+        kbWrap.appendChild(d);
+      })();
+    }
+  }
+
+  // ===== 保険処理：オブザーバー不発でも「画面内なのに不可視」を残さない =====
+  var fsTick=false;
+  function failsafe(){
+    fsTick=false;
+    var vh=window.innerHeight;
+    [].slice.call(document.querySelectorAll('.rev:not(.vis),.fus:not(.vis)')).forEach(function(el){
+      if(el.getBoundingClientRect().top < vh-30) el.classList.add('vis');
+    });
+    [].slice.call(document.querySelectorAll('.sec h2:not(.chars-in)')).forEach(function(h){
+      if(h.getBoundingClientRect().top < vh-30) h.classList.add('chars-in');
+    });
+  }
+  window.addEventListener('scroll',function(){
+    if(!fsTick){ fsTick=true; requestAnimationFrame(failsafe); }
+  },{passive:true});
+  window.addEventListener('resize',function(){
+    if(!fsTick){ fsTick=true; requestAnimationFrame(failsafe); }
+  });
+  window.addEventListener('load',function(){ setTimeout(failsafe,600); });
+  failsafe(); // オブザーバー登録直後にも即時実行（初期表示分を確実に可視化）
+  setTimeout(failsafe,1200); // フォント読込等でレイアウトが動いた後の再チェック
+})();
+</script>
+</body>
+</html>
