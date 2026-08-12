@@ -6,7 +6,7 @@
 <title>億万鳥者 新宿本殿｜今までにない「億万長者」気分を味わえるアミューズメント居酒屋</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#100D08;
@@ -20,27 +20,37 @@
     --disp:"Shippori Mincho",serif;
     --body:"Zen Kaku Gothic New",sans-serif;
     --mono:"Roboto Mono",monospace;
+    /* 左右余白の一元管理：SPは15〜20px基準、画面幅に応じて自動伸縮（全セクション共通） */
+    --pad-x:clamp(15px,4.5vw,24px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
+  /* 横スクロール禁止の最終防衛線（clipはstickyを壊さない） */
+  html,body{overflow-x:clip}
   body{font-family:var(--body);background:var(--bg);color:var(--cream);line-height:1.8;
     -webkit-font-smoothing:antialiased;font-size:15px}
   a{color:inherit;text-decoration:none}
   img{display:block;width:100%;height:100%;object-fit:cover}
+  /* メディア要素は親幅を絶対に超えない */
+  img,svg,video,iframe{max-width:100%}
 
   /* ===== 固定ヘッダー（予約導線は常時表示：MD絶対条件） ===== */
   header{position:fixed;top:0;left:0;right:0;z-index:50;
     display:flex;align-items:center;justify-content:space-between;
-    height:56px;padding:0 16px;
+    height:56px;padding:0 var(--pad-x);
     background:linear-gradient(180deg,rgba(16,13,8,.75),rgba(16,13,8,0));
     transition:background .4s}
   header.solid{background:rgba(16,13,8,.92);backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line-2)}
   .brand{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
     text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .hd-cta{font-family:var(--body);font-weight:700;font-size:13px;color:#150f04;
+  .hd-cta{display:inline-flex;align-items:center;font-family:var(--body);font-weight:700;font-size:13px;color:#150f04;
     background:var(--gold);padding:9px 18px;border-radius:999px;
-    box-shadow:0 6px 18px -8px rgba(217,174,82,.6)}
+    box-shadow:0 6px 18px -8px rgba(217,174,82,.6);
+    transition:filter .25s ease,box-shadow .25s ease}
+  .hd-cta:hover,.hd-cta:focus-visible{filter:brightness(1.12);
+    box-shadow:0 8px 22px -6px rgba(217,174,82,.85)}
+  @media (prefers-reduced-motion: reduce){ .hd-cta{transition:none} }
 
   /* ===== ローディング ===== */
   #loader{position:fixed;inset:0;z-index:100;background:var(--bg);
@@ -48,7 +58,7 @@
     transition:opacity .6s;pointer-events:none}
   #loader.done{opacity:0}
   #loader .lg{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:.2em;color:var(--gold-2)}
-  #loader .bar{width:180px;height:2px;background:var(--line-2);overflow:hidden;border-radius:2px}
+  #loader .bar{width:min(180px,56vw);height:2px;background:var(--line-2);overflow:hidden;border-radius:2px}
   #loader .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .2s}
   #loader .pct{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
 
@@ -70,7 +80,7 @@
 
   /* ===== オーバーレイ各ステージ ===== */
   .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    opacity:0;pointer-events:none;padding:0 24px}
+    opacity:0;pointer-events:none;padding:0 var(--pad-x)}
   .stage.on{pointer-events:auto}
 
   /* Stage1：タイトル（画面下寄せ） */
@@ -110,19 +120,31 @@
   /* ===== CVボタン ===== */
   .cv-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;justify-content:inherit}
   .st-final .cv-row{justify-content:center}
-  .btn-g{display:inline-block;font-weight:700;font-size:14.5px;color:#150f04;
+  .btn-g{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:#150f04;
     background:var(--gold);padding:14px 30px;border-radius:12px;
-    box-shadow:0 10px 28px -10px rgba(217,174,82,.65)}
-  .btn-o{display:inline-block;font-weight:700;font-size:14.5px;color:var(--gold-2);
+    box-shadow:0 10px 28px -10px rgba(217,174,82,.65);
+    transition:filter .25s ease,box-shadow .25s ease,transform .25s ease}
+  .btn-g:hover,.btn-g:focus-visible{filter:brightness(1.12);
+    box-shadow:0 12px 34px -8px rgba(217,174,82,.85);transform:translateY(-1px)}
+  .btn-o{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:var(--gold-2);
     border:1px solid rgba(217,174,82,.6);padding:13px 30px;border-radius:12px;
-    background:rgba(16,13,8,.5)}
+    background:rgba(16,13,8,.5);
+    transition:background .25s ease,border-color .25s ease,box-shadow .25s ease}
+  .btn-o:hover,.btn-o:focus-visible{background:rgba(217,174,82,.14);border-color:rgba(217,174,82,.95);
+    box-shadow:0 0 22px -6px rgba(217,174,82,.5)}
+  @media (prefers-reduced-motion: reduce){
+    .btn-g,.btn-o{transition:none}
+    .btn-g:hover,.btn-g:focus-visible{transform:none}
+  }
+  /* ボタン内アイコン（インラインSVG・文字色に追従／カーソル判定は親ボタンに一本化） */
+  .btn-ic{display:inline-block;vertical-align:-0.18em;width:1.06em;height:1.06em;margin-right:6px;pointer-events:none;flex:none}
   .catch{font-family:var(--disp);font-weight:700;font-size:16.5px;margin-top:12px;
     text-shadow:0 1px 12px rgba(0,0,0,.85)}
   .catch em{font-style:normal;color:var(--gold-2)}
 
   /* ===== 本編セクション共通 ===== */
   .sec{padding:84px 0;border-bottom:1px solid var(--line-2)}
-  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:720px;margin:0 auto;padding:0 var(--pad-x)}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--gold);
     text-transform:uppercase;display:block;margin-bottom:10px}
   .sec h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,5.4vw,34px);
@@ -144,19 +166,21 @@
 
   /* 動画 */
   .movie-frame{border-radius:12px;overflow:hidden;border:1px solid rgba(217,174,82,.35);
-    background:#000;aspect-ratio:16/9;margin:0 auto}
+    background:#000;aspect-ratio:9/16;margin:0 auto;
+    /* 縦型ショート動画用：SPは画面幅なり、PCは高さが収まる幅に自動制限 */
+    width:min(100%,340px,calc(78vh*9/16))}
   .movie-frame video,.movie-frame iframe{display:block;width:100%;height:100%;border:0}
   .movie-frame video{object-fit:contain}
 
   /* メニューカード（横スワイプ・scroll-snap） */
   .cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-    padding:6px 24px 18px;-webkit-overflow-scrolling:touch;
+    padding:6px var(--pad-x) 18px;-webkit-overflow-scrolling:touch;
     max-width:1080px;margin:0 auto}
   .cards::-webkit-scrollbar{height:6px}
   .cards::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
   .card{flex:0 0 78%;max-width:320px;scroll-snap-align:center;
     background:var(--panel);border:1px solid rgba(217,174,82,.3);border-radius:14px;overflow:hidden}
-  .card figure{aspect-ratio:4/3;overflow:hidden}
+  .card figure{aspect-ratio:3/2;overflow:hidden} /* MN: 2026/08/12 4/3→3/2に変更（カード高さ圧縮） */
   .card .ph-box{display:flex;align-items:center;justify-content:center;
     font-family:var(--mono);font-size:11px;color:var(--muted);
     background:repeating-linear-gradient(45deg,#1A150D,#1A150D 12px,#171208 12px,#171208 24px)}
@@ -170,8 +194,9 @@
   /* 中央カードの拡大演出：transformはJSが毎フレーム計算（スワイプ中も追従） */
   /* ===== スタック型カルーセル（録画実測：カードが重なり、縁だけ覗く） ===== */
   .cards.deck{display:grid;justify-items:center;align-items:start;
+    position:relative;z-index:0; /* カードのz-indexをこの領域内に閉じ込め、固定CVバー/ヘッダーへの被りを防止 */
     overflow:hidden;scroll-snap-type:none;
-    padding:18px 24px 58px;max-width:520px;margin:0 auto;
+    padding:18px var(--pad-x) 58px;max-width:520px;margin:0 auto;
     touch-action:pan-y;overscroll-behavior-x:contain;
     cursor:grab;user-select:none;-webkit-user-select:none}
   .cards.deck.dragging{cursor:grabbing}
@@ -211,6 +236,7 @@
   .map iframe{display:block;width:100%;height:320px;border:0;filter:grayscale(.2) sepia(.15)}
   .info div{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:13.5px}
   .info dt{flex:0 0 84px;color:var(--gold-2);font-weight:700}
+  .info dd{min-width:0;overflow-wrap:break-word;word-break:break-word}
   .info dd a{text-decoration:underline;text-underline-offset:3px}
 
   /* フッター＋固定CVバー */
@@ -221,7 +247,7 @@
   .f-note{font-family:var(--mono);font-size:10px;color:#6d6250;line-height:1.8}
   .cvbar{position:fixed;left:0;right:0;bottom:0;z-index:60;
     display:flex;gap:10px;justify-content:center;
-    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    padding:12px var(--pad-x) calc(12px + env(safe-area-inset-bottom));
     background:rgba(16,13,8,.94);backdrop-filter:blur(8px);
     border-top:1px solid var(--line-2);
     transform:translateY(110%);transition:transform .4s ease}
@@ -247,7 +273,7 @@
   .xp-scrim{position:absolute;inset:0;pointer-events:none;opacity:0;
     background:radial-gradient(ellipse 78% 46% at 50% 50%,rgba(16,13,8,.38) 0%,rgba(16,13,8,.26) 60%,rgba(16,13,8,0) 88%)}
   .xp-copy{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);color:#fff;
-    text-align:center;padding:0 24px;opacity:0;pointer-events:none;
+    text-align:center;padding:0 var(--pad-x);opacity:0;pointer-events:none;
     font-family:var(--disp);font-weight:800;font-size:clamp(22px,6vw,34px);
     letter-spacing:.14em;line-height:1.8;
     text-shadow:0 0 3px rgba(16,13,8,.9), 0 0 8px rgba(16,13,8,.85),
@@ -266,7 +292,6 @@
   }
   /* 文節単位の折返し制御（ビルド時分かち書き。BudouX方式の静的版） */
   .seg{white-space:nowrap}
-  @media (max-width:480px){ #concept .lead br{display:none} }
 
   /* ===== E1: 見出し一文字ずつ出現＋金グリント ===== */
   .sec h2 .ch{display:inline-block;opacity:0;transform:translateY(.55em) rotate(4deg);
@@ -280,13 +305,15 @@
   }
 
   /* ===== E2: 一億円カウントアップ ===== */
-  .cost{margin:4px 0 26px;padding:18px 22px;border:1px solid rgba(217,174,82,.35);
+  .cost{margin:4px auto 26px;padding:18px 22px;border:1px solid rgba(217,174,82,.35);
     border-radius:12px;background:linear-gradient(160deg,rgba(217,174,82,.08),rgba(16,13,8,0));
-    display:inline-block}
+    display:block;width:100%;text-align:center}
   .cost-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted)}
-  .cost-num{font-family:var(--mono);font-weight:700;font-size:clamp(28px,7.4vw,44px);
+  .cost-num{font-family:"Amiri",serif;font-weight:700;
+    font-size:clamp(23px,5.9vw,35px); /* 「¥」：従来より一回り小さく */
     color:var(--gold-2);letter-spacing:.02em;line-height:1.3;
     text-shadow:0 0 26px rgba(217,174,82,.35);font-variant-numeric:tabular-nums}
+  .cost-num #costNum{font-size:clamp(42px,11.1vw,66px);line-height:1.2} /* 数字：従来の1.5倍 */
   .cost-tag{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.1em;color:var(--cream)}
 
   /* ===== E3: 画像の襖開きリビール ===== */
@@ -296,6 +323,11 @@
   .gallery figure:nth-child(2).fus{transition-delay:.12s}
   .gallery figure:nth-child(3).fus{transition-delay:.2s}
   .gallery figure:nth-child(4).fus{transition-delay:.3s}
+
+  /* ===== 麻の葉文様（全ページ最背面・組子個室モチーフ） ===== */
+  .asanoha{position:fixed;inset:0;pointer-events:none;z-index:-2;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256.0%22%20height%3D%2296.9948%22%20viewBox%3D%220%200%2056.0%2096.9948%22%3E%3Cg%20stroke%3D%22%23D9AE52%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22butt%22%20fill%3D%22none%22%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%22105.078%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22121.244%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2256.58%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2240.415%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%228.083%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%22-24.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-42.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%22-24.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2240.415%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22-8.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%228.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2298.0%22%20y2%3D%2272.746%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    opacity:.05}
 
   /* ===== E4: 小判アンビエント（背面固定レイヤー・無限ループ） ===== */
   .koban{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
@@ -313,13 +345,62 @@
     .fus{clip-path:none;transform:none;transition:none}
     .kb{display:none}
   }
+
+  /* ===== MN: メニュー送りボタンをカード左右端へオーバーレイ（2026/08/12追加） ===== */
+  .car-wrap{position:relative;max-width:520px;margin:0 auto}
+  /* 縦位置＝カード画像の中央（デッキ上padding18px＋カード幅min(100vw-左右余白,320px)の1/3＝3:2画像の高さの半分） */
+  .car-wrap .car-nav{position:absolute;left:50%;
+    top:calc(18px + min(100vw - 2*var(--pad-x),320px)/3);
+    transform:translate(-50%,-50%);
+    width:min(100% - 8px,372px); /* 372px=カード320px＋ボタン52px：ボタン中心がカード左右端に載る */
+    justify-content:space-between;gap:0;margin:0;
+    pointer-events:none;z-index:1} /* z-index 1：デッキ(0)より上・ヘッダー(50)/CVバー(60)より下 */
+  .car-wrap .car-btn{pointer-events:auto}
+  /* ===== GR: Googleレビュー表示（B'案）追加スタイル（2026/08/12追加） ===== */
+  .gr-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;
+    background:var(--panel);border:1px solid var(--line-2);border-radius:12px;
+    padding:16px 20px;margin-bottom:12px}
+  .gr-num{font-family:var(--mono);font-weight:700;font-size:clamp(30px,7.5vw,38px);color:var(--gold-2);line-height:1}
+  .gr-glyph{color:var(--gold);letter-spacing:.16em;font-size:15px}
+  .gr-cnt{font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  .gr-acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:14px}
+  .gr-acts .btn-o{cursor:pointer;font-family:var(--body)}
+  .gr-glink{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+  .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
+  /* ポップアップ（z-index 80帯：CVバー60より上・ローダー100より下） */
+  .gr-pop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;
+    padding:var(--pad-x)}
+  .gr-pop[hidden]{display:none}
+  .gr-pop-bg{position:absolute;inset:0;background:rgba(6,4,2,.78)}
+  .gr-pop-panel{position:relative;width:min(100%,560px);max-height:min(78vh,720px);
+    display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid rgba(217,174,82,.55);border-radius:14px;
+    box-shadow:0 24px 70px -20px rgba(0,0,0,.9);
+    animation:grPopIn .3s ease}
+  @keyframes grPopIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .gr-pop-panel{animation:none} }
+  .gr-pop-head{padding:16px 20px 12px;border-bottom:1px solid var(--line-2);position:relative}
+  .gr-pop-title{font-family:var(--disp);font-size:17px;color:var(--cream);margin:0 34px 4px 0}
+  .gr-pop-note{font-size:11.5px;color:var(--muted);margin:0}
+  .gr-pop-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:8px 0 6px}
+  .gr-pop-sum .gr-num{font-size:clamp(26px,6vw,32px)}
+  #hdCta.gr-mode{cursor:pointer} /* レビューボタン切替後 */
+  .gr-pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid var(--line-2);border-radius:9px;
+    color:var(--gold-2);font-size:17px;line-height:1;cursor:pointer}
+  .gr-pop-x:hover,.gr-pop-x:focus-visible{border-color:rgba(217,174,82,.9);background:rgba(217,174,82,.12)}
+  .gr-pop-body{padding:14px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}
+  .gr-pop-foot{padding:12px 20px 14px;border-top:1px solid var(--line-2);
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+  .gr-pop-attr{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
 </style>
 </head>
 <body>
 
 <header id="hd">
   <div class="brand">億万鳥者</div>
-  <a class="hd-cta" href="#" data-ebica>ご予約</a>
+  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「Googleレビューを見る」に切替（失敗時は予約のまま＝フェイルセーフ） -->
 </header>
 
 <div id="loader">
@@ -365,7 +446,6 @@
 <!-- ===== 2. コンセプト紹介 ===== -->
 <section class="sec" id="concept">
   <div class="wrap">
-    <span class="eyebrow">Concept</span>
     <h2 class="rev"><span class="seg">「億万鳥者」と</span><span class="seg">呼ばれ、</span><em><span class="seg">乾杯。</span></em></h2>
     <div class="cost rev">
       <span class="cost-label">総工費</span>
@@ -374,8 +454,7 @@
     </div>
     <p class="lead rev"><span class="seg">外観、</span><span class="seg">内観、</span><span class="seg">料理、</span><span class="seg">接客まで──</span><span class="seg">すべてが</span><span class="seg">億万長者仕様。</span><br>
     <span class="seg">一歩</span><span class="seg">足を</span><span class="seg">踏み入れれば、</span><span class="seg">そこは</span><span class="seg">金色に</span><span class="seg">輝く</span><span class="seg">非日常。</span><br>
-    <span class="seg">上品な</span><span class="seg">和空間を</span><span class="seg">感じる</span><span class="seg">伝統組子の</span><span class="seg">個室で、</span><br>
-    <span class="seg">今宵、</span><span class="seg">あなたは</span><span class="seg">『億万長者様』として</span><span class="seg">もてなされる。</span></p>
+    <span class="seg">上品な</span><span class="seg">和空間を</span><span class="seg">感じる</span><span class="seg">伝統組子の</span><span class="seg">個室で、</span><span class="seg">今宵、</span><span class="seg">あなたは</span><span class="seg">『億万長者様』として</span><span class="seg">もてなされる。</span></p>
     <div class="gallery">
       <figure><img src="assets/gallery_hall.webp" alt="金の設えのテーブル席" loading="lazy"></figure>
       <figure><img src="assets/gallery_neon.webp" alt="億万鳥者の縦看板" loading="lazy"></figure>
@@ -388,10 +467,9 @@
 <!-- ===== 4. 店舗プロモーション動画 ===== -->
 <section class="sec" id="movie">
   <div class="wrap">
-    <span class="eyebrow">Movie</span>
     <h2 class="rev"><span class="seg">1分で</span><span class="seg">わかる、</span><em><span class="seg">億万鳥者。</span></em></h2>
     <div class="movie-frame rev" id="movieFrame">
-      <video src="assets/pv_h264.mp4" poster="assets/gallery_logo.webp" controls playsinline preload="metadata"></video>
+      <iframe src="https://www.youtube.com/embed/pvuQRBpvyFE?rel=0" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
 </section>
@@ -399,9 +477,9 @@
 <!-- ===== 5. おすすめメニュー（横スワイプ・カード型） ===== -->
 <section class="sec" id="menu">
   <div class="wrap">
-    <span class="eyebrow">Menu</span>
     <h2 class="rev"><span class="seg">豪華すぎる、</span><em><span class="seg">和牛創作料理。</span></em></h2>
   </div>
+  <div class="car-wrap"><!-- MN: 送りボタンのオーバーレイ位置基準（2026/08/12追加） -->
   <div class="cards rev">
     <article class="card">
       <figure><img src="assets/menu_burger.webp" alt="億万バーガー" loading="lazy"></figure>
@@ -452,6 +530,7 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
+  </div><!-- /.car-wrap -->
 </section>
 
 <!-- ===== 5.5 スクロール連動イメージエクスパンド ===== -->
@@ -470,27 +549,33 @@
 <!-- ===== 6. 口コミ・レビュー ===== -->
 <section class="sec" id="review">
   <div class="wrap">
-    <span class="eyebrow">Review</span>
     <h2 class="rev"><span class="seg">億万長者たちの</span><em><span class="seg">声。</span></em></h2>
-    <div class="reviews rev" id="rvBox"></div>
+    <!-- GR: 総合評価・件数バッジ（Googleの実数値を無加工で常時表示・コンプラ必須①） -->
+    <div class="gr-sum rev" id="grSum" hidden>
+      <span class="gr-num" id="grNum"></span>
+      <span class="gr-glyph" id="grGlyph" aria-hidden="true"></span>
+      <span class="gr-cnt">Google口コミ <span id="grCnt"></span>件</span>
+    </div>
+    <!-- GR: 2026/08/12変更 口コミカード1件表示・セクション内ボタンを削除（ポップアップはヘッダーボタンから開く仕様へ） -->
+    <div class="gr-acts rev" id="grActs" hidden>
+      <a class="gr-glink" id="grGLink" href="#" target="_blank" rel="noopener">Googleで口コミを見る</a>
+    </div>
   </div>
 </section>
 
 <!-- ===== 7. 最新情報（SNS連携） ===== -->
 <section class="sec" id="sns">
   <div class="wrap">
-    <span class="eyebrow">Follow Us</span>
     <h2 class="rev"><span class="seg">最新情報は</span><span class="seg"><em>Instagram</em>で。</span></h2>
     <p class="lead rev">限定イベント・新メニューをいち早くお届けします。</p>
     <!-- Instagram: 確認済みURL反映済。フィード埋め込みは連携方式の選定後に実装 -->
-    <a class="btn-o rev" href="#" data-insta style="display:inline-block">@okumanchoja_shinjuku をフォロー</a>
+    <a class="btn-o rev" href="#" data-insta><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.3" fill="currentColor"/></svg>@okumanchoja_shinjuku をフォロー</a>
   </div>
 </section>
 
 <!-- ===== 8. アクセス・店舗情報 ===== -->
 <section class="sec" id="access">
   <div class="wrap">
-    <span class="eyebrow">Access</span>
     <h2 class="rev"><span class="seg">新宿・歌舞伎町の</span><span class="seg"><em>本殿</em>へ。</span></h2>
     <div class="map rev">
       <!-- 店名クエリでピン指定（周辺店舗ピンの混在を回避） -->
@@ -516,10 +601,35 @@
 </footer>
 
 <!-- 常時固定CVバー（FV通過後に表示） -->
-<div class="cvbar" id="cvbar">
-  <a class="btn-g" href="#" data-ebica>席を予約する</a>
-  <a class="btn-o" href="tel:0000000000" data-tel>電話で予約する</a>
+<!-- GR: 口コミポップアップ（z-index 80：CVバーより上・ローダーより下） -->
+<div class="gr-pop" id="grPop" hidden>
+  <div class="gr-pop-bg" id="grPopBg"></div>
+  <div class="gr-pop-panel" role="dialog" aria-modal="true" aria-labelledby="grPopTitle">
+    <div class="gr-pop-head">
+      <p class="gr-pop-title" id="grPopTitle">Google口コミ</p>
+      <div class="gr-pop-sum"><!-- GR: 総合評価サマリー（rating/userRatingCountを無加工表示・コンプラ必須①） -->
+        <span class="gr-num" id="grPopNum"></span>
+        <span class="gr-glyph" id="grPopGlyph" aria-hidden="true"></span>
+        <span class="gr-cnt">Google口コミ <span id="grPopCnt"></span>件</span>
+      </div>
+      <p class="gr-pop-note">星4以上の口コミを抜粋して表示しています</p><!-- コンプラ必須② -->
+      <button type="button" class="gr-pop-x" id="grPopX" aria-label="閉じる">×</button>
+    </div>
+    <div class="gr-pop-body reviews" id="grPopList"></div>
+    <div class="gr-pop-foot">
+      <span class="gr-pop-attr">レビュー提供元：Google</span><!-- コンプラ必須③ -->
+      <a class="gr-glink" id="grPopGLink" href="#" target="_blank" rel="noopener">Googleで口コミを見る</a><!-- コンプラ必須⑤ -->
+    </div>
+  </div>
 </div>
+
+<div class="cvbar" id="cvbar">
+  <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
+  <a class="btn-o" href="tel:0000000000" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
+</div>
+
+<!-- 麻の葉文様：全ページ最背面（店舗の組子個室と同モチーフ） -->
+<div class="asanoha" aria-hidden="true"></div>
 
 <!-- 小判アンビエント：全ページ背面に無限ループ（FV中はcanvasの背後で不可視） -->
 <div class="koban" id="koban" aria-hidden="true"></div>
@@ -695,16 +805,22 @@
   // ============================================================
   // ★★★ 差し替え箇所はここに集約 ★★★
   var CONFIG={
-    EBICA_URL:'https://tabelog.com/tokyo/A1304/A130401/13270920/', // ★暫定：食べログ予約ページ。Ebica URL入手後に差し替え
+    EBICA_URL:'https://booking.ebica.jp/webrsv/search/e014094701/29223?affiid=sc01', // Ebica予約ページ（確定）
     TEL:'0367099757',         // 店舗電話（食べログ掲載: 03-6709-9757）
     INSTAGRAM_URL:'https://www.instagram.com/okumanchoja_shinjuku/',
-    YOUTUBE_ID:''            // ★要差替：YouTube動画ID（例:'dQw4w9WgXcQ'）。設定するとYouTube埋め込みに自動切替
+    YOUTUBE_ID:'pvuQRBpvyFE', // 店舗PV（YouTubeショート・縦型）。HTML側に直書き済み、IDはここで一元管理
+    // GR: Googleレビュー表示（B'案）。GAS公開URL（キー不要・API消費ゼロ）。GAS移設時はこのURLのみ書き換える
+    REVIEW_API_URL:'https://script.google.com/macros/s/AKfycbxSKvRVtFLGkPcU7HIvfBXJp5H-AAhTfGNYN6GiuoFjlVtFgLy4lHQaS1EkFAyWzkAp/exec',
+    REVIEW_STORE_NAME:'億万鳥者 新宿本殿' // JSON内stores[]からこの店舗名を選択して表示
   };
   // YouTube ID設定時はプレーヤーを差し替え（未設定時はローカル動画を16:9枠で再生）
   if(CONFIG.YOUTUBE_ID){
     var mf=document.getElementById('movieFrame');
+    // 2026/08/12変更：エラー153対策（referrerpolicy必須化対応）＋ミュート自動再生・ループ化
+    // ※mute=1は必須（全ブラウザ共通で音付き自動再生は不可。音はユーザーのタップ操作で出せる）
     if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
-      +'?rel=0" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'; }
+      +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist='+CONFIG.YOUTUBE_ID
+      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'; }
   }
   // ============================================================
   document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
@@ -1043,89 +1159,81 @@
     document.getElementById('xpScrim').style.opacity='1';
   }
 
-  // ===== E6: ダミーレビュー自動生成エンジン（テンプレート組み立て型） =====
-  // 設計: 観点×小観点×言い回し×文骨格の掛け算で毎ロード別の文を組み立てる。
-  // 重複はセッション内履歴と照合して自動再生成。※デモLP用の生成表示。本番公開に転用する場合は実レビューへ差し替えること。
-  var rvBox=document.getElementById('rvBox');
-  if(rvBox){
-    // 観点 → 小観点 → 言い回しプール（完結した一文単位で管理）
-    var RV_POOL={
-      '演出・接客':{
-        '入店演出':['入店した瞬間から世界観が完成されていて圧倒された','暖簾をくぐった瞬間に非日常が始まる','入口からもう金ピカで、期待値が一気に上がった'],
-        '億万長者様呼び':['「億万長者様」と呼ばれるたびに笑ってしまうけど悪い気はしない','注文のたびの「億万長者様」コールが癖になる','店員さんに億万長者様と呼ばれて、途中から本当にその気になっていた'],
-        '盛り上げ':['スタッフさんの盛り上げが絶妙で、終始楽しい空気だった','演出の間の取り方がうまくて、テーブル全体が沸いた','スタッフの皆さんのテンションに引っ張られて大盛り上がりだった'],
-        'サプライズ':['誕生日のお祝い演出が豪華で、主役が本気で喜んでいた','サプライズをお願いしたら想像の3倍派手で最高だった','お祝い演出の派手さは今まで行った店で一番かもしれない']
-      },
-      '料理':{
-        'ユッケ':['億万長者ユッケは黄身を割る瞬間がハイライト','A4和牛のユッケがとろけるほど濃厚だった','ユッケの見た目の豪華さに全員がスマホを構えた'],
-        '生ハム':['A5和牛の生ハムてんこ盛りはテーブルが肉で覆われる衝撃のビジュアル','生ハムてんこ盛りは量も味も文句なし','和牛生ハムの脂の甘さが忘れられない'],
-        'バーガー':['億万バーガーはベーコンがはみ出す規格外サイズで食べ応え抜群','億万バーガーを頼んだら想像を超えるボリュームで歓声が上がった'],
-        'レバニラ':['貴族に献上するレバニラは名前負けしない上品な味','レバニラに黄身が2つ乗っていて背徳感がすごい'],
-        '焼き鳥':['焼き鳥は炭火の香りがしっかりしていて普通に美味しい','締めに頼んだもも串が意外なほど本格派だった']
-      },
-      'ドリンク演出':{
-        '運試しサワー':['運試しサワーで大吉を引いて特大サイズが来た','おみくじでサワーのサイズが決まる演出が楽しすぎる','運試しサワーは小さくても盛り上がるのでずるい'],
-        'ルーレット':['億万ルーレットで割引が当たってテンションが上がった','ルーレット演出があるおかげで会計まで楽しい'],
-        '乾杯':['乾杯の掛け声から全力で、最初から笑いっぱなしだった','乾杯の演出だけでこの店に来た価値があった']
-      },
-      '空間':{
-        '組子個室':['伝統組子の個室が想像以上に上質で落ち着けた','個室の組子細工が美しくて写真を撮りまくった','個室なので周りを気にせず騒げるのがありがたい'],
-        '金の内装':['店内どこを見ても金色で、いい意味で現実感がない','金の内装は写真映えが半端じゃない'],
-        '雰囲気':['派手なのに安っぽくならない絶妙なバランスだった','ギラギラしているのに居心地がいい不思議な空間']
-      },
-      '利用シーン':{
-        'デート':['デートで利用したが、会話が途切れる暇がなかった','デート利用にちょうどいい非日常感だった'],
-        '宴会':['送別会で利用したら主役も参加者も大満足だった','会社の飲み会で使ったら普段静かな人まで笑っていた'],
-        '女子会':['女子会で行ったら全員のカメラロールが金色になった']
-      },
-      'アクセス・コスパ':{
-        '立地':['新宿駅から徒歩1分なので集合が楽だった','駅近なので終電ギリギリまで楽しめた'],
-        'コスパ':['この演出と料理でこの価格なら十分納得','思ったより値段が良心的で驚いた']
-      }
+  // ===== E6: Googleレビュー表示（B'案・GAS連携）2026/08/12実装／同日改修：ヘッダーボタンからポップアップ表示 =====
+  // データ源: CONFIG.REVIEW_API_URL（GAS公開URL）。星4以上フィルタ・半月毎更新はGAS側で実施済み。
+  // フェイルセーフ: 取得失敗・タイムアウト・対象店舗不明・星4以上0件時は、
+  //   ヘッダーボタンは「ご予約はこちら」のまま維持し、#reviewセクションを非表示（LP本体は正常動作）
+  var grSec=document.getElementById('review');
+  if(grSec&&CONFIG.REVIEW_API_URL){
+    var grEsc=function(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; };
+    var grHide=function(){ grSec.style.display='none'; };
+    // 星グリフは視覚表現のみ（総合評価の数値そのものは無加工で表示：コンプラ必須①）
+    var grGlyphOf=function(r){ var n=Math.round(Number(r)); if(!(n>=0&&n<=5)) n=0;
+      return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); };
+    // 口コミカード：本文はJSON無改変＋投稿者名表示（コンプラ必須④）。既存.rvカードデザインを流用
+    var grCard=function(rv){
+      return '<blockquote class="rv"><span class="stars">'+grGlyphOf(rv.rating)+'</span>'
+        +'<p>'+grEsc(rv.text)+'</p><cite>'+grEsc(rv.author)
+        +(rv.relativeTime?'／'+grEsc(rv.relativeTime):'')+'</cite></blockquote>';
     };
-    var RV_OPENERS=['','','先日訪問。','初めて利用しました。','2回目の訪問です。','友人に勧められて来店。','SNSで見つけて気になっていたお店。'];
-    var RV_CONNECTORS=['。','。そして','。あと','。ちなみに','。何より'];
-    var RV_CLOSERS=['','','また行きたい。','リピート確定です。','次は別のメニューも試したい。','人を連れて行きたくなるお店。','機会があればまた利用します。'];
-    var RV_PERSONA_AGE=['20代','20代','30代','30代','40代'];
-    var RV_PERSONA_GEN=['女性','男性'];
-    var rvHistory=[];
-    function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
-    function buildReview(){
-      // 観点を2〜3個重複なしで選ぶ
-      var keys=Object.keys(RV_POOL).slice();
-      var n=2+Math.floor(Math.random()*2);
-      var parts=[];
-      for(var i=0;i<n;i++){
-        var k=keys.splice(Math.floor(Math.random()*keys.length),1)[0];
-        var subs=RV_POOL[k];
-        var sk=pick(Object.keys(subs));
-        parts.push(pick(subs[sk]));
+    var grFindStore=function(data){
+      var st=(data&&data.stores)||[];
+      for(var i=0;i<st.length;i++){ if(st[i]&&st[i].name===CONFIG.REVIEW_STORE_NAME) return st[i]; }
+      for(var j=0;j<st.length;j++){ if(st[j]&&st[j].name&&st[j].name.indexOf('新宿本殿')>=0) return st[j]; }
+      return null;
+    };
+    // ポップアップ開閉（画面中央配置・要素外タップで閉じる・ESCで閉じる）
+    var grPop=document.getElementById('grPop');
+    var hdCta=document.getElementById('hdCta');
+    var grPrevOverflow='';
+    var grOpen=function(){ grPop.hidden=false; grPrevOverflow=document.body.style.overflow;
+      document.body.style.overflow='hidden'; document.getElementById('grPopX').focus(); };
+    var grClose=function(){ grPop.hidden=true; document.body.style.overflow=grPrevOverflow;
+      if(hdCta){ hdCta.focus(); } };
+    document.getElementById('grPopX').addEventListener('click',grClose);
+    document.getElementById('grPopBg').addEventListener('click',grClose); // 要素外タップで閉じる
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!grPop.hidden){ grClose(); } });
+    var grRender=function(data){
+      var s=grFindStore(data);
+      if(!s||s.rating==null||s.userRatingCount==null){ grHide(); return; }
+      var rvs=s.reviews||[];
+      var gUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name||CONFIG.REVIEW_STORE_NAME)
+        +(s.placeId?('&query_place_id='+encodeURIComponent(s.placeId)):'');
+      // コンプラ必須①: 総合評価・件数はJSONのrating/userRatingCountを加工せずそのまま表示（変更禁止）
+      document.getElementById('grNum').textContent=String(s.rating);
+      document.getElementById('grGlyph').textContent=grGlyphOf(s.rating);
+      document.getElementById('grCnt').textContent=String(s.userRatingCount);
+      document.getElementById('grPopNum').textContent=String(s.rating);
+      document.getElementById('grPopGlyph').textContent=grGlyphOf(s.rating);
+      document.getElementById('grPopCnt').textContent=String(s.userRatingCount);
+      document.getElementById('grGLink').href=gUrl;   // コンプラ必須⑤（LP内）
+      document.getElementById('grPopGLink').href=gUrl; // コンプラ必須⑤（ポップアップ内）
+      document.getElementById('grSum').hidden=false;
+      document.getElementById('grActs').hidden=false;
+      // 星4以上が0件の月：仕様どおりバッジ＋Googleリンクのみ表示し、ヘッダーは予約ボタンのまま（空のポップアップを開かせない）
+      if(!rvs.length){ if(typeof failsafe==='function'){ failsafe(); } return; }
+      var list=''; for(var k=0;k<rvs.length;k++){ list+=grCard(rvs[k]); }
+      document.getElementById('grPopList').innerHTML=list;
+      // ヘッダーボタンを「Googleレビューを見る」に切替（データ取得成功時のみ）
+      if(hdCta){
+        hdCta.innerHTML='<svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">'
+          +'<path d="m12 3 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8-4.3-4.1 5.9-.8Z" '
+          +'stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Googleレビューを見る';
+        hdCta.removeAttribute('data-ebica'); hdCta.setAttribute('href','#');
+        hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
+        hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
       }
-      var body=pick(RV_OPENERS)+parts[0];
-      for(var j=1;j<parts.length;j++){ body+=pick(RV_CONNECTORS).replace('。','。 ').trim()+parts[j]; }
-      body+='。'+pick(RV_CLOSERS);
-      return body;
-    }
-    function uniqueReview(){
-      for(var t=0;t<12;t++){                 // 重複時は自動再生成（最大12回）
-        var r=buildReview();
-        if(rvHistory.indexOf(r)===-1){ rvHistory.push(r); return r; }
-      }
-      return buildReview();
-    }
-    function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-    function renderReviews(){
-      var out='';
-      for(var i=0;i<3;i++){
-        var stars=(Math.random()<0.6)?'★★★★★':'★★★★☆';
-        var cite=pick(RV_PERSONA_AGE)+'・'+pick(RV_PERSONA_GEN);
-        // 本LPはデモ用。本番公開に転用する場合は生成レビューを実レビューに差し替えること（景表法・ステマ規制）
-        out+='<blockquote class="rv"><span class="stars">'+stars+'</span>'
-          +'<p>'+esc(uniqueReview())+'</p><cite>'+cite+'</cite></blockquote>';
-      }
-      rvBox.innerHTML=out;
-    }
-    renderReviews();
+      if(typeof failsafe==='function'){ failsafe(); } // 非同期挿入後の可視化再チェック（IO不発対策）
+    };
+    // 取得（10秒タイムアウト付き）
+    var grCtl=(typeof AbortController!=='undefined')?new AbortController():null;
+    var grTo=setTimeout(function(){ if(grCtl){ grCtl.abort(); } },10000);
+    try{
+      fetch(CONFIG.REVIEW_API_URL,grCtl?{signal:grCtl.signal}:{})
+        .then(function(res){ if(!res.ok){ throw new Error('bad status'); } return res.json(); })
+        .then(function(data){ clearTimeout(grTo); grRender(data); })
+        .catch(function(){ clearTimeout(grTo); grHide(); });
+    }catch(e){ clearTimeout(grTo); grHide(); }
   }
 
   // ===== E4: 小判アンビエント（背面固定・無限ループ） =====
