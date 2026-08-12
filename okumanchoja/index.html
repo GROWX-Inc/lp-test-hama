@@ -171,6 +171,9 @@
     width:min(100%,340px,calc(78vh*9/16))}
   .movie-frame video,.movie-frame iframe{display:block;width:100%;height:100%;border:0}
   .movie-frame video{object-fit:contain}
+  /* VD: 2026/08/12 動画UI遮断（案2）：透明カバーでYouTube UIへのタップを遮断（controls=0と併用） */
+  .movie-frame{position:relative}
+  .movie-cover{position:absolute;inset:0;z-index:1}
 
   /* メニューカード（横スワイプ・scroll-snap） */
   .cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -406,7 +409,7 @@
 
 <header id="hd">
   <div class="brand">億万鳥者</div>
-  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ） -->
+  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ) -->
 </header>
 
 <div id="loader">
@@ -822,11 +825,13 @@
   // YouTube ID設定時はプレーヤーを差し替え（未設定時はローカル動画を16:9枠で再生）
   if(CONFIG.YOUTUBE_ID){
     var mf=document.getElementById('movieFrame');
-    // 2026/08/12変更：エラー153対策（referrerpolicy必須化対応）＋ミュート自動再生・ループ化
-    // ※mute=1は必須（全ブラウザ共通で音付き自動再生は不可。音はユーザーのタップ操作で出せる）
+    // 2026/08/12変更（案2）：エラー153対策に加え、controls=0でプレーヤーUIを非表示化＋透明カバーでタップを遮断
+    // ※mute=1は必須（全ブラウザ共通で音付き自動再生は不可）。カバーによりユーザー操作（再生/停止/音出し）は不可＝
+    //   ミュート自動再生ループの「動く映像」としての表示に特化する仕様（案2の合意事項）
     if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
-      +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist='+CONFIG.YOUTUBE_ID
-      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'; }
+      +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&playlist='+CONFIG.YOUTUBE_ID
+      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
+      +'<div class="movie-cover" aria-hidden="true"></div>'; }
   }
   // ============================================================
   document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
