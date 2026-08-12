@@ -384,7 +384,13 @@
   .gr-pop-note{font-size:11.5px;color:var(--muted);margin:0}
   .gr-pop-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:8px 0 6px}
   .gr-pop-sum .gr-num{font-size:clamp(26px,6vw,32px)}
-  #hdCta.gr-mode{cursor:pointer} /* レビューボタン切替後 */
+  #hdCta.gr-mode{cursor:pointer;
+    /* 2026/08/12改修：評価・件数を大きく見せる2段構成（マーケ訴求）。ヘッダー56px内に収める */
+    flex-direction:column;align-items:center;gap:1px;
+    padding:6px 16px;border-radius:14px;line-height:1.25}
+  .gr-cta-num{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.02em}
+  .gr-cta-num .gr-cta-star{font-size:13px;margin-right:1px}
+  .gr-cta-act{font-size:9.5px;font-weight:700;letter-spacing:.06em;opacity:.85}
   .gr-pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;
     display:inline-flex;align-items:center;justify-content:center;
     background:transparent;border:1px solid var(--line-2);border-radius:9px;
@@ -400,7 +406,7 @@
 
 <header id="hd">
   <div class="brand">億万鳥者</div>
-  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「Googleレビューを見る」に切替（失敗時は予約のまま＝フェイルセーフ） -->
+  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ） -->
 </header>
 
 <div id="loader">
@@ -607,7 +613,7 @@
   <div class="gr-pop-panel" role="dialog" aria-modal="true" aria-labelledby="grPopTitle">
     <div class="gr-pop-head">
       <p class="gr-pop-title" id="grPopTitle">Google口コミ</p>
-      <div class="gr-pop-sum"><!-- GR: 総合評価サマリー（rating/userRatingCountを無加工表示・コンプラ必須①） -->
+      <div class="gr-pop-sum"><!-- GR: 総合評価サマリー（rating/userRatingCountを無加工表示・コンプラ必須①) -->
         <span class="gr-num" id="grPopNum"></span>
         <span class="gr-glyph" id="grPopGlyph" aria-hidden="true"></span>
         <span class="gr-cnt">Google口コミ <span id="grPopCnt"></span>件</span>
@@ -711,7 +717,7 @@
     c.drawImage(im,(cw-dw)/2,(ch-dh)/2,dw,dh);
   }
   function drawContain(im,alpha){
-    var iw=im.width||im.naturalWidth, ih=im.height||im.naturalHeight;
+    var iw=im.width||im.naturalWidth, ih=im.naturalHeight||im.height;
     var cw=cv.width,ch=cv.height;
     var s=Math.min(cw/iw,ch/ih),dw=iw*s,dh=ih*s;
     ctx.globalAlpha=alpha;
@@ -1222,11 +1228,12 @@
       if(!rvs.length){ if(typeof failsafe==='function'){ failsafe(); } return; }
       var list=''; for(var k=0;k<rvs.length;k++){ list+=grCard(rvs[k]); }
       document.getElementById('grPopList').innerHTML=list;
-      // ヘッダーボタンを「Googleレビューを見る」に切替（データ取得成功時のみ）
+      // ヘッダーボタンを2段表示「★評価（件数）／Googleレビューを見る」に切替（データ取得成功時のみ）
+      // 数値はJSONのrating/userRatingCountを無加工で表示（コンプラ必須①）。GASの半月毎更新に自動追従
       if(hdCta){
-        hdCta.innerHTML='<svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">'
-          +'<path d="m12 3 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8-4.3-4.1 5.9-.8Z" '
-          +'stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Googleレビューを見る';
+        hdCta.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
+          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
+          +'<span class="gr-cta-act">Googleレビューを見る</span>';
         hdCta.removeAttribute('data-ebica'); hdCta.setAttribute('href','#');
         hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
         hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
