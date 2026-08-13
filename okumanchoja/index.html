@@ -34,12 +34,13 @@
   /* メディア要素は親幅を絶対に超えない */
   img,svg,video,iframe{max-width:100%}
 
-  /* ===== 固定ヘッダー（予約導線は常時表示：MD絶対条件） ===== */
+  /* ===== 固定ヘッダー（スクロール連動表示：FV中と下スクロール中は非表示・上スクロール/停止で表示） ===== */
   header{position:fixed;top:0;left:0;right:0;z-index:50;
     display:flex;align-items:center;justify-content:space-between;
     height:56px;padding:0 var(--pad-x);
     background:linear-gradient(180deg,rgba(16,13,8,.75),rgba(16,13,8,0));
-    transition:background .4s}
+    transition:background .4s,transform .45s ease,opacity .45s ease}
+  header.ui-hidden{transform:translateY(-110%);opacity:0;pointer-events:none}
   header.solid{background:rgba(16,13,8,.92);backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line-2)}
   .brand{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
@@ -171,6 +172,9 @@
     width:min(100%,340px,calc(78vh*9/16))}
   .movie-frame video,.movie-frame iframe{display:block;width:100%;height:100%;border:0}
   .movie-frame video{object-fit:contain}
+  /* VD: 2026/08/12 動画UI遮断（案2）：透明カバーでYouTube UIへのタップを遮断（controls=0と併用） */
+  .movie-frame{position:relative}
+  .movie-cover{position:absolute;inset:0;z-index:1}
 
   /* メニューカード（横スワイプ・scroll-snap） */
   .cards{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -250,9 +254,13 @@
     padding:12px var(--pad-x) calc(12px + env(safe-area-inset-bottom));
     background:rgba(16,13,8,.94);backdrop-filter:blur(8px);
     border-top:1px solid var(--line-2);
-    transform:translateY(110%);transition:transform .4s ease}
-  .cvbar.show{transform:none}
+    transform:none;transition:transform .4s ease}
+  .cvbar.ui-hidden{transform:translateY(110%)}
   .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:13.5px}
+  /* バッジ（将来設置。要素に class="badge" を付ければ自動でスクロール連動する） */
+  .badge{transition:transform .45s ease,opacity .45s ease}
+  .badge.ui-hidden{opacity:0;transform:translateY(8px);pointer-events:none}
+  @media (prefers-reduced-motion: reduce){ header,.cvbar,.badge{transition:none} }
 
   /* スクロール誘導 */
   .cue{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
@@ -304,17 +312,37 @@
     100%{text-shadow:none}
   }
 
-  /* ===== E2: 一億円カウントアップ ===== */
-  .cost{margin:4px auto 26px;padding:18px 22px;border:1px solid rgba(217,174,82,.35);
+  /* ===== E2: 総工費「1億円」表示（2026/08/12改修：モックアップ確定版） ===== */
+  .cost{position:relative;margin:22px auto 26px;padding:24px 12px;border:1px solid rgba(217,174,82,.35);
     border-radius:12px;background:linear-gradient(160deg,rgba(217,174,82,.08),rgba(16,13,8,0));
     display:block;width:100%;text-align:center}
-  .cost-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted)}
-  .cost-num{font-family:"Amiri",serif;font-weight:700;
-    font-size:clamp(23px,5.9vw,35px); /* 「¥」：従来より一回り小さく */
-    color:var(--gold-2);letter-spacing:.02em;line-height:1.3;
-    text-shadow:0 0 26px rgba(217,174,82,.35);font-variant-numeric:tabular-nums}
-  .cost-num #costNum{font-size:clamp(42px,11.1vw,66px);line-height:1.2} /* 数字：従来の1.5倍 */
-  .cost-tag{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.1em;color:var(--cream)}
+  /* 1億円＋右横テキスト：下端そろえの横並び */
+  .cost-row{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:nowrap}
+  .cost-num{font-family:"Amiri",var(--disp); /* 「1」=Amiri、漢字「億円」はAmiri非対応のため明朝にフォールバック */
+    font-weight:700;
+    font-size:88px; /* 「1」：72px→二回りアップ（この1箇所で調整可能） */
+    color:var(--gold-2);letter-spacing:.02em;line-height:1.1;white-space:nowrap;
+    transform:skewX(-8deg); /* 斜体（角度はこの1箇所で調整可能） */
+    text-shadow:0 0 26px rgba(217,174,82,.35)}
+  .cost-num .co{font-size:64px} /* 「億円」：48px→二回りアップ（この1箇所で調整可能） */
+  .cost-num .cr{color:#E5312B} /* 「1億」のみ赤（暫定色。この1箇所で調整可能） */
+  /* 1文字ずつ出現：既存の .rev→.vis 出現（IntersectionObserver）に連動する純CSS実装 */
+  .cost-num .cn{display:inline-block;opacity:0;transform:translateY(14px);
+    transition:opacity .5s ease,transform .5s ease}
+  .cost.vis .cn{opacity:1;transform:none}
+  .cost.vis .cn:nth-child(1){transition-delay:.15s}
+  .cost.vis .cn:nth-child(2){transition-delay:.4s}
+  .cost.vis .cn:nth-child(3){transition-delay:.65s}
+  @media (prefers-reduced-motion: reduce){ .cost-num .cn{transition:none;opacity:1;transform:none} }
+  .cost-tag{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.08em;color:var(--cream);
+    text-align:left;line-height:1.6;padding-bottom:17px;white-space:nowrap} /* 17px=Amiri実メトリクス計測に基づく文字下端そろえ（ビジュアル一致） */
+  /* 横組1行が収まらない狭幅（実測限界337px＋余裕）では、文字は横書きのまま要素を縦積みに切替。はみ出し防止 */
+  @media (max-width:347px){
+    .cost-row{flex-direction:column;align-items:center;gap:6px}
+    .cost-num,.cost-tag{padding-bottom:0}
+    .cost-tag{text-align:center;line-height:1.5}
+    .cost-tag br{display:none} /* 縦積み時は1行で表示 */
+  }
 
   /* ===== E3: 画像の襖開きリビール ===== */
   .fus{clip-path:inset(0 50% 0 50%);transform:scale(1.06);
@@ -327,7 +355,7 @@
   /* ===== 麻の葉文様（全ページ最背面・組子個室モチーフ） ===== */
   .asanoha{position:fixed;inset:0;pointer-events:none;z-index:-2;
     background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256.0%22%20height%3D%2296.9948%22%20viewBox%3D%220%200%2056.0%2096.9948%22%3E%3Cg%20stroke%3D%22%23D9AE52%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22butt%22%20fill%3D%22none%22%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%22105.078%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22121.244%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2256.58%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2240.415%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%228.083%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%22-24.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-42.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%22-24.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2240.415%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22-8.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%228.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2298.0%22%20y2%3D%2272.746%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    opacity:.05}
+    opacity:.09} /* 2026/08/12：.05→.09に濃度アップ（濃さ調整はこの1箇所） */
 
   /* ===== E4: 小判アンビエント（背面固定レイヤー・無限ループ） ===== */
   .koban{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
@@ -406,7 +434,7 @@
 
 <header id="hd">
   <div class="brand">億万鳥者</div>
-  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ） -->
+  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ) -->
 </header>
 
 <div id="loader">
@@ -454,9 +482,10 @@
   <div class="wrap">
     <h2 class="rev"><span class="seg">「億万鳥者」と</span><span class="seg">呼ばれ、</span><em><span class="seg">乾杯。</span></em></h2>
     <div class="cost rev">
-      <span class="cost-label">総工費</span>
-      <div class="cost-num">¥<span id="costNum">0</span></div>
-      <span class="cost-tag">一億円で、居酒屋建ててみた。</span>
+      <div class="cost-row">
+        <div class="cost-num" aria-label="1億円で居酒屋建ててみた"><span class="cn cr" aria-hidden="true">1</span><span class="cn co cr" aria-hidden="true">億</span><span class="cn co" aria-hidden="true">円</span></div>
+        <div class="cost-tag" aria-hidden="true">で居酒屋<br>建ててみた</div>
+      </div>
     </div>
     <p class="lead rev"><span class="seg">外観、</span><span class="seg">内観、</span><span class="seg">料理、</span><span class="seg">接客まで──</span><span class="seg">すべてが</span><span class="seg">億万長者仕様。</span><br>
     <span class="seg">一歩</span><span class="seg">足を</span><span class="seg">踏み入れれば、</span><span class="seg">そこは</span><span class="seg">金色に</span><span class="seg">輝く</span><span class="seg">非日常。</span><br>
@@ -822,11 +851,13 @@
   // YouTube ID設定時はプレーヤーを差し替え（未設定時はローカル動画を16:9枠で再生）
   if(CONFIG.YOUTUBE_ID){
     var mf=document.getElementById('movieFrame');
-    // 2026/08/12変更：エラー153対策（referrerpolicy必須化対応）＋ミュート自動再生・ループ化
-    // ※mute=1は必須（全ブラウザ共通で音付き自動再生は不可。音はユーザーのタップ操作で出せる）
+    // 2026/08/12変更（案2）：エラー153対策に加え、controls=0でプレーヤーUIを非表示化＋透明カバーでタップを遮断
+    // ※mute=1は必須（全ブラウザ共通で音付き自動再生は不可）。カバーによりユーザー操作（再生/停止/音出し）は不可＝
+    //   ミュート自動再生ループの「動く映像」としての表示に特化する仕様（案2の合意事項）
     if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
-      +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&playlist='+CONFIG.YOUTUBE_ID
-      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'; }
+      +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&playlist='+CONFIG.YOUTUBE_ID
+      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
+      +'<div class="movie-cover" aria-hidden="true"></div>'; }
   }
   // ============================================================
   document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
@@ -843,15 +874,55 @@
     document.querySelectorAll('.rev').forEach(function(el){ el.classList.add('vis'); });
   }
 
-  // 固定CVバー：FVスクラブ通過後に表示
-  var cvbar=document.getElementById('cvbar');
-  var wrap=document.getElementById('scrubWrap');
-  function onScroll(){
-    var passed=window.scrollY > (wrap.offsetTop + wrap.offsetHeight - window.innerHeight*1.2);
-    cvbar.classList.toggle('show',passed);
-  }
-  window.addEventListener('scroll',onScroll,{passive:true});
-  onScroll();
+  // ===== ヘッダー / CVバー / バッジ：スクロール連動表示制御 =====
+  // 仕様：
+  //  1) FV（スクラブ）が完了し第2セクションに完全に切り替わるまで → 常に非表示
+  //  2) 通過後：下スクロール中=非表示／上スクロール=表示／停止(タイマー)=表示
+  (function(){
+    var UI_JITTER=4;        // px：これ以下のスクロール量は方向判定しない（微小ブレ対策）
+    var UI_STOP_DELAY=150;  // ms：スクロール停止とみなすまでの時間
+    var scrubEl=document.getElementById('scrubWrap');
+    var uiEls=[document.getElementById('hd'),document.getElementById('cvbar')];
+    document.querySelectorAll('.badge').forEach(function(b){ uiEls.push(b); });
+    uiEls=uiEls.filter(Boolean);
+
+    // FV完了境界：scrubWrap下端が画面上端に達した位置（＝第2セクションへの切替完了点）
+    // リサイズ・回転・画像読込完了時に再計算してズレを防ぐ
+    var boundary=0;
+    function calcBoundary(){ boundary=scrubEl.offsetTop+scrubEl.offsetHeight-window.innerHeight; }
+    calcBoundary();
+    window.addEventListener('resize',calcBoundary);
+    window.addEventListener('orientationchange',calcBoundary);
+    window.addEventListener('load',calcBoundary);
+
+    var lastY=window.scrollY, visible=null, stopTimer=null, ticking=false;
+    function setVisible(v){
+      if(v===visible) return;
+      visible=v;
+      uiEls.forEach(function(el){ el.classList.toggle('ui-hidden',!v); });
+    }
+    function update(){
+      ticking=false;
+      var y=window.scrollY;
+      if(y<boundary){ // FV領域内：方向・停止に関わらず常に非表示
+        setVisible(false);
+        lastY=y;
+        if(stopTimer){ clearTimeout(stopTimer); stopTimer=null; }
+        return;
+      }
+      var dy=y-lastY;
+      if(dy>UI_JITTER){ setVisible(false); lastY=y; }        // 下スクロール
+      else if(dy<-UI_JITTER){ setVisible(true); lastY=y; }   // 上スクロール
+      if(stopTimer) clearTimeout(stopTimer);
+      stopTimer=setTimeout(function(){                        // 停止：表示
+        if(window.scrollY>=boundary) setVisible(true);
+      },UI_STOP_DELAY);
+    }
+    window.addEventListener('scroll',function(){
+      if(!ticking){ ticking=true; requestAnimationFrame(update); }
+    },{passive:true});
+    update(); // 初期化：読込時はFV内＝非表示から開始
+  })();
 
   var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1092,30 +1163,7 @@
     render();
   })();
 
-  // ===== E2: 一億円カウントアップ =====
-  var costEl=document.getElementById('costNum');
-  if(costEl){
-    var TARGET=100000000, ran=false;
-    function runCount(){
-      if(ran)return; ran=true;
-      if(reduced){ costEl.textContent=TARGET.toLocaleString('ja-JP'); return; }
-      var t0=null, DUR=1700;
-      function step(ts){
-        if(!t0)t0=ts;
-        var p=Math.min((ts-t0)/DUR,1);
-        var e=1-Math.pow(1-p,3); // easeOutCubic
-        costEl.textContent=Math.round(TARGET*e).toLocaleString('ja-JP');
-        if(p<1)requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-    if('IntersectionObserver' in window){
-      var ioC=new IntersectionObserver(function(es){
-        es.forEach(function(e){ if(e.isIntersecting){ runCount(); ioC.disconnect(); } });
-      },{threshold:0.25});
-      ioC.observe(costEl);
-    } else { runCount(); }
-  }
+  // ===== E2: 一億円カウントアップ（2026/08/12廃止：静的「1億円」＋CSSの1文字ずつ出現に変更。.rev→.visに連動） =====
 
   // ===== E3: 襖開きリビール（ギャラリー・メニュー写真） =====
   // 画面下端の60px手前で先行発火＝「スペースだけあって中身が見えない」帯域を作らない
@@ -1180,7 +1228,17 @@
   var grSec=document.getElementById('review');
   if(grSec&&CONFIG.REVIEW_API_URL){
     var grEsc=function(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; };
-    var grHide=function(){ grSec.style.display='none'; };
+    // 2026/08/12改修（合意済み）: フェイルセーフ時もヘッダーはレビュー導線に統一（数値なし・Google Maps直リンク）
+    //   データ未取得のため評価数値は一切表示しない（コンプラ必須①に抵触しない形）。予約導線は固定CVバーが担う
+    var grCtaReview=function(url){
+      var c=document.getElementById('hdCta');
+      if(!c||c.classList.contains('gr-mode')) return; // 2段表示（取得成功）済みなら何もしない
+      c.textContent='Googleレビューを見る';
+      c.removeAttribute('data-ebica');
+      c.setAttribute('href',url||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME)));
+      c.setAttribute('target','_blank'); c.setAttribute('rel','noopener');
+    };
+    var grHide=function(){ grSec.style.display='none'; grCtaReview(); };
     // 星グリフは視覚表現のみ（総合評価の数値そのものは無加工で表示：コンプラ必須①）
     var grGlyphOf=function(r){ var n=Math.round(Number(r)); if(!(n>=0&&n<=5)) n=0;
       return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); };
@@ -1224,8 +1282,8 @@
       document.getElementById('grPopGLink').href=gUrl; // コンプラ必須⑤（ポップアップ内）
       document.getElementById('grSum').hidden=false;
       document.getElementById('grActs').hidden=false;
-      // 星4以上が0件の月：仕様どおりバッジ＋Googleリンクのみ表示し、ヘッダーは予約ボタンのまま（空のポップアップを開かせない）
-      if(!rvs.length){ if(typeof failsafe==='function'){ failsafe(); } return; }
+      // 星4以上が0件の月：バッジ＋Googleリンクは表示。ヘッダーもレビューボタンに統一（空のポップアップを開かせず、placeId付きMaps直リンクへ）
+      if(!rvs.length){ grCtaReview(gUrl); if(typeof failsafe==='function'){ failsafe(); } return; }
       var list=''; for(var k=0;k<rvs.length;k++){ list+=grCard(rvs[k]); }
       document.getElementById('grPopList').innerHTML=list;
       // ヘッダーボタンを2段表示「★評価（件数）／Googleレビューを見る」に切替（データ取得成功時のみ）
