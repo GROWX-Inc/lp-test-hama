@@ -804,7 +804,21 @@
     var bs=Math.min(1,720/cv.clientWidth); // 背景は最大720px幅相当で十分
     bg.width=Math.round(cv.clientWidth*bs); bg.height=Math.round(cv.clientHeight*bs);
     last=-1; }
-  size(); window.addEventListener('resize',function(){size(); render(cur,true);});
+  // ===== ②勝手にスクロール対策（2026/08/17承認・計画1） =====
+  // iOS Safari/Chromeはスクロール方向に応じて自身のツールバーを出し入れし、
+  // そのたびに window.innerHeight が変動する。この値をフレーム計算に直接使うと
+  // スクロールしていないのに表示フレームが飛ぶ（実測で最大24フレームのジャンプ）。
+  // 対策：画面高さは初回取得値に固定し、横幅が変わったとき（＝画面回転・ウィンドウ
+  // リサイズ）のみ更新する。バーの出し入れ（高さのみの変化）では更新しない。
+  // ※canvasの解像度合わせ(size())は従来どおり毎回実行する。同一フレーム内で
+  //   再描画されるためチラつきは発生せず、省略すると画像が引き伸ばされるため。
+  var vhStable=window.innerHeight;
+  var lastVw=window.innerWidth;
+  size();
+  window.addEventListener('resize',function(){
+    if(window.innerWidth!==lastVw){ lastVw=window.innerWidth; vhStable=window.innerHeight; }
+    size(); render(cur,true);
+  });
 
   function isLandscape(){ return cv.width > cv.height*1.05; }
 
@@ -889,7 +903,7 @@
   var cur=0;
   var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function loop(){
-    var r=wrap.getBoundingClientRect(), vh=window.innerHeight;
+    var r=wrap.getBoundingClientRect(), vh=vhStable; // ②対策：バー出し入れで変動するinnerHeightではなく固定値を使用
     var prog=Math.min(Math.max(-r.top/(r.height-vh),0),1);
     var target=prog*(N-1);
     if(reduced){ cur=target; }
@@ -1258,9 +1272,14 @@
         xpC1=document.getElementById('xpC1'),
         xpC2=document.getElementById('xpC2');
     var xpLast=-1;
+    // ②勝手にスクロール対策（FVと同一）：画面高さは初回取得値に固定し、横幅変化時のみ更新
+    var xpVh=window.innerHeight, xpVw=window.innerWidth;
+    window.addEventListener('resize',function(){
+      if(window.innerWidth!==xpVw){ xpVw=window.innerWidth; xpVh=window.innerHeight; xpLast=-1; }
+    });
     function xpEase(x){ return x*x*(3-2*x); }
     function xpTick(){
-      var r=xpWrap.getBoundingClientRect(), vh=window.innerHeight;
+      var r=xpWrap.getBoundingClientRect(), vh=xpVh; // ②対策：固定値を使用
       if(r.bottom>0 && r.top<vh){ // 画面内のときだけ計算
         var p=Math.min(Math.max(-r.top/(r.height-vh),0),1);
         if(Math.abs(p-xpLast)>0.001){
