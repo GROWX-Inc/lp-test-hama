@@ -733,95 +733,127 @@
 <script>
 ;(function(){
   'use strict';
-  var N=235;
+  // ===== 2026/08/18 スクロール滑らか化改修（承認済み 改善1〜3） =====
+  // 改善3: フレームを1枚おきに間引いて使用（235→118コマ）。隣接コマは render() が
+  //        透明度ブレンドで重ねるため、見た目の滑らかさは維持しつつ転送量を半減。
+  //        ファイル自体は従来のまま（偶数番＋最終234番のみを取得する。再アップロード不要）
+  var N=118;
   // 端末に応じてフレームセットを選択（スマホ=720px幅／PC・タブレット=1080px幅=元動画原寸）
   var FRAME_DIR=(window.innerWidth<=560)?'frames720':'frames1080';
   var SCRUB_FRAMES=[];
-  for(var i=0;i<N;i++){ SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(i).padStart(3,'0')+'.webp'); }
+  for(var i=0;i<N;i++){ var srcNo=Math.min(i*2,234); SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(srcNo).padStart(3,'0')+'.webp'); }
 
   var wrap=document.getElementById('scrubWrap'),cv=document.getElementById('scrubCv');
   var ctx=cv.getContext('2d');
   var bmps=new Array(N);
   var useBmp=('createImageBitmap' in window);
 
-  // ===== メモリ管理：スライディングウィンドウ方式（2026/08/17 案1承認により変更） =====
-  // 背景：従来は全235フレームをデコード保持しており、RGBA展開後のメモリが
-  //       約826MB(スマホ720p)/約1.86GB(PC1080p)に達し、iOS WebKitのタブ上限超過で
-  //       プロセスが強制終了→ページ自動リロードが発生していた。
-  // 方式：現在フレーム±WINDOW枚のみ保持し、範囲外は ImageBitmap.close() で即解放。
-  //       ANCHOR_STRIDE刻みの「アンカーフレーム」だけは常駐させ、高速スクロール時も
-  //       nearest() の代替表示が必ずヒットするようにする（真っ黒表示の防止）。
-  // 常駐上限の目安：アンカー11枚＋動的最大29枚 ≒ 約40枚
-  //               ＝ スマホ約140MB / PC約320MB（従来比 約1/6）
-  var WINDOW=10;        // 現在位置の前後に保持するフレーム数
-  var EVICT_MARGIN=4;   // 解放判定はウィンドウよりこの分だけ広く取る（捨て直しの頻発防止）
-  var ANCHOR_STRIDE=24; // この刻み＋最終フレームは常駐（0,24,...,216,234 の11枚）
+  // ===== メモリ管理：スライディングウィンドウ方式（2026/08/17 案1承認・08/18改修） =====
+  // 改善2: 「必要なコマをその都度ネットワークから取り寄せる」方式をやめ、
+  //        ローディング中に全コマを圧縮のまま（blob）メモリへ先読みする。
+  //        スクロール開始後のネットワーク依存がゼロになり、電波・機種による
+  //        カクつき差が消える。圧縮のままなら全118コマで約4.6MB(スマホ)と軽量。
+  //        展開（デコード）は従来どおり現在位置±WINDOW枚のみ（メモリ超過防止）。
+  var WINDOW=14;        // 現在位置の前後に展開保持するフレーム数（1:1追従化に合わせ10→14に拡大）
+  var EVICT_MARGIN=6;   // 解放判定はウィンドウよりこの分だけ広く取る（捨て直しの頻発防止）
+  var ANCHOR_STRIDE=24; // この刻み＋最終フレームは常駐（0,24,48,72,96,117 の6枚）
   function isAnchor(i){ return i%ANCHOR_STRIDE===0 || i===N-1; }
   var center=0;         // 現在の中心フレーム（整数）
 
   var ldBar=document.getElementById('ldBar'),ldPct=document.getElementById('ldPct'),loader=document.getElementById('loader');
   var loaderHidden=false;
 
-  // ローディング進捗は初期セット（アンカー全11枚＋先頭ウィンドウ0〜10）のみを対象にする
-  // ※従来の「全235枚を読み切る」方式は廃止（メモリ超過の根本原因のため）
-  var INIT_SET={},INIT_TOTAL=0;
-  for(var ii=0;ii<N;ii++){ if(isAnchor(ii)||ii<=WINDOW){ INIT_SET[ii]=true; INIT_TOTAL++; } }
-  var loaded=0;
-
-  function onLoaded(i){
-    if(!INIT_SET[i]) return; // ウィンドウ追従の動的読み込みは進捗バー対象外
-    loaded++;
-    var p=Math.min(100,Math.round(loaded/INIT_TOTAL*100));
+  // ローディング進捗＝全コマの先読み完了率。全コマ到着＋先頭コマ表示でローダー消灯
+  var fetched=0, blobCache=new Array(N);
+  function onFetched(){
+    fetched++;
+    var p=Math.min(100,Math.round(fetched/N*100));
     if(ldBar){ldBar.style.width=p+'%';}
     if(ldPct){ldPct.textContent=p+'%';}
-    // 初期セットの1/3が揃った時点で開始（従来の「全体の1/8」相当の待ち感覚を維持）
-    if(!loaderHidden && loaded>=Math.ceil(INIT_TOTAL/3)){
+    if(fetched>=N){ pump(); maybeStart(); }
+  }
+  function maybeStart(){
+    if(loaderHidden) return;
+    if(fetched>=N && renderedOnce){
       loaderHidden=true;
       loader.classList.add('done');
       setTimeout(function(){loader.style.display='none';},700);
     }
   }
+  // 先読み：同時6本で全コマの圧縮データを取得（失敗時は2回まで自動再試行）
+  function prefetch(i,attempt){
+    fetch(SCRUB_FRAMES[i]).then(function(r){
+      if(!r.ok) throw new Error('bad status');
+      return r.blob();
+    }).then(function(b){
+      blobCache[i]=b; onFetched();
+      if(i===0||isAnchor(i)||i<=WINDOW) pump(); // 初期表示に必要なコマは到着し次第デコード
+    }).catch(function(){
+      if((attempt||0)<2){ setTimeout(function(){prefetch(i,(attempt||0)+1);},600); }
+      else { blobCache[i]=null; onFetched(); } // 2回失敗：先へ進む（表示は隣接コマで代替）
+    });
+  }
+  (function(){
+    var q=[]; // 取得順：先頭ウィンドウ→アンカー→残り（見始めに必要な順）
+    for(var w=0;w<=WINDOW;w++) q.push(w);
+    for(var a=0;a<N;a+=ANCHOR_STRIDE){ if(q.indexOf(a)===-1) q.push(a); }
+    if(q.indexOf(N-1)===-1) q.push(N-1);
+    for(var r=0;r<N;r++){ if(q.indexOf(r)===-1) q.push(r); }
+    // 同時6本を維持：1本完了するたびに次の1本を投入する
+    var next=0, CONC=6;
+    var origOnFetched=onFetched;
+    onFetched=function(){ origOnFetched(); if(next<q.length){ prefetch(q[next++]); } };
+    for(var k0=0;k0<CONC && next<q.length;k0++){ prefetch(q[next++]); }
+  })();
   // 保持してよいフレームか（アンカー or 現在ウィンドウ＋マージン内）
   function keep(i){ return isAnchor(i) || Math.abs(i-center)<=WINDOW+EVICT_MARGIN; }
-  // フレームを解放して再読み込み可能な状態に戻す
+  // 展開済みフレームを解放（圧縮データは保持しているので即座に再展開できる）
   function release(i){
     var b=bmps[i];
     if(b && typeof b.close==='function'){ try{b.close();}catch(e){} }
     bmps[i]=undefined;
   }
-  // 同時読み込み数の上限。高速スクロールで中心が一気に移動した際、通過区間の
-  // 全フレームを要求すると読み込み→デコード→即破棄のスラッシングが起きて
-  // メインスレッドが詰まる（Playwright計測でrAFが約7fpsまで劣化）ため、
-  // 常に「その時点の中心に近い未読フレーム」から最大MAX_INFLIGHT件だけ要求する。
-  var MAX_INFLIGHT=6;
+  // 同時デコード数の上限（1:1追従化に合わせ6→8に拡大）。
+  // 圧縮データは手元にあるため、1コマの展開は数ミリ秒〜十数ミリ秒で完了する
+  var MAX_INFLIGHT=8;
   var inflight=0;
   function load(i){
     if(i<0||i>=N)return;
     if(bmps[i]!==undefined)return;
-    bmps[i]=null; // 読み込み中マーカー
+    if(blobCache[i]===undefined)return; // まだ到着していない（先読み中）→到着時にpumpされる
+    if(blobCache[i]===null)return;      // 取得失敗コマ：隣接コマで代替表示
+    bmps[i]=null; // 展開中マーカー
     inflight++;
-    var im=new Image();
     function done(){ inflight--; pump(); }
-    im.onload=function(){
-      function commit(b){
-        // 読了時点で既にウィンドウ外へ通過済み（高速スクロール時）→保持せず即破棄
-        if(!keep(i)){
-          if(b && typeof b.close==='function'){ try{b.close();}catch(e){} }
-          bmps[i]=undefined;
-        } else {
-          bmps[i]=b;
-          onLoaded(i);
-          if(i===0)render(0,true);
-        }
-        done();
+    function commit(b){
+      if(!keep(i)){
+        if(b && typeof b.close==='function'){ try{b.close();}catch(e){} }
+        bmps[i]=undefined;
+      } else {
+        bmps[i]=b;
+        if(i===0){ render(0,true); }
+        maybeStart();
       }
-      if(useBmp){ createImageBitmap(im).then(commit).catch(function(){ commit(im); }); }
-      else { commit(im); }
-    };
-    im.onerror=function(){ onLoaded(i); done(); }; // bmps[i]=nullのまま＝再試行しない（従来仕様を踏襲）
-    im.src=SCRUB_FRAMES[i];
+      done();
+    }
+    if(useBmp){
+      createImageBitmap(blobCache[i]).then(commit).catch(function(){
+        // blobからの展開に失敗した稀なケース：<img>経由でフォールバック
+        var im=new Image();
+        var url=URL.createObjectURL(blobCache[i]);
+        im.onload=function(){ URL.revokeObjectURL(url); commit(im); };
+        im.onerror=function(){ URL.revokeObjectURL(url); bmps[i]=undefined; done(); };
+        im.src=url;
+      });
+    } else {
+      var im=new Image();
+      var url=URL.createObjectURL(blobCache[i]);
+      im.onload=function(){ URL.revokeObjectURL(url); commit(im); };
+      im.onerror=function(){ URL.revokeObjectURL(url); bmps[i]=undefined; done(); };
+      im.src=url;
+    }
   }
-  // スケジューラ：中心に近い順に未読フレームを補充（上限MAX_INFLIGHT）
+  // スケジューラ：中心に近い順に未展開フレームを補充（上限MAX_INFLIGHT）
   function pump(){
     if(inflight>=MAX_INFLIGHT)return;
     if(bmps[center]===undefined){ load(center); if(inflight>=MAX_INFLIGHT)return; }
@@ -830,12 +862,6 @@
       if(bmps[center-d]===undefined && center-d>=0){ load(center-d); if(inflight>=MAX_INFLIGHT)return; }
     }
   }
-  // 初期読み込み：アンカー→先頭ウィンドウの順（全フレーム一括読み込みは行わない）
-  var initOrder=[];
-  for(var a0=0;a0<N;a0+=ANCHOR_STRIDE){ initOrder.push(a0); }
-  if(initOrder.indexOf(N-1)===-1) initOrder.push(N-1);
-  for(var w0=1;w0<=WINDOW;w0++){ if(initOrder.indexOf(w0)===-1) initOrder.push(w0); }
-  initOrder.forEach(function(idx,k){ setTimeout(function(){load(idx);}, k*9); });
 
   // ウィンドウ追従：中心フレームが変わったら解放処理を行い、スケジューラで
   // 中心付近から順に補充する（毎tick呼ばれるが実処理は軽量）
@@ -857,6 +883,7 @@
     return null;
   }
   var last=-1;
+  var renderedOnce=false; // 1コマでも描画できたか（ローダー消灯条件に使用）
   // アンビエント背景canvas（ぼかすので内部解像度は控えめでよい＝軽い）
   var bg=document.getElementById('scrubBg'), bgctx=bg.getContext('2d');
   var bgOn=false;
@@ -932,6 +959,7 @@
     ctx.globalAlpha=1;
     if(land){ drawPanelLines(); }
     last=f;
+    renderedOnce=true;
   }
 
   // オーバーレイ制御
@@ -972,11 +1000,9 @@
     var r=wrap.getBoundingClientRect(), vh=vhStable; // ②対策：バー出し入れで変動するinnerHeightではなく固定値を使用
     var prog=Math.min(Math.max(-r.top/(r.height-vh),0),1);
     var target=prog*(N-1);
-    if(reduced){ cur=target; }
-    else{
-      cur+=(target-cur)*0.09;
-      if(Math.abs(target-cur)<0.01) cur=target;
-    }
+    // 2026/08/18 改善1（承認済み）: 「あとからゆっくり追いつく」映画風イージングを廃止し、
+    // 指のスクロール位置とコマを1:1で直結（参考サイトと同じ追従感）。
+    cur=target;
     ensureWindow(Math.round(cur)); // 保持ウィンドウを現在位置に追従（毎tick呼ばれるが実処理は軽量）
     render(cur,false);
     updateOverlays(prog);
