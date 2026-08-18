@@ -17,7 +17,7 @@
     --gold:#D9AE52;
     --gold-2:#EBCB84;
     --cream:#F2ECDD;
-    --muted:#A99B7E;
+    --muted:#CBBEA3;
     --red:#B94236;
     --disp:"Shippori Mincho",serif;
     --body:"Zen Kaku Gothic New",sans-serif;
@@ -42,7 +42,7 @@
   header.ui-hidden{transform:translateY(-110%);opacity:0;pointer-events:none}
   .brand{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
     text-shadow:0 1px 8px rgba(0,0,0,.6)}
-  .hd-cta{display:inline-flex;align-items:center;font-family:var(--body);font-weight:700;font-size:13px;color:#150f04;
+  .hd-cta{display:inline-flex;align-items:center;font-family:var(--body);font-weight:700;font-size:15px;color:#150f04;
     background:var(--gold);padding:9px 18px;border-radius:999px;
     box-shadow:0 6px 18px -8px rgba(217,174,82,.6);
     transition:filter .25s ease,box-shadow .25s ease}
@@ -86,17 +86,17 @@
   .dw-nav a:hover,.dw-nav a:focus-visible{color:var(--gold-2)}
   .dw-nav a.cur{color:var(--gold-2)}
   .dw-ctas{display:flex;flex-direction:column;gap:12px;margin-top:28px}
-  .dw-ctas .btn-g,.dw-ctas .btn-o{width:100%;text-align:center;padding:13px 10px;font-size:13.5px}
+  .dw-ctas .btn-g,.dw-ctas .btn-o{width:100%;text-align:center;padding:13px 10px;font-size:15px}
   #dwGr.gr-mode{cursor:pointer;flex-direction:column;align-items:center;gap:1px;line-height:1.25;padding:9px 10px}
 
   /* ===== ボタン（index.html共通） ===== */
-  .btn-g{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:#150f04;
+  .btn-g{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:15px;color:#150f04;
     background:var(--gold);padding:14px 30px;border-radius:12px;
     box-shadow:0 10px 28px -10px rgba(217,174,82,.65);
     transition:filter .25s ease,box-shadow .25s ease,transform .25s ease}
   .btn-g:hover,.btn-g:focus-visible{filter:brightness(1.12);
     box-shadow:0 12px 34px -8px rgba(217,174,82,.85);transform:translateY(-1px)}
-  .btn-o{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:var(--gold-2);
+  .btn-o{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:15px;color:var(--gold-2);
     border:1px solid rgba(217,174,82,.6);padding:13px 30px;border-radius:12px;
     background:rgba(16,13,8,.5);
     transition:background .25s ease,border-color .25s ease,box-shadow .25s ease}
@@ -110,12 +110,12 @@
 
   /* ===== セクション共通（index.html共通） ===== */
   .wrap{max-width:720px;margin:0 auto;padding:0 var(--pad-x)}
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--gold);
+  .eyebrow{font-family:var(--mono);font-size:15px;letter-spacing:.18em;color:var(--gold);
     text-transform:uppercase;display:block;margin-bottom:10px}
   h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,5.4vw,34px);
     line-height:1.5;margin-bottom:18px;letter-spacing:.04em}
   h2 em{font-style:normal;color:var(--gold-2)}
-  .lead{font-size:14px;color:#fff;line-height:2.1}
+  .lead{font-size:15px;color:#fff;line-height:2.1}
   .rev{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
   .rev.vis{opacity:1;transform:none}
   @media (prefers-reduced-motion: reduce){ .rev{opacity:1;transform:none;transition:none} }
@@ -135,12 +135,12 @@
     margin-bottom:18px}
   .mcat::before,.mcat::after{content:"";height:1px;background:linear-gradient(90deg,transparent,var(--gold));flex:0 0 26px}
   .mcat::after{background:linear-gradient(90deg,var(--gold),transparent);flex:1}
-  .mcat-note{font-size:11.5px;color:var(--muted);margin:-10px 0 16px}
-  .mi{display:flex;align-items:baseline;gap:10px;padding:9px 0;font-size:14px}
+  .mcat-note{font-size:15px;color:var(--muted);margin:-10px 0 16px}
+  .mi{display:flex;align-items:baseline;gap:10px;padding:9px 0;font-size:15px}
   .mi-n{min-width:0;overflow-wrap:anywhere}
-  .mi-n small{display:block;font-size:11px;color:var(--muted);line-height:1.7}
+  .mi-n small{display:block;font-size:15px;color:var(--muted);line-height:1.7}
   .mi-dots{flex:1;min-width:24px;border-bottom:1px dotted rgba(169,155,126,.55);transform:translateY(-4px)}
-  .mi-p{font-family:var(--mono);font-size:13.5px;color:var(--gold-2);white-space:nowrap}
+  .mi-p{font-family:var(--mono);font-size:17px;color:var(--gold-2);white-space:nowrap}
 
   /* ===== ショーケース（KAMAKURA catShow構成の億万鳥者トーン版・承認3-A） =====
      カテゴリごとに背景トーンが変化（ゴールド調バリエーション）。円形ディスク3枚見せ・中央大 */
@@ -150,7 +150,7 @@
   .shw-b{background:linear-gradient(180deg,#2B1414,#1E0F0F)}   /* 新名物：臙脂 */
   .shw-c{background:linear-gradient(180deg,#14201A,#0F1712)}   /* 和牛・逸品：深緑 */
   .shw .wrap{text-align:center}
-  .shw-en{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--gold);
+  .shw-en{font-family:var(--mono);font-size:15px;letter-spacing:.34em;color:var(--gold);
     text-transform:uppercase;display:block;margin-bottom:10px}
   .shw-jp{font-family:var(--disp);font-weight:800;font-size:clamp(19px,4.6vw,24px);letter-spacing:.06em;
     min-height:2.6em;display:flex;align-items:center;justify-content:center;
@@ -165,8 +165,8 @@
   .shw-side{width:clamp(64px,17vw,92px);height:clamp(64px,17vw,92px);opacity:.5;cursor:pointer;
     transition:opacity .3s ease,transform .3s ease}
   .shw-side:hover{opacity:.85;transform:scale(1.05)}
-  .shw-price{font-family:var(--mono);font-size:15px;color:var(--gold-2);transition:opacity .35s ease}
-  .shw-price small{font-size:11px;color:var(--muted);margin-left:4px}
+  .shw-price{font-family:var(--mono);font-size:20px;color:var(--gold-2);transition:opacity .35s ease}
+  .shw-price small{font-size:15px;color:var(--muted);margin-left:4px}
   .shw-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px}
   .shw-arrow{width:38px;height:38px;border-radius:50%;border:1px solid rgba(217,174,82,.5);
     background:rgba(16,13,8,.45);color:var(--gold-2);font-size:17px;line-height:1;cursor:pointer;
@@ -180,10 +180,10 @@
   .shw-fade .shw-jp,.shw-fade .shw-price,.shw-fade .shw-main img{opacity:0}
   /* ショーケース直下の補足リスト（KAMAKURA msub相当） */
   .msub{max-width:480px;margin:22px auto 0;text-align:left}
-  .msub .mi{padding:7px 0;font-size:13px}
+  .msub .mi{padding:7px 0;font-size:15px}
 
   /* ===== 注記 ===== */
-  .mnote{font-family:var(--mono);font-size:10.5px;color:#6d6250;line-height:2;padding:34px 0 60px}
+  .mnote{font-family:var(--mono);font-size:15px;color:var(--muted);line-height:2;padding:34px 0 60px}
 
   /* ===== 締め：エンタメ訴求（KAMAKURA Anniversary相当・ダーク） ===== */
   .fin{background:linear-gradient(180deg,#0B0805,#131007 60%,#0B0805);padding:96px 0;text-align:center;
@@ -196,9 +196,9 @@
   /* ===== フッター＋固定CVバー（index.html共通） ===== */
   footer{padding:56px 0 130px;text-align:center}
   .f-brand{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.14em}
-  .f-brand small{display:block;font-size:10px;letter-spacing:.3em;color:var(--gold-2);margin-top:6px}
-  .f-copy{font-size:12px;color:#fff;margin:14px 0 20px}
-  .f-note{font-family:var(--mono);font-size:10px;color:#6d6250;line-height:1.8}
+  .f-brand small{display:block;font-size:15px;letter-spacing:.3em;color:var(--gold-2);margin-top:6px}
+  .f-copy{font-size:15px;color:#fff;margin:14px 0 20px}
+  .f-note{font-family:var(--mono);font-size:15px;color:var(--muted);line-height:1.8}
   .cvbar{position:fixed;left:0;right:0;bottom:0;z-index:60;
     display:flex;gap:10px;justify-content:center;
     padding:12px var(--pad-x) calc(12px + env(safe-area-inset-bottom));
@@ -206,18 +206,18 @@
     border-top:1px solid var(--line-2);
     transform:none;transition:transform .4s ease}
   .cvbar.ui-hidden{transform:translateY(110%)}
-  .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:13.5px}
+  .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:15px}
   @media (prefers-reduced-motion: reduce){ header,.cvbar{transition:none} }
 
   /* ===== GR: 口コミポップアップ（index.html共通・コンプラ必須①〜⑤準拠） ===== */
   .reviews{display:grid;gap:12px}
   .rv{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:18px 20px}
-  .rv .stars{color:var(--gold);letter-spacing:.2em;font-size:13px}
-  .rv p{font-size:13.5px;line-height:1.9;margin:8px 0}
-  .rv cite{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .rv .stars{color:var(--gold);letter-spacing:.2em;font-size:15px}
+  .rv p{font-size:15px;line-height:1.9;margin:8px 0}
+  .rv cite{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--muted)}
   .gr-num{font-family:var(--mono);font-weight:700;font-size:clamp(30px,7.5vw,38px);color:var(--gold-2);line-height:1}
   .gr-glyph{color:var(--gold);letter-spacing:.16em;font-size:15px}
-  .gr-cnt{font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  .gr-cnt{font-size:16px;color:var(--muted);font-family:var(--mono)}
   .gr-pop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;
     padding:var(--pad-x)}
   .gr-pop[hidden]{display:none}
@@ -231,15 +231,15 @@
   @media (prefers-reduced-motion: reduce){ .gr-pop-panel{animation:none} }
   .gr-pop-head{padding:16px 20px 12px;border-bottom:1px solid var(--line-2);position:relative}
   .gr-pop-title{font-family:var(--disp);font-size:17px;color:var(--cream);margin:0 34px 4px 0}
-  .gr-pop-note{font-size:11.5px;color:var(--muted);margin:0}
+  .gr-pop-note{font-size:15px;color:var(--muted);margin:0}
   .gr-pop-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:8px 0 6px}
   .gr-pop-sum .gr-num{font-size:clamp(26px,6vw,32px)}
   #hdCta.gr-mode{cursor:pointer;
     flex-direction:column;align-items:center;gap:1px;
     padding:6px 16px;border-radius:14px;line-height:1.25}
-  .gr-cta-num{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.02em}
-  .gr-cta-num .gr-cta-star{font-size:13px;margin-right:1px}
-  .gr-cta-act{font-size:9.5px;font-weight:700;letter-spacing:.06em;opacity:.85}
+  .gr-cta-num{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.02em}
+  .gr-cta-num .gr-cta-star{font-size:15px;margin-right:1px}
+  .gr-cta-act{font-size:15px;font-weight:700;letter-spacing:.06em;opacity:.85}
   .gr-pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;
     display:inline-flex;align-items:center;justify-content:center;
     background:transparent;border:1px solid var(--line-2);border-radius:9px;
@@ -248,8 +248,8 @@
   .gr-pop-body{padding:14px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}
   .gr-pop-foot{padding:12px 20px 14px;border-top:1px solid var(--line-2);
     display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
-  .gr-pop-attr{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
-  .gr-glink{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+  .gr-pop-attr{font-size:15px;color:var(--muted);font-family:var(--mono)}
+  .gr-glink{font-size:15px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
   .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
 </style>
 </head>
