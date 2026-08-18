@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お品書き｜一億円で居酒屋建ててみた。億万鳥者 新宿本殿</title>
+<meta name="description" content="Ａ５和牛の生ハムや億万バーガーなど、豪華すぎる和牛創作料理のお品書き。全てのお客様を億万長者としておもてなしするアミューズメント居酒屋「億万鳥者 新宿本殿」。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== 共通基盤（index.htmlと同一のデザイントークン） ===== */
+  :root{
+    --bg:#100D08;
+    --panel:#1A150D;
+    --line-2:#3A3020;
+    --gold:#D9AE52;
+    --gold-2:#EBCB84;
+    --cream:#F2ECDD;
+    --muted:#A99B7E;
+    --red:#B94236;
+    --disp:"Shippori Mincho",serif;
+    --body:"Zen Kaku Gothic New",sans-serif;
+    --mono:"Roboto Mono",monospace;
+    --pad-x:clamp(15px,4.5vw,24px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);background:var(--bg);color:var(--cream);line-height:1.8;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  button{font-family:inherit}
+
+  /* ===== ヘッダー（index.html共通仕様・menu.htmlはFVなしのため常時solid） ===== */
+  header{position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    height:56px;padding:0 var(--pad-x);
+    background:rgba(16,13,8,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-2);
+    transition:transform .45s ease,opacity .45s ease}
+  header.ui-hidden{transform:translateY(-110%);opacity:0;pointer-events:none}
+  .brand{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
+    text-shadow:0 1px 8px rgba(0,0,0,.6)}
+  .hd-cta{display:inline-flex;align-items:center;font-family:var(--body);font-weight:700;font-size:13px;color:#150f04;
+    background:var(--gold);padding:9px 18px;border-radius:999px;
+    box-shadow:0 6px 18px -8px rgba(217,174,82,.6);
+    transition:filter .25s ease,box-shadow .25s ease}
+  .hd-cta:hover,.hd-cta:focus-visible{filter:brightness(1.12);
+    box-shadow:0 8px 22px -6px rgba(217,174,82,.85)}
+  @media (prefers-reduced-motion: reduce){ .hd-cta{transition:none} }
+
+  /* ===== ハンバーガーメニュー（index.htmlと同一仕様・承認4-A） ===== */
+  .hd-right{display:flex;align-items:center;gap:8px;min-width:0}
+  .hbg{width:40px;height:40px;flex:none;display:inline-flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px;
+    background:transparent;border:0;cursor:pointer;padding:0;
+    -webkit-tap-highlight-color:transparent}
+  .hbg span{display:block;width:22px;height:2px;background:var(--gold-2);border-radius:2px;
+    transition:transform .3s ease,opacity .3s ease}
+  .hbg.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .hbg.on span:nth-child(2){opacity:0}
+  .hbg.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  @media (prefers-reduced-motion: reduce){ .hbg span{transition:none} }
+  .dw{position:fixed;inset:0;z-index:70;display:flex;justify-content:flex-end}
+  .dw[hidden]{display:none}
+  .dw-bg{position:absolute;inset:0;background:rgba(6,4,2,.78)}
+  .dw-panel{position:relative;width:min(84vw,340px);height:100%;
+    background:rgba(16,13,8,.97);border-left:1px solid var(--line-2);
+    display:flex;flex-direction:column;
+    padding:64px 26px calc(28px + env(safe-area-inset-bottom));
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    animation:dwIn .32s ease}
+  @keyframes dwIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion: reduce){ .dw-panel{animation:none} }
+  .dw-x{position:absolute;top:12px;right:12px;width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid var(--line-2);border-radius:50%;
+    color:var(--cream);font-size:18px;line-height:1;cursor:pointer;
+    transition:border-color .25s ease,background .25s ease}
+  .dw-x:hover,.dw-x:focus-visible{border-color:rgba(217,174,82,.9);background:rgba(217,174,82,.12)}
+  .dw-nav{display:flex;flex-direction:column}
+  .dw-nav a{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
+    padding:15px 4px;border-bottom:1px solid var(--line-2);
+    transition:color .25s ease}
+  .dw-nav a:hover,.dw-nav a:focus-visible{color:var(--gold-2)}
+  .dw-nav a.cur{color:var(--gold-2)}
+  .dw-ctas{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .dw-ctas .btn-g,.dw-ctas .btn-o{width:100%;text-align:center;padding:13px 10px;font-size:13.5px}
+  #dwGr.gr-mode{cursor:pointer;flex-direction:column;align-items:center;gap:1px;line-height:1.25;padding:9px 10px}
+
+  /* ===== ボタン（index.html共通） ===== */
+  .btn-g{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:#150f04;
+    background:var(--gold);padding:14px 30px;border-radius:12px;
+    box-shadow:0 10px 28px -10px rgba(217,174,82,.65);
+    transition:filter .25s ease,box-shadow .25s ease,transform .25s ease}
+  .btn-g:hover,.btn-g:focus-visible{filter:brightness(1.12);
+    box-shadow:0 12px 34px -8px rgba(217,174,82,.85);transform:translateY(-1px)}
+  .btn-o{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow-wrap:anywhere;font-weight:700;font-size:14.5px;color:var(--gold-2);
+    border:1px solid rgba(217,174,82,.6);padding:13px 30px;border-radius:12px;
+    background:rgba(16,13,8,.5);
+    transition:background .25s ease,border-color .25s ease,box-shadow .25s ease}
+  .btn-o:hover,.btn-o:focus-visible{background:rgba(217,174,82,.14);border-color:rgba(217,174,82,.95);
+    box-shadow:0 0 22px -6px rgba(217,174,82,.5)}
+  @media (prefers-reduced-motion: reduce){
+    .btn-g,.btn-o{transition:none}
+    .btn-g:hover,.btn-g:focus-visible{transform:none}
+  }
+  .btn-ic{display:inline-block;vertical-align:-0.18em;width:1.06em;height:1.06em;margin-right:6px;pointer-events:none;flex:none}
+
+  /* ===== セクション共通（index.html共通） ===== */
+  .wrap{max-width:720px;margin:0 auto;padding:0 var(--pad-x)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--gold);
+    text-transform:uppercase;display:block;margin-bottom:10px}
+  h2{font-family:var(--disp);font-weight:800;font-size:clamp(24px,5.4vw,34px);
+    line-height:1.5;margin-bottom:18px;letter-spacing:.04em}
+  h2 em{font-style:normal;color:var(--gold-2)}
+  .lead{font-size:14px;color:#fff;line-height:2.1}
+  .rev{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+  .rev.vis{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){ .rev{opacity:1;transform:none;transition:none} }
+
+  /* ===== 麻の葉文様（最背面・index.html共通モチーフ） ===== */
+  .asanoha{position:fixed;inset:0;pointer-events:none;z-index:-2;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2256.0%22%20height%3D%2296.9948%22%20viewBox%3D%220%200%2056.0%2096.9948%22%3E%3Cg%20stroke%3D%22%23D9AE52%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22butt%22%20fill%3D%22none%22%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%22105.078%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22121.244%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2256.58%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2240.415%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%228.083%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%22-24.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2288.912%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-42.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%22-24.249%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2240.415%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%22121.244%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%2272.746%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%22-8.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2214.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2240.415%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%2272.746%22%20x2%3D%2214.0%22%20y2%3D%2288.912%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%22-24.249%22%20x2%3D%2270.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%22-14.0%22%20y1%3D%228.083%22%20x2%3D%2214.0%22%20y2%3D%2224.249%22%2F%3E%3Cline%20x1%3D%2214.0%22%20y1%3D%2224.249%22%20x2%3D%2242.0%22%20y2%3D%228.083%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2270.0%22%20y2%3D%2256.58%22%2F%3E%3Cline%20x1%3D%2242.0%22%20y1%3D%2272.746%22%20x2%3D%2298.0%22%20y2%3D%2272.746%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    opacity:.09}
+
+  /* ===== ページタイトル ===== */
+  .pt{padding:132px 0 64px;border-bottom:1px solid var(--line-2)}
+
+  /* ===== カテゴリ見出し＋品目リスト（KAMAKURA mlist構成の億万鳥者トーン版） ===== */
+  .mlist{padding:46px 0 10px}
+  .mcat{display:flex;align-items:center;gap:12px;
+    font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.1em;color:var(--gold-2);
+    margin-bottom:18px}
+  .mcat::before,.mcat::after{content:"";height:1px;background:linear-gradient(90deg,transparent,var(--gold));flex:0 0 26px}
+  .mcat::after{background:linear-gradient(90deg,var(--gold),transparent);flex:1}
+  .mcat-note{font-size:11.5px;color:var(--muted);margin:-10px 0 16px}
+  .mi{display:flex;align-items:baseline;gap:10px;padding:9px 0;font-size:14px}
+  .mi-n{min-width:0;overflow-wrap:anywhere}
+  .mi-n small{display:block;font-size:11px;color:var(--muted);line-height:1.7}
+  .mi-dots{flex:1;min-width:24px;border-bottom:1px dotted rgba(169,155,126,.55);transform:translateY(-4px)}
+  .mi-p{font-family:var(--mono);font-size:13.5px;color:var(--gold-2);white-space:nowrap}
+
+  /* ===== ショーケース（KAMAKURA catShow構成の億万鳥者トーン版・承認3-A） =====
+     カテゴリごとに背景トーンが変化（ゴールド調バリエーション）。円形ディスク3枚見せ・中央大 */
+  .shw{padding:56px 0 50px;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    overflow:hidden;position:relative}
+  .shw-a{background:linear-gradient(180deg,#2A1F10,#1E160B)}   /* スペシャリテ：金茶 */
+  .shw-b{background:linear-gradient(180deg,#2B1414,#1E0F0F)}   /* 新名物：臙脂 */
+  .shw-c{background:linear-gradient(180deg,#14201A,#0F1712)}   /* 和牛・逸品：深緑 */
+  .shw .wrap{text-align:center}
+  .shw-en{font-family:var(--mono);font-size:11px;letter-spacing:.34em;color:var(--gold);
+    text-transform:uppercase;display:block;margin-bottom:10px}
+  .shw-jp{font-family:var(--disp);font-weight:800;font-size:clamp(19px,4.6vw,24px);letter-spacing:.06em;
+    min-height:2.6em;display:flex;align-items:center;justify-content:center;
+    transition:opacity .35s ease}
+  .shw-stage{position:relative;display:flex;align-items:center;justify-content:center;
+    gap:clamp(10px,3vw,26px);margin:18px 0 14px}
+  .shw-disc{border-radius:50%;overflow:hidden;flex:none;
+    border:1px solid rgba(217,174,82,.5);
+    box-shadow:0 18px 44px -16px rgba(0,0,0,.85),0 0 0 6px rgba(217,174,82,.08)}
+  .shw-disc img{width:100%;height:100%;object-fit:cover;transition:opacity .35s ease}
+  .shw-main{width:clamp(196px,56vw,250px);height:clamp(196px,56vw,250px)}
+  .shw-side{width:clamp(64px,17vw,92px);height:clamp(64px,17vw,92px);opacity:.5;cursor:pointer;
+    transition:opacity .3s ease,transform .3s ease}
+  .shw-side:hover{opacity:.85;transform:scale(1.05)}
+  .shw-price{font-family:var(--mono);font-size:15px;color:var(--gold-2);transition:opacity .35s ease}
+  .shw-price small{font-size:11px;color:var(--muted);margin-left:4px}
+  .shw-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px}
+  .shw-arrow{width:38px;height:38px;border-radius:50%;border:1px solid rgba(217,174,82,.5);
+    background:rgba(16,13,8,.45);color:var(--gold-2);font-size:17px;line-height:1;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:background .25s ease,border-color .25s ease}
+  .shw-arrow:hover,.shw-arrow:focus-visible{background:rgba(217,174,82,.16);border-color:rgba(217,174,82,.95)}
+  .shw-dots{display:flex;gap:8px}
+  .shw-dot{width:7px;height:7px;border-radius:50%;background:rgba(169,155,126,.45);border:0;padding:0;cursor:pointer;
+    transition:background .25s ease,transform .25s ease}
+  .shw-dot.on{background:var(--gold-2);transform:scale(1.25)}
+  .shw-fade .shw-jp,.shw-fade .shw-price,.shw-fade .shw-main img{opacity:0}
+  /* ショーケース直下の補足リスト（KAMAKURA msub相当） */
+  .msub{max-width:480px;margin:22px auto 0;text-align:left}
+  .msub .mi{padding:7px 0;font-size:13px}
+
+  /* ===== 注記 ===== */
+  .mnote{font-family:var(--mono);font-size:10.5px;color:#6d6250;line-height:2;padding:34px 0 60px}
+
+  /* ===== 締め：エンタメ訴求（KAMAKURA Anniversary相当・ダーク） ===== */
+  .fin{background:linear-gradient(180deg,#0B0805,#131007 60%,#0B0805);padding:96px 0;text-align:center;
+    border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+  .fin .wrap{text-align:center}
+  .fin h2{margin-bottom:14px}
+  .fin .lead{margin-bottom:30px}
+  .fin .cv-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+  /* ===== フッター＋固定CVバー（index.html共通） ===== */
+  footer{padding:56px 0 130px;text-align:center}
+  .f-brand{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.14em}
+  .f-brand small{display:block;font-size:10px;letter-spacing:.3em;color:var(--gold-2);margin-top:6px}
+  .f-copy{font-size:12px;color:#fff;margin:14px 0 20px}
+  .f-note{font-family:var(--mono);font-size:10px;color:#6d6250;line-height:1.8}
+  .cvbar{position:fixed;left:0;right:0;bottom:0;z-index:60;
+    display:flex;gap:10px;justify-content:center;
+    padding:12px var(--pad-x) calc(12px + env(safe-area-inset-bottom));
+    background:rgba(16,13,8,.94);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line-2);
+    transform:none;transition:transform .4s ease}
+  .cvbar.ui-hidden{transform:translateY(110%)}
+  .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:13.5px}
+  @media (prefers-reduced-motion: reduce){ header,.cvbar{transition:none} }
+
+  /* ===== GR: 口コミポップアップ（index.html共通・コンプラ必須①〜⑤準拠） ===== */
+  .reviews{display:grid;gap:12px}
+  .rv{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:18px 20px}
+  .rv .stars{color:var(--gold);letter-spacing:.2em;font-size:13px}
+  .rv p{font-size:13.5px;line-height:1.9;margin:8px 0}
+  .rv cite{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .gr-num{font-family:var(--mono);font-weight:700;font-size:clamp(30px,7.5vw,38px);color:var(--gold-2);line-height:1}
+  .gr-glyph{color:var(--gold);letter-spacing:.16em;font-size:15px}
+  .gr-cnt{font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  .gr-pop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;
+    padding:var(--pad-x)}
+  .gr-pop[hidden]{display:none}
+  .gr-pop-bg{position:absolute;inset:0;background:rgba(6,4,2,.78)}
+  .gr-pop-panel{position:relative;width:min(100%,560px);max-height:min(78vh,720px);
+    display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid rgba(217,174,82,.55);border-radius:14px;
+    box-shadow:0 24px 70px -20px rgba(0,0,0,.9);
+    animation:grPopIn .3s ease}
+  @keyframes grPopIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .gr-pop-panel{animation:none} }
+  .gr-pop-head{padding:16px 20px 12px;border-bottom:1px solid var(--line-2);position:relative}
+  .gr-pop-title{font-family:var(--disp);font-size:17px;color:var(--cream);margin:0 34px 4px 0}
+  .gr-pop-note{font-size:11.5px;color:var(--muted);margin:0}
+  .gr-pop-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:8px 0 6px}
+  .gr-pop-sum .gr-num{font-size:clamp(26px,6vw,32px)}
+  #hdCta.gr-mode{cursor:pointer;
+    flex-direction:column;align-items:center;gap:1px;
+    padding:6px 16px;border-radius:14px;line-height:1.25}
+  .gr-cta-num{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.02em}
+  .gr-cta-num .gr-cta-star{font-size:13px;margin-right:1px}
+  .gr-cta-act{font-size:9.5px;font-weight:700;letter-spacing:.06em;opacity:.85}
+  .gr-pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid var(--line-2);border-radius:9px;
+    color:var(--gold-2);font-size:17px;line-height:1;cursor:pointer}
+  .gr-pop-x:hover,.gr-pop-x:focus-visible{border-color:rgba(217,174,82,.9);background:rgba(217,174,82,.12)}
+  .gr-pop-body{padding:14px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}
+  .gr-pop-foot{padding:12px 20px 14px;border-top:1px solid var(--line-2);
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+  .gr-pop-attr{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+  .gr-glink{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+  .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <div class="brand"><a href="index.html">億万鳥者</a></div>
+  <div class="hd-right">
+    <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで2段表示に切替（失敗時はMaps直リンク＝index.htmlと同一フェイルセーフ） -->
+    <button type="button" class="hbg" id="hbgBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="dw"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ===== ハンバーガードロワー（index.htmlと同一仕様・承認4-A：トップ/アクセスはindex.htmlへ） ===== -->
+<div class="dw" id="dw" hidden>
+  <div class="dw-bg" id="dwBg"></div>
+  <nav class="dw-panel" aria-label="サイトメニュー">
+    <button type="button" class="dw-x" id="dwX" aria-label="メニューを閉じる">×</button>
+    <div class="dw-nav">
+      <a href="index.html">トップ</a>
+      <a href="menu.html" class="cur" aria-current="page">メニュー</a>
+      <a href="course.html">コース</a>
+      <a href="index.html#access">アクセス</a>
+    </div>
+    <div class="dw-ctas">
+      <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
+      <a class="btn-o" href="#" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
+      <a class="btn-o" href="#" id="dwGr" target="_blank" rel="noopener">Googleレビューを見る</a><!-- GR: index.htmlと同一仕様（承認3-A） -->
+    </div>
+  </nav>
+</div>
+
+<!-- ===== ページタイトル ===== -->
+<section class="pt">
+  <div class="wrap">
+    <span class="eyebrow">Menu</span>
+    <h2 class="rev">豪華すぎる、<em>和牛創作料理</em>。</h2>
+    <p class="lead rev">Ａ５和牛の生ハムに、規格外の億万バーガー。<br>
+    見た目も味も「億万長者」級の創作料理を、心ゆくまで。</p>
+  </div>
+</section>
+
+<!-- ===== お通し ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>お通し</span></h4>
+    <div class="mi"><span class="mi-n">年貢<small>３色のマカロンから１つお選びください！</small></span><span class="mi-dots"></span><span class="mi-p">¥400</span></div>
+  </div>
+</section>
+
+<!-- ===== スペシャリテ（ショーケース：承認済みカルーセル①） ===== -->
+<section class="shw shw-a rev" id="shwSp">
+  <div class="wrap">
+    <span class="shw-en">Specialite</span>
+    <h3 class="shw-jp" data-r="jp">億万バーガー</h3>
+    <div class="shw-stage">
+      <div class="shw-disc shw-side" data-r="left" role="button" tabindex="0" aria-label="前の料理へ"><img src="assets/menu_namaham.webp" alt="" loading="lazy"></div>
+      <div class="shw-disc shw-main"><img data-r="img" src="assets_menu/sp_burger.webp" alt="億万バーガー" width="760" height="507"></div>
+      <div class="shw-disc shw-side" data-r="right" role="button" tabindex="0" aria-label="次の料理へ"><img src="assets/menu_namaham.webp" alt="" loading="lazy"></div>
+    </div>
+    <p class="shw-price" data-r="price">¥1,880<small>（税込）</small></p>
+    <div class="shw-nav">
+      <button type="button" class="shw-arrow" data-r="prev" aria-label="前の料理">‹</button>
+      <div class="shw-dots" data-r="dots"></div>
+      <button type="button" class="shw-arrow" data-r="next" aria-label="次の料理">›</button>
+    </div>
+    <div class="msub">
+      <div class="mi"><span class="mi-n">【事前予約必須】Ａ５和牛の生ハム　殿サイズ</span><span class="mi-dots"></span><span class="mi-p">¥5,000</span></div>
+      <div class="mi"><span class="mi-n">Ａ５和牛の生ハムてんこ盛り　ハーフ</span><span class="mi-dots"></span><span class="mi-p">¥1,680</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 新名物イチオシ（ショーケース：承認済みカルーセル②） ===== -->
+<section class="shw shw-b rev" id="shwMb">
+  <div class="wrap">
+    <span class="shw-en">New Signature</span>
+    <h3 class="shw-jp" data-r="jp">貴族に献上するレバニラ</h3>
+    <div class="shw-stage">
+      <div class="shw-disc shw-side" data-r="left" role="button" tabindex="0" aria-label="前の料理へ"><img src="assets_menu/meibutsu_slider.webp" alt="" loading="lazy"></div>
+      <div class="shw-disc shw-main"><img data-r="img" src="assets_menu/meibutsu_rebanira.webp" alt="貴族に献上するレバニラ" width="760" height="506"></div>
+      <div class="shw-disc shw-side" data-r="right" role="button" tabindex="0" aria-label="次の料理へ"><img src="assets_menu/meibutsu_slider.webp" alt="" loading="lazy"></div>
+    </div>
+    <p class="shw-price" data-r="price">¥1,780<small>（税込）</small></p>
+    <div class="shw-nav">
+      <button type="button" class="shw-arrow" data-r="prev" aria-label="前の料理">‹</button>
+      <div class="shw-dots" data-r="dots"></div>
+      <button type="button" class="shw-arrow" data-r="next" aria-label="次の料理">›</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 炭焼き（リスト：承認1-A） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>炭焼き</span></h4>
+    <div class="mi"><span class="mi-n">鴨わさ　〜山葵と炭の香り〜<small>鴨の炭焼きに程よい山葵の香り</small></span><span class="mi-dots"></span><span class="mi-p">¥880</span></div>
+    <div class="mi"><span class="mi-n">エイヒレの炭焼き</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n">玉座の炭焼きサムギョプサル</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+    <div class="mi"><span class="mi-n">信玄鳥のもも焼き<small>定番の地鶏焼き　塩、タレからお選びください</small></span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div>
+  </div>
+</section>
+
+<!-- ===== 葉物（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>葉物</span></h4>
+    <div class="mi"><span class="mi-n">億万鳥者サラダ</span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
+    <div class="mi"><span class="mi-n">億万鳥者のポテトサラダ??<small>なぜ和食居酒屋なのにこれを選んだのか？</small></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+  </div>
+</section>
+
+<!-- ===== 匠の技、限定串（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>匠の技、限定串</span></h4>
+    <p class="mcat-note">職人の都合上、ご提供が無い場合がございます。</p>
+    <div class="mi"><span class="mi-n">【数量限定】国産鶏皮　塩/タレ</span><span class="mi-dots"></span><span class="mi-p">¥150</span></div>
+    <div class="mi"><span class="mi-n">国産　せせり</span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
+    <div class="mi"><span class="mi-n">国産　ぼんじり</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n">もも</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n">ねぎま</span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
+    <div class="mi"><span class="mi-n">レバー</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n">砂肝</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+  </div>
+</section>
+
+<!-- ===== 和牛・逸品（ショーケース：承認済みカルーセル③） ===== -->
+<section class="shw shw-c rev" id="shwWg">
+  <div class="wrap">
+    <span class="shw-en">Wagyu Selection</span>
+    <h3 class="shw-jp" data-r="jp">A4和牛の億万長者ユッケ</h3>
+    <div class="shw-stage">
+      <div class="shw-disc shw-side" data-r="left" role="button" tabindex="0" aria-label="前の料理へ"><img src="assets_menu/wagyu_bakudan.webp" alt="" loading="lazy"></div>
+      <div class="shw-disc shw-main"><img data-r="img" src="assets/menu_yukke.webp" alt="A4和牛の億万長者ユッケ" width="760" height="506"></div>
+      <div class="shw-disc shw-side" data-r="right" role="button" tabindex="0" aria-label="次の料理へ"><img src="assets_menu/wagyu_bakudan.webp" alt="" loading="lazy"></div>
+    </div>
+    <p class="shw-price" data-r="price">¥1,680<small>（税込）</small></p>
+    <div class="shw-nav">
+      <button type="button" class="shw-arrow" data-r="prev" aria-label="前の料理">‹</button>
+      <div class="shw-dots" data-r="dots"></div>
+      <button type="button" class="shw-arrow" data-r="next" aria-label="次の料理">›</button>
+    </div>
+    <div class="msub">
+      <div class="mi"><span class="mi-n">【数量限定】A4和牛のタルタルトースト　2個<small>1個追加 ¥390</small></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+      <div class="mi"><span class="mi-n">【数量限定】和牛極みユッケ</span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div>
+      <div class="mi"><span class="mi-n">贅沢とろたく</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== おつまみ（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>おつまみ</span></h4>
+    <div class="mi"><span class="mi-n">白菜キムチ</span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
+    <div class="mi"><span class="mi-n">自家製アボカドキムチ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n">自家製山芋キムチ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n">キムチ盛り合わせ<small>白菜、山芋、アボカドの3種盛り合わせ</small></span><span class="mi-dots"></span><span class="mi-p">¥980</span></div>
+    <div class="mi"><span class="mi-n">砂肝土佐酢和え</span><span class="mi-dots"></span><span class="mi-p">¥620</span></div>
+    <div class="mi"><span class="mi-n">麻辣コリコリ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n">鶏皮センマイ刺し</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n">丸籠茶豆</span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
+    <div class="mi"><span class="mi-n">おつまみチーズケーキ</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n">本物のよだれ鶏</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n">信玄鶏のレバ刺し</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+  </div>
+</section>
+
+<!-- ===== 揚げ物（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>揚げ物</span></h4>
+    <div class="mi"><span class="mi-n">黄金のチキン南蛮</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n">じっくり寝かせた唐揚げ</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n">とうもろこしの天ぷら</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n">殿の爆烈チキン</span><span class="mi-dots"></span><span class="mi-p">¥880</span></div>
+    <div class="mi"><span class="mi-n">鯵フライ</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n">牡蛎フライ</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n">リッチフライドポテト</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+  </div>
+</section>
+
+<!-- ===== 〆もの（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>〆もの</span></h4>
+    <div class="mi"><span class="mi-n">信玄鶏のそぼろ飯</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n">貴族の鶏白湯雑炊</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n">冷製麻辣担億麺</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+    <div class="mi"><span class="mi-n">冷製億麺</span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
+    <div class="mi"><span class="mi-n">【数量限定】和牛極みユッケ丼</span><span class="mi-dots"></span><span class="mi-p">¥980</span></div>
+  </div>
+</section>
+
+<!-- ===== デザート（リスト） ===== -->
+<section class="mlist rev">
+  <div class="wrap">
+    <h4 class="mcat"><span>デザート</span></h4>
+    <div class="mi"><span class="mi-n">深煎りほうじ茶アイス</span><span class="mi-dots"></span><span class="mi-p">¥400</span></div>
+    <div class="mi"><span class="mi-n">塩バニラと10年熟成みりん</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n">酒井パティシエのティラミス</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n">酒井パティシエの燃えるバスクチーズケーキ</span><span class="mi-dots"></span><span class="mi-p">¥1,180</span></div>
+  </div>
+</section>
+
+<!-- ===== 出典注記 ===== -->
+<div class="wrap">
+  <p class="mnote">※価格はすべて税込です。<br>
+  ※掲載メニューは食べログ「一億円で居酒屋建ててみた。億万鳥者 新宿本殿」公式掲載情報（更新日2026/05/22・2026年8月17日確認）に準拠しています。仕入れ状況等により内容・価格が変更となる場合があります。</p>
+</div>
+
+<!-- ===== 締め：エンタメ訴求 → コース誘導 ===== -->
+<section class="fin rev">
+  <div class="wrap">
+    <span class="eyebrow">Entertainment</span>
+    <h2>味の先に、<em>「億万長者」体験</em>を。</h2>
+    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。<br>
+    おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。<br>
+    宴会・記念日は、料理も体験も欲張れるコースがおすすめです。</p>
+    <div class="cv-row">
+      <a class="btn-g" href="course.html">コースを見る</a>
+      <a class="btn-o" href="index.html">トップへ戻る</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-brand">億万鳥者<small>OKUMANCHO-JA SHINJUKU HONDEN</small></div>
+    <p class="f-copy">今までにない「億万長者」気分を味わえるアミューズメント居酒屋</p>
+    <small class="f-note">© IFREADINING Inc.</small>
+  </div>
+</footer>
+
+<!-- GR: 口コミポップアップ（index.htmlと同一・コンプラ必須①〜⑤準拠） -->
+<div class="gr-pop" id="grPop" hidden>
+  <div class="gr-pop-bg" id="grPopBg"></div>
+  <div class="gr-pop-panel" role="dialog" aria-modal="true" aria-labelledby="grPopTitle">
+    <div class="gr-pop-head">
+      <p class="gr-pop-title" id="grPopTitle">Google口コミ</p>
+      <div class="gr-pop-sum"><!-- GR: rating/userRatingCountを無加工表示（コンプラ必須①） -->
+        <span class="gr-num" id="grPopNum"></span>
+        <span class="gr-glyph" id="grPopGlyph" aria-hidden="true"></span>
+        <span class="gr-cnt">Google口コミ <span id="grPopCnt"></span>件</span>
+      </div>
+      <p class="gr-pop-note">星4以上の口コミを抜粋して表示しています</p><!-- コンプラ必須② -->
+      <button type="button" class="gr-pop-x" id="grPopX" aria-label="閉じる">×</button>
+    </div>
+    <div class="gr-pop-body reviews" id="grPopList"></div>
+    <div class="gr-pop-foot">
+      <span class="gr-pop-attr">レビュー提供元：Google</span><!-- コンプラ必須③ -->
+      <a class="gr-glink" id="grPopGLink" href="#" target="_blank" rel="noopener">Googleで口コミを見る</a><!-- コンプラ必須⑤ -->
+    </div>
+  </div>
+</div>
+
+<div class="cvbar" id="cvbar">
+  <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
+  <a class="btn-o" href="tel:0000000000" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
+</div>
+
+<div class="asanoha" aria-hidden="true"></div>
+
+<script>
+  // ===== 設定（index.htmlと同一値・一元管理） =====
+  var CONFIG={
+    EBICA_URL:'https://booking.ebica.jp/webrsv/search/e014094701/29223?affiid=sc01',
+    TEL:'0367099757',
+    // GR: Googleレビュー表示（B'案）。GAS公開URL（index.htmlと同一）
+    REVIEW_API_URL:'https://script.google.com/macros/s/AKfycbxSKvRVtFLGkPcU7HIvfBXJp5H-AAhTfGNYN6GiuoFjlVtFgLy4lHQaS1EkFAyWzkAp/exec',
+    REVIEW_STORE_NAME:'億万鳥者 新宿本殿'
+  };
+  document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
+  document.querySelectorAll('[data-tel]').forEach(function(a){ a.href='tel:'+CONFIG.TEL; });
+
+  // ===== ハンバーガードロワー（index.htmlと同一仕様） =====
+  var dwClose=null;
+  (function(){
+    var dw=document.getElementById('dw'), btn=document.getElementById('hbgBtn'),
+        bx=document.getElementById('dwX'), bg=document.getElementById('dwBg');
+    if(!dw||!btn||!bx||!bg) return;
+    var prevOv='';
+    var open=function(){ dw.hidden=false; btn.classList.add('on');
+      btn.setAttribute('aria-expanded','true'); btn.setAttribute('aria-label','メニューを閉じる');
+      prevOv=document.body.style.overflow; document.body.style.overflow='hidden'; bx.focus(); };
+    var close=function(){ dw.hidden=true; btn.classList.remove('on');
+      btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','メニューを開く');
+      document.body.style.overflow=prevOv; btn.focus(); };
+    dwClose=close;
+    btn.addEventListener('click',function(){ if(dw.hidden){ open(); } else { close(); } });
+    bx.addEventListener('click',close);
+    bg.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!dw.hidden){ close(); } });
+    // GRボタン初期値：Maps検索直リンク（フェイルセーフ。数値は一切表示しない）
+    var g=document.getElementById('dwGr');
+    if(g){ g.setAttribute('href',
+      'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME)); }
+  })();
+
+  // ===== ヘッダー/CVバーのスクロール連動（index.htmlの制御からFV境界を除いた版） =====
+  // 下スクロール中=非表示／上スクロール=表示／停止=表示。menu.htmlはFVがないため初期状態は表示
+  (function(){
+    var UI_JITTER=4, UI_STOP_DELAY=150;
+    var uiEls=[document.getElementById('hd'),document.getElementById('cvbar')].filter(Boolean);
+    var lastY=window.scrollY, visible=null, stopTimer=null, ticking=false;
+    function setVisible(v){
+      if(v===visible) return;
+      visible=v;
+      uiEls.forEach(function(el){ el.classList.toggle('ui-hidden',!v); });
+    }
+    function update(){
+      ticking=false;
+      var y=window.scrollY;
+      var dy=y-lastY;
+      if(dy>UI_JITTER){ setVisible(false); lastY=y; }
+      else if(dy<-UI_JITTER){ setVisible(true); lastY=y; }
+      if(stopTimer) clearTimeout(stopTimer);
+      stopTimer=setTimeout(function(){ setVisible(true); },UI_STOP_DELAY);
+    }
+    window.addEventListener('scroll',function(){
+      if(!ticking){ ticking=true; requestAnimationFrame(update); }
+    },{passive:true});
+    setVisible(true);
+  })();
+
+  // ===== 出現アニメーション（.rev） =====
+  (function(){
+    var els=document.querySelectorAll('.rev');
+    if(!('IntersectionObserver' in window)){ els.forEach(function(el){ el.classList.add('vis'); }); return; }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } });
+    },{threshold:.12});
+    els.forEach(function(el){ io.observe(el); });
+    // フェイルセーフ：IO不発時も3秒後に全表示
+    setTimeout(function(){ document.querySelectorAll('.rev:not(.vis)').forEach(function(el){ el.classList.add('vis'); }); },3000);
+  })();
+
+  // ===== ショーケースカルーセル（KAMAKURA catShow構成の移植・データはJSで一元管理） =====
+  (function(){
+    var SHOWS={
+      shwSp:[ // スペシャリテ
+        {img:'assets_menu/sp_burger.webp',    jp:'億万バーガー',              price:'¥1,880'},
+        {img:'assets/menu_namaham.webp',      jp:'Ａ５和牛の生ハムてんこ盛り　レギュラー', price:'¥2,480'}
+      ],
+      shwMb:[ // 新名物イチオシ
+        {img:'assets_menu/meibutsu_rebanira.webp', jp:'貴族に献上するレバニラ',            price:'¥1,780'},
+        {img:'assets_menu/meibutsu_slider.webp',   jp:'億万鳥者の大トロホルモンスライダー！', price:'¥1,580'}
+      ],
+      shwWg:[ // 和牛・逸品
+        {img:'assets/menu_yukke.webp',        jp:'A4和牛の億万長者ユッケ', price:'¥1,680'},
+        {img:'assets_menu/wagyu_bakudan.webp',jp:'至福の和牛ばくだん',     price:'¥1,980'}
+      ]
+    };
+    Object.keys(SHOWS).forEach(function(id){
+      var root=document.getElementById(id), items=SHOWS[id];
+      if(!root||!items||!items.length) return;
+      var q=function(sel){ return root.querySelector('[data-r="'+sel+'"]'); };
+      var jp=q('jp'), img=q('img'), price=q('price'),
+          left=q('left'), right=q('right'), dotsWrap=q('dots');
+      var cur=0, busy=false;
+      // ドット生成
+      var dots=items.map(function(_,i){
+        var d=document.createElement('button');
+        d.type='button'; d.className='shw-dot'+(i===0?' on':'');
+        d.setAttribute('aria-label',(i+1)+'品目を表示');
+        d.addEventListener('click',function(){ go(i); });
+        dotsWrap.appendChild(d);
+        return d;
+      });
+      function sideIdx(offset){ return (cur+offset+items.length)%items.length; }
+      function apply(){
+        var it=items[cur];
+        jp.textContent=it.jp;
+        img.src=it.img; img.alt=it.jp;
+        var priceSafe=String(it.price).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+        price.innerHTML=priceSafe+'<small>（税込）</small>';
+        left.querySelector('img').src=items[sideIdx(-1)].img;
+        right.querySelector('img').src=items[sideIdx(1)].img;
+        dots.forEach(function(d,i){ d.classList.toggle('on',i===cur); });
+      }
+      function go(i){
+        if(busy) return;
+        var n=(i+items.length)%items.length;
+        if(n===cur) return;
+        busy=true; cur=n;
+        root.classList.add('shw-fade');
+        setTimeout(function(){ apply(); root.classList.remove('shw-fade'); busy=false; },360);
+      }
+      q('prev').addEventListener('click',function(){ go(cur-1); });
+      q('next').addEventListener('click',function(){ go(cur+1); });
+      var act=function(el,fn){
+        el.addEventListener('click',fn);
+        el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } });
+      };
+      act(left,function(){ go(cur-1); });
+      act(right,function(){ go(cur+1); });
+      // スワイプ対応（横40px以上で切替）
+      var tx=null;
+      root.addEventListener('touchstart',function(e){ tx=e.changedTouches[0].clientX; },{passive:true});
+      root.addEventListener('touchend',function(e){
+        if(tx==null) return;
+        var dx=e.changedTouches[0].clientX-tx; tx=null;
+        if(dx>40){ go(cur-1); } else if(dx<-40){ go(cur+1); }
+      },{passive:true});
+      apply();
+    });
+  })();
+
+  // ===== GR: Googleレビュー（B'案・index.htmlと同一ロジックのmenu.html版） =====
+  // menu.htmlにはページ内レビューセクションが無いため、ヘッダー/ドロワーCTAとポップアップのみ更新
+  // フェイルセーフ: 取得失敗時はヘッダー/ドロワーをMaps直リンクの「Googleレビューを見る」に統一（数値なし）
+  (function(){
+    if(!CONFIG.REVIEW_API_URL) return;
+    var grEsc=function(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; };
+    var grCtaReview=function(url){
+      var u=url||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME));
+      var c=document.getElementById('hdCta');
+      if(c&&!c.classList.contains('gr-mode')){
+        c.textContent='Googleレビューを見る';
+        c.removeAttribute('data-ebica');
+        c.setAttribute('href',u);
+        c.setAttribute('target','_blank'); c.setAttribute('rel','noopener');
+      }
+      var g=document.getElementById('dwGr');
+      if(g&&!g.classList.contains('gr-mode')){ g.setAttribute('href',u); }
+    };
+    var grGlyphOf=function(r){ var n=Math.round(Number(r)); if(!(n>=0&&n<=5)) n=0;
+      return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); };
+    var grCard=function(rv){
+      return '<blockquote class="rv"><span class="stars">'+grGlyphOf(rv.rating)+'</span>'
+        +'<p>'+grEsc(rv.text)+'</p><cite>'+grEsc(rv.author)
+        +(rv.relativeTime?'／'+grEsc(rv.relativeTime):'')+'</cite></blockquote>';
+    };
+    var grFindStore=function(data){
+      var st=(data&&data.stores)||[];
+      for(var i=0;i<st.length;i++){ if(st[i]&&st[i].name===CONFIG.REVIEW_STORE_NAME) return st[i]; }
+      for(var j=0;j<st.length;j++){ if(st[j]&&st[j].name&&st[j].name.indexOf('新宿本殿')>=0) return st[j]; }
+      return null;
+    };
+    var grPop=document.getElementById('grPop');
+    var hdCta=document.getElementById('hdCta');
+    var grPrevOverflow='';
+    var grOpen=function(){ grPop.hidden=false; grPrevOverflow=document.body.style.overflow;
+      document.body.style.overflow='hidden'; document.getElementById('grPopX').focus(); };
+    var grClose=function(){ grPop.hidden=true; document.body.style.overflow=grPrevOverflow;
+      if(hdCta){ hdCta.focus(); } };
+    document.getElementById('grPopX').addEventListener('click',grClose);
+    document.getElementById('grPopBg').addEventListener('click',grClose);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!grPop.hidden){ grClose(); } });
+    var grRender=function(data){
+      var s=grFindStore(data);
+      if(!s||s.rating==null||s.userRatingCount==null){ grCtaReview(); return; }
+      var rvs=s.reviews||[];
+      var gUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name||CONFIG.REVIEW_STORE_NAME)
+        +(s.placeId?('&query_place_id='+encodeURIComponent(s.placeId)):'');
+      // コンプラ必須①: rating/userRatingCountは無加工で表示
+      document.getElementById('grPopNum').textContent=String(s.rating);
+      document.getElementById('grPopGlyph').textContent=grGlyphOf(s.rating);
+      document.getElementById('grPopCnt').textContent=String(s.userRatingCount);
+      document.getElementById('grPopGLink').href=gUrl; // コンプラ必須⑤
+      if(!rvs.length){ grCtaReview(gUrl); return; } // 星4以上0件時は空ポップアップを開かせない
+      var list=''; for(var k=0;k<rvs.length;k++){ list+=grCard(rvs[k]); }
+      document.getElementById('grPopList').innerHTML=list;
+      if(hdCta){
+        hdCta.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
+          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
+          +'<span class="gr-cta-act">Googleレビューを見る</span>';
+        hdCta.removeAttribute('data-ebica'); hdCta.setAttribute('href','#');
+        hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
+        hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
+      }
+      var dwG=document.getElementById('dwGr');
+      if(dwG){
+        dwG.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
+          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
+          +'<span class="gr-cta-act">Googleレビューを見る</span>';
+        dwG.removeAttribute('target'); dwG.removeAttribute('rel'); dwG.setAttribute('href','#');
+        dwG.classList.add('gr-mode'); dwG.setAttribute('role','button');
+        dwG.addEventListener('click',function(e){ e.preventDefault();
+          if(typeof dwClose==='function'){ dwClose(); } grOpen(); });
+      }
+    };
+    var grCtl=(typeof AbortController!=='undefined')?new AbortController():null;
+    var grTo=setTimeout(function(){ if(grCtl){ grCtl.abort(); } },10000);
+    try{
+      fetch(CONFIG.REVIEW_API_URL,grCtl?{signal:grCtl.signal}:{})
+        .then(function(res){ if(!res.ok){ throw new Error('bad status'); } return res.json(); })
+        .then(function(data){ clearTimeout(grTo); grRender(data); })
+        .catch(function(){ clearTimeout(grTo); grCtaReview(); });
+    }catch(e){ clearTimeout(grTo); grCtaReview(); }
+  })();
+</script>
+</body>
+</html>
