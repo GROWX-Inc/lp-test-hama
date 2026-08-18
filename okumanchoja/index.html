@@ -53,6 +53,45 @@
     box-shadow:0 8px 22px -6px rgba(217,174,82,.85)}
   @media (prefers-reduced-motion: reduce){ .hd-cta{transition:none} }
 
+  /* ===== ハンバーガーメニュー（menu.html/course.htmlと同一仕様・TOP移植） ===== */
+  .hd-right{display:flex;align-items:center;gap:8px;min-width:0}
+  .hbg{width:40px;height:40px;flex:none;display:inline-flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px;
+    background:transparent;border:0;cursor:pointer;padding:0;
+    -webkit-tap-highlight-color:transparent}
+  .hbg span{display:block;width:22px;height:2px;background:var(--gold-2);border-radius:2px;
+    transition:transform .3s ease,opacity .3s ease}
+  .hbg.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .hbg.on span:nth-child(2){opacity:0}
+  .hbg.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  @media (prefers-reduced-motion: reduce){ .hbg span{transition:none} }
+  .dw{position:fixed;inset:0;z-index:70;display:flex;justify-content:flex-end}
+  .dw[hidden]{display:none}
+  .dw-bg{position:absolute;inset:0;background:rgba(6,4,2,.78)}
+  .dw-panel{position:relative;width:min(84vw,340px);height:100%;
+    background:rgba(16,13,8,.97);border-left:1px solid var(--line-2);
+    display:flex;flex-direction:column;
+    padding:64px 26px calc(28px + env(safe-area-inset-bottom));
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    animation:dwIn .32s ease}
+  @keyframes dwIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion: reduce){ .dw-panel{animation:none} }
+  .dw-x{position:absolute;top:12px;right:12px;width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;border:1px solid var(--line-2);border-radius:50%;
+    color:var(--cream);font-size:18px;line-height:1;cursor:pointer;
+    transition:border-color .25s ease,background .25s ease}
+  .dw-x:hover,.dw-x:focus-visible{border-color:rgba(217,174,82,.9);background:rgba(217,174,82,.12)}
+  .dw-nav{display:flex;flex-direction:column}
+  .dw-nav a{font-family:var(--disp);font-weight:800;font-size:17px;letter-spacing:.12em;
+    padding:15px 4px;border-bottom:1px solid var(--line-2);
+    transition:color .25s ease}
+  .dw-nav a:hover,.dw-nav a:focus-visible{color:var(--gold-2)}
+  .dw-nav a.cur{color:var(--gold-2)}
+  .dw-ctas{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .dw-ctas .btn-g,.dw-ctas .btn-o{width:100%;text-align:center;padding:13px 10px;font-size:15px}
+  #dwGr.gr-mode{cursor:pointer;flex-direction:column;align-items:center;gap:1px;line-height:1.25;padding:9px 10px}
+
   /* ===== ローディング ===== */
   #loader{position:fixed;inset:0;z-index:100;background:var(--bg);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
@@ -434,8 +473,30 @@
 
 <header id="hd">
   <div class="brand">億万鳥者</div>
-  <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ) -->
+  <div class="hd-right">
+    <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ) -->
+    <button type="button" class="hbg" id="hbgBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="dw"><span></span><span></span><span></span></button>
+  </div>
 </header>
+
+<!-- ===== ハンバーガードロワー（menu.html/course.htmlと同一仕様・TOP移植） ===== -->
+<div class="dw" id="dw" hidden>
+  <div class="dw-bg" id="dwBg"></div>
+  <nav class="dw-panel" aria-label="サイトメニュー">
+    <button type="button" class="dw-x" id="dwX" aria-label="メニューを閉じる">×</button>
+    <div class="dw-nav">
+      <a href="#top" id="dwTop" class="cur" aria-current="page">トップ</a>
+      <a href="menu.html">メニュー</a>
+      <a href="course.html">コース</a>
+      <a href="#access" id="dwAccess">アクセス</a>
+    </div>
+    <div class="dw-ctas">
+      <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
+      <a class="btn-o" href="#" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
+      <a class="btn-o" href="#" id="dwGr" target="_blank" rel="noopener">Googleレビューを見る</a><!-- GR: menu.htmlと同一仕様 -->
+    </div>
+  </nav>
+</div>
 
 <div id="loader">
   <div class="lg">億万鳥者</div>
@@ -957,6 +1018,35 @@
   // ============================================================
   document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
   document.querySelectorAll('[data-tel]').forEach(function(a){ a.href='tel:'+CONFIG.TEL; });
+
+  // ===== ハンバーガードロワー（menu.html/course.htmlと同一仕様・TOP移植） =====
+  var dwClose=null;
+  (function(){
+    var dw=document.getElementById('dw'), btn=document.getElementById('hbgBtn'),
+        bx=document.getElementById('dwX'), bg=document.getElementById('dwBg');
+    if(!dw||!btn||!bx||!bg) return;
+    var prevOv='';
+    var open=function(){ dw.hidden=false; btn.classList.add('on');
+      btn.setAttribute('aria-expanded','true'); btn.setAttribute('aria-label','メニューを閉じる');
+      prevOv=document.body.style.overflow; document.body.style.overflow='hidden'; bx.focus(); };
+    var close=function(){ dw.hidden=true; btn.classList.remove('on');
+      btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','メニューを開く');
+      document.body.style.overflow=prevOv; btn.focus(); };
+    dwClose=close;
+    btn.addEventListener('click',function(){ if(dw.hidden){ open(); } else { close(); } });
+    bx.addEventListener('click',close);
+    bg.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!dw.hidden){ close(); } });
+    // ページ内リンク（トップ/アクセス）はドロワーを閉じてからスクロール
+    ['dwTop','dwAccess'].forEach(function(id){
+      var a=document.getElementById(id);
+      if(a){ a.addEventListener('click',function(){ close(); }); }
+    });
+    // GRボタン初期値：Maps検索直リンク（フェイルセーフ。数値は一切表示しない）
+    var g=document.getElementById('dwGr');
+    if(g){ g.setAttribute('href',
+      'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME)); }
+  })();
   document.querySelectorAll('[data-insta]').forEach(function(a){ a.href=CONFIG.INSTAGRAM_URL; });
 
   // セクション出現アニメーション
@@ -1395,6 +1485,16 @@
         hdCta.removeAttribute('data-ebica'); hdCta.setAttribute('href','#');
         hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
         hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
+      }
+      var dwG=document.getElementById('dwGr');
+      if(dwG){
+        dwG.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
+          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
+          +'<span class="gr-cta-act">Googleレビューを見る</span>';
+        dwG.removeAttribute('target'); dwG.removeAttribute('rel'); dwG.setAttribute('href','#');
+        dwG.classList.add('gr-mode'); dwG.setAttribute('role','button');
+        dwG.addEventListener('click',function(e){ e.preventDefault();
+          if(typeof dwClose==='function'){ dwClose(); } grOpen(); });
       }
       if(typeof failsafe==='function'){ failsafe(); } // 非同期挿入後の可視化再チェック（IO不発対策）
     };
