@@ -474,7 +474,7 @@
 <header id="hd">
   <div class="brand">億万鳥者</div>
   <div class="hd-right">
-    <a class="hd-cta" href="#" data-ebica id="hdCta"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>ご予約はこちら</a><!-- GR: レビューデータ取得成功時のみJSで「★評価（件数）／Googleレビューを見る」の2段表示に切替（失敗時は予約のまま＝フェイルセーフ) -->
+    <a class="hd-cta gr-mode" href="#" id="hdCta" target="_blank" rel="noopener"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- GR: 2026/08/18改修 初期から数値なし2段表示（切替を目立たせない）。取得成功時は上段のみ実数値へ差し替え／失敗時はこのまま（Maps直リンク・数値ハードコード禁止) -->
     <button type="button" class="hbg" id="hbgBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="dw"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -493,7 +493,7 @@
     <div class="dw-ctas">
       <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
       <a class="btn-o" href="#" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
-      <a class="btn-o" href="#" id="dwGr" target="_blank" rel="noopener">Googleレビューを見る</a><!-- GR: menu.htmlと同一仕様 -->
+      <a class="btn-o gr-mode" href="#" id="dwGr" target="_blank" rel="noopener"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- GR: 2026/08/18改修 初期から数値なし2段表示（index/menu/course共通） -->
     </div>
   </nav>
 </div>
@@ -1068,10 +1068,12 @@
       var a=document.getElementById(id);
       if(a){ a.addEventListener('click',function(){ close(); }); }
     });
-    // GRボタン初期値：Maps検索直リンク（フェイルセーフ。数値は一切表示しない）
+    // GRボタン初期値：ヘッダー・ドロワーともMaps検索直リンク（フェイルセーフ。数値は一切表示しない）
+    var gmUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME);
     var g=document.getElementById('dwGr');
-    if(g){ g.setAttribute('href',
-      'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME)); }
+    if(g){ g.setAttribute('href',gmUrl); }
+    var hc=document.getElementById('hdCta');
+    if(hc){ hc.setAttribute('href',gmUrl); }
   })();
   document.querySelectorAll('[data-insta]').forEach(function(a){ a.href=CONFIG.INSTAGRAM_URL; });
 
@@ -1444,15 +1446,15 @@
   var grSec=document.getElementById('review');
   if(grSec&&CONFIG.REVIEW_API_URL){
     var grEsc=function(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; };
-    // 2026/08/12改修（合意済み）: フェイルセーフ時もヘッダーはレビュー導線に統一（数値なし・Google Maps直リンク）
-    //   データ未取得のため評価数値は一切表示しない（コンプラ必須①に抵触しない形）。予約導線は固定CVバーが担う
+    // 2026/08/12改修（合意済み）: フェイルセーフ時もヘッダーはレビュー導線（数値なし・Maps直リンク）。予約導線は固定CVバーが担う
     var grCtaReview=function(url){
+      // 2026/08/18改修: 初期マークアップが数値なし2段表示のため文言の書き換えは廃止し、hrefの更新のみ行う
+      // （取得成功でポップアップ役（role=button）へ切替済みの要素は触らない）
+      var u=url||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME));
       var c=document.getElementById('hdCta');
-      if(!c||c.classList.contains('gr-mode')) return; // 2段表示（取得成功）済みなら何もしない
-      c.textContent='Googleレビューを見る';
-      c.removeAttribute('data-ebica');
-      c.setAttribute('href',url||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME)));
-      c.setAttribute('target','_blank'); c.setAttribute('rel','noopener');
+      if(c&&!c.getAttribute('role')){ c.setAttribute('href',u); }
+      var g=document.getElementById('dwGr');
+      if(g&&!g.getAttribute('role')){ g.setAttribute('href',u); }
     };
     var grHide=function(){ grSec.style.display='none'; grCtaReview(); };
     // 星グリフは視覚表現のみ（総合評価の数値そのものは無加工で表示：コンプラ必須①）
@@ -1508,7 +1510,7 @@
         hdCta.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
           +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
           +'<span class="gr-cta-act">Googleレビューを見る</span>';
-        hdCta.removeAttribute('data-ebica'); hdCta.setAttribute('href','#');
+        hdCta.removeAttribute('data-ebica'); hdCta.removeAttribute('target'); hdCta.removeAttribute('rel'); hdCta.setAttribute('href','#');
         hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
         hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
       }
