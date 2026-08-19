@@ -264,6 +264,9 @@
   .lead,.mnote,.mi-n,.mcat-note,.shw-jp,.rv p{word-break:auto-phrase}
   /* 改行優先順位: ①句点（文単位=.sent） ②文節（.seg／auto-phrase） ③禁則処理 */
   .sent{display:inline-block}
+  /* 注記を行全体の幅で表示（2026/08/19: 名前列内に閉じ込められ不要な折返しが出ていた問題の修正。
+     .miの1行目（名前｜点線｜価格）は従来どおり折返しなし・価格は必ず1行目右端） */
+  .mi + small{display:block;margin:-9px 0 0;padding:0 0 9px;font-size:15px;color:var(--muted);line-height:1.7;word-break:auto-phrase}
   /* 見出しキャッチ：文節を塊で折り返す（index.htmlと同一方式） */
   .seg{white-space:nowrap}
 </style>
@@ -310,7 +313,7 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>お通し</span></h4>
-    <div class="mi"><span class="mi-n">年貢<small>３色のマカロンから１つお選びください！</small></span><span class="mi-dots"></span><span class="mi-p">¥400</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">年貢</span></span><span class="mi-dots"></span><span class="mi-p">¥400</span></div><small><span class="seg">３色の</span><span class="seg">マカロンから</span><span class="seg">１つ</span><span class="seg">お選びください！</span></small>
   </div>
 </section>
 
@@ -332,8 +335,8 @@
       <button type="button" class="shw-arrow" data-r="next" aria-label="次の料理">›</button>
     </div>
     <div class="msub">
-      <div class="mi"><span class="mi-n">【事前予約必須】Ａ５和牛の生ハム　殿サイズ</span><span class="mi-dots"></span><span class="mi-p">¥5,000</span></div>
-      <div class="mi"><span class="mi-n">Ａ５和牛の生ハムてんこ盛り　ハーフ</span><span class="mi-dots"></span><span class="mi-p">¥1,680</span></div>
+      <div class="mi"><span class="mi-n"><span class="seg">【事前予約必須】</span><span class="seg">Ａ５和牛の</span><span class="seg">生ハム</span>　<span class="seg">殿サイズ</span></span><span class="mi-dots"></span><span class="mi-p">¥5,000</span></div>
+      <div class="mi"><span class="mi-n"><span class="seg">Ａ５和牛の</span><span class="seg">生ハム</span><span class="seg">てんこ盛り</span>　<span class="seg">ハーフ</span></span><span class="mi-dots"></span><span class="mi-p">¥1,680</span></div>
     </div>
   </div>
 </section>
@@ -362,10 +365,10 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>炭焼き</span></h4>
-    <div class="mi"><span class="mi-n">鴨わさ　〜山葵と炭の香り〜<small>鴨の炭焼きに程よい山葵の香り</small></span><span class="mi-dots"></span><span class="mi-p">¥880</span></div>
-    <div class="mi"><span class="mi-n">エイヒレの炭焼き</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
-    <div class="mi"><span class="mi-n">玉座の炭焼きサムギョプサル</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
-    <div class="mi"><span class="mi-n">信玄鳥のもも焼き<small>定番の地鶏焼き　塩、タレからお選びください</small></span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">鴨わさ</span>　<span class="seg">〜山葵と</span><span class="seg">炭の香り〜</span></span><span class="mi-dots"></span><span class="mi-p">¥880</span></div><small><span class="seg">鴨の</span><span class="seg">炭焼きに</span><span class="seg">程よい</span><span class="seg">山葵の香り</span></small>
+    <div class="mi"><span class="mi-n"><span class="seg">エイヒレの</span><span class="seg">炭焼き</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">玉座の</span><span class="seg">炭焼き</span><span class="seg">サムギョプサル</span></span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">信玄鳥の</span><span class="seg">もも焼き</span></span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div><small><span class="seg">定番の</span><span class="seg">地鶏焼き</span>　<span class="seg">塩、</span><span class="seg">タレから</span><span class="seg">お選びください</span></small>
   </div>
 </section>
 
@@ -373,8 +376,8 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>葉物</span></h4>
-    <div class="mi"><span class="mi-n">億万鳥者サラダ</span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
-    <div class="mi"><span class="mi-n">億万鳥者のポテトサラダ??<small>なぜ和食居酒屋なのにこれを選んだのか？</small></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">億万鳥者</span><span class="seg">サラダ</span></span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">億万鳥者の</span><span class="seg">ポテトサラダ??</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div><small><span class="seg">なぜ</span><span class="seg">和食居酒屋なのに</span><span class="seg">これを</span><span class="seg">選んだのか？</span></small>
   </div>
 </section>
 
@@ -383,13 +386,13 @@
   <div class="wrap">
     <h4 class="mcat"><span>匠の技、限定串</span></h4>
     <p class="mcat-note">職人の都合上、ご提供が無い場合がございます。</p>
-    <div class="mi"><span class="mi-n">【数量限定】国産鶏皮　塩/タレ</span><span class="mi-dots"></span><span class="mi-p">¥150</span></div>
-    <div class="mi"><span class="mi-n">国産　せせり</span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
-    <div class="mi"><span class="mi-n">国産　ぼんじり</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
-    <div class="mi"><span class="mi-n">もも</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
-    <div class="mi"><span class="mi-n">ねぎま</span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
-    <div class="mi"><span class="mi-n">レバー</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
-    <div class="mi"><span class="mi-n">砂肝</span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">【数量限定】</span><span class="seg">国産鶏皮</span>　<span class="seg">塩/タレ</span></span><span class="mi-dots"></span><span class="mi-p">¥150</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">国産</span>　<span class="seg">せせり</span></span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">国産</span>　<span class="seg">ぼんじり</span></span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">もも</span></span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">ねぎま</span></span><span class="mi-dots"></span><span class="mi-p">¥320</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">レバー</span></span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">砂肝</span></span><span class="mi-dots"></span><span class="mi-p">¥290</span></div>
   </div>
 </section>
 
@@ -411,9 +414,9 @@
       <button type="button" class="shw-arrow" data-r="next" aria-label="次の料理">›</button>
     </div>
     <div class="msub">
-      <div class="mi"><span class="mi-n">【数量限定】A4和牛のタルタルトースト　2個<small>1個追加 ¥390</small></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-      <div class="mi"><span class="mi-n">【数量限定】和牛極みユッケ</span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div>
-      <div class="mi"><span class="mi-n">贅沢とろたく</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+      <div class="mi"><span class="mi-n"><span class="seg">【数量限定】</span><span class="seg">A4和牛の</span><span class="seg">タルタルトースト</span>　<span class="seg">2個</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div><small><span class="seg">1個追加</span> <span class="seg">¥390</span></small>
+      <div class="mi"><span class="mi-n"><span class="seg">【数量限定】</span><span class="seg">和牛</span><span class="seg">極みユッケ</span></span><span class="mi-dots"></span><span class="mi-p">¥1,480</span></div>
+      <div class="mi"><span class="mi-n"><span class="seg">贅沢</span><span class="seg">とろたく</span></span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
     </div>
   </div>
 </section>
@@ -422,17 +425,17 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>おつまみ</span></h4>
-    <div class="mi"><span class="mi-n">白菜キムチ</span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
-    <div class="mi"><span class="mi-n">自家製アボカドキムチ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
-    <div class="mi"><span class="mi-n">自家製山芋キムチ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
-    <div class="mi"><span class="mi-n">キムチ盛り合わせ<small>白菜、山芋、アボカドの3種盛り合わせ</small></span><span class="mi-dots"></span><span class="mi-p">¥980</span></div>
-    <div class="mi"><span class="mi-n">砂肝土佐酢和え</span><span class="mi-dots"></span><span class="mi-p">¥620</span></div>
-    <div class="mi"><span class="mi-n">麻辣コリコリ</span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
-    <div class="mi"><span class="mi-n">鶏皮センマイ刺し</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
-    <div class="mi"><span class="mi-n">丸籠茶豆</span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
-    <div class="mi"><span class="mi-n">おつまみチーズケーキ</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-    <div class="mi"><span class="mi-n">本物のよだれ鶏</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-    <div class="mi"><span class="mi-n">信玄鶏のレバ刺し</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">白菜キムチ</span></span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">自家製</span><span class="seg">アボカドキムチ</span></span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">自家製</span><span class="seg">山芋キムチ</span></span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">キムチ</span><span class="seg">盛り合わせ</span></span><span class="mi-dots"></span><span class="mi-p">¥980</span></div><small><span class="seg">白菜、</span><span class="seg">山芋、</span><span class="seg">アボカドの</span><span class="seg">3種盛り合わせ</span></small>
+    <div class="mi"><span class="mi-n"><span class="seg">砂肝</span><span class="seg">土佐酢和え</span></span><span class="mi-dots"></span><span class="mi-p">¥620</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">麻辣コリコリ</span></span><span class="mi-dots"></span><span class="mi-p">¥580</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">鶏皮</span><span class="seg">センマイ刺し</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">丸籠茶豆</span></span><span class="mi-dots"></span><span class="mi-p">¥480</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">おつまみ</span><span class="seg">チーズケーキ</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">本物の</span><span class="seg">よだれ鶏</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">信玄鶏の</span><span class="seg">レバ刺し</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
   </div>
 </section>
 
@@ -440,13 +443,13 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>揚げ物</span></h4>
-    <div class="mi"><span class="mi-n">黄金のチキン南蛮</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-    <div class="mi"><span class="mi-n">じっくり寝かせた唐揚げ</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-    <div class="mi"><span class="mi-n">とうもろこしの天ぷら</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
-    <div class="mi"><span class="mi-n">殿の爆烈チキン</span><span class="mi-dots"></span><span class="mi-p">¥880</span></div>
-    <div class="mi"><span class="mi-n">鯵フライ</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
-    <div class="mi"><span class="mi-n">牡蛎フライ</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
-    <div class="mi"><span class="mi-n">リッチフライドポテト</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">黄金の</span><span class="seg">チキン南蛮</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">じっくり</span><span class="seg">寝かせた</span><span class="seg">唐揚げ</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">とうもろこしの</span><span class="seg">天ぷら</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">殿の</span><span class="seg">爆烈チキン</span></span><span class="mi-dots"></span><span class="mi-p">¥880</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">鯵フライ</span></span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">牡蛎フライ</span></span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">リッチ</span><span class="seg">フライドポテト</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
   </div>
 </section>
 
@@ -454,11 +457,11 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>〆もの</span></h4>
-    <div class="mi"><span class="mi-n">信玄鶏のそぼろ飯</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
-    <div class="mi"><span class="mi-n">貴族の鶏白湯雑炊</span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
-    <div class="mi"><span class="mi-n">冷製麻辣担億麺</span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
-    <div class="mi"><span class="mi-n">冷製億麺</span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
-    <div class="mi"><span class="mi-n">【数量限定】和牛極みユッケ丼</span><span class="mi-dots"></span><span class="mi-p">¥980</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">信玄鶏の</span><span class="seg">そぼろ飯</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">貴族の</span><span class="seg">鶏白湯雑炊</span></span><span class="mi-dots"></span><span class="mi-p">¥720</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">冷製</span><span class="seg">麻辣担億麺</span></span><span class="mi-dots"></span><span class="mi-p">¥1,380</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">冷製億麺</span></span><span class="mi-dots"></span><span class="mi-p">¥1,080</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">【数量限定】</span><span class="seg">和牛</span><span class="seg">極みユッケ丼</span></span><span class="mi-dots"></span><span class="mi-p">¥980</span></div>
   </div>
 </section>
 
@@ -466,10 +469,10 @@
 <section class="mlist rev">
   <div class="wrap">
     <h4 class="mcat"><span>デザート</span></h4>
-    <div class="mi"><span class="mi-n">深煎りほうじ茶アイス</span><span class="mi-dots"></span><span class="mi-p">¥400</span></div>
-    <div class="mi"><span class="mi-n">塩バニラと10年熟成みりん</span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
-    <div class="mi"><span class="mi-n">酒井パティシエのティラミス</span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
-    <div class="mi"><span class="mi-n">酒井パティシエの燃えるバスクチーズケーキ</span><span class="mi-dots"></span><span class="mi-p">¥1,180</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">深煎り</span><span class="seg">ほうじ茶アイス</span></span><span class="mi-dots"></span><span class="mi-p">¥400</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">塩バニラと</span><span class="seg">10年熟成みりん</span></span><span class="mi-dots"></span><span class="mi-p">¥680</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">酒井パティシエの</span><span class="seg">ティラミス</span></span><span class="mi-dots"></span><span class="mi-p">¥780</span></div>
+    <div class="mi"><span class="mi-n"><span class="seg">酒井パティシエの</span><span class="seg">燃える</span><span class="seg">バスクチーズケーキ</span></span><span class="mi-dots"></span><span class="mi-p">¥1,180</span></div>
   </div>
 </section>
 
@@ -500,7 +503,7 @@
   </div>
 </footer>
 
-<!-- GR: 口コミポップアップ（index.htmlと同一・コンプラ必須①〜⑤準拠） -->
+<!-- GR: 口コミポップアップ（index.htmlと同一・コンプラ必須①〜⑤準拠) -->
 <div class="gr-pop" id="grPop" hidden>
   <div class="gr-pop-bg" id="grPopBg"></div>
   <div class="gr-pop-panel" role="dialog" aria-modal="true" aria-labelledby="grPopTitle">
