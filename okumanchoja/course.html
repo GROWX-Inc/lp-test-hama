@@ -287,6 +287,12 @@
   .gr-pop-attr{font-size:15px;color:var(--muted);font-family:var(--mono)}
   .gr-glink{font-size:15px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
   .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
+
+  /* ===== テキスト改行最適化（改行ガイドライン準拠 2026/08/19） ===== */
+  /* 本文：固定<br>を廃し、ブラウザの文節解析による自然折返し（Chromium系で有効・非対応ブラウザは従来どおり） */
+  .lead,.mnote,.mi-n,.crs-desc,.crs-meta,.crs-note,.rv p{word-break:auto-phrase}
+  /* 見出しキャッチ：文節を塊で折り返す（index.htmlと同一方式） */
+  .seg{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -322,9 +328,8 @@
 <section class="pt">
   <div class="wrap">
     <span class="eyebrow">Course</span>
-    <h2 class="rev">宴も、味も、<em>「億万長者」級</em>。</h2>
-    <p class="lead rev">Ａ５和牛の生ハムから始まる、豪華絢爛のコース仕立て。<br>
-    歓送迎会・宴会・記念日は、コースでまるごと億万長者体験を。</p>
+    <h2 class="rev"><span class="seg">宴も、</span><span class="seg">味も、</span><span class="seg"><em>「億万長者」級</em>。</span></h2>
+    <p class="lead rev">Ａ５和牛の生ハムから始まる、豪華絢爛のコース仕立て。歓送迎会・宴会・記念日は、コースでまるごと億万長者体験を。</p>
   </div>
 </section>
 
@@ -397,7 +402,7 @@
 
     <div class="crs-card">
       <span class="crs-tag">全7品＋2時間飲み放題</span>
-      <h3 class="crs-name">成金コース〈2時間飲み放題付き〉</h3>
+      <h3 class="crs-name"><span class="seg">成金コース</span><span class="seg">〈2時間飲み放題付き〉</span></h3>
       <p class="crs-price"><span class="strike">¥5,500</span>¥4,980<small>（税込）</small></p>
       <p class="crs-meta">《当日予約OK》会社宴会におすすめ！</p>
       <p class="crs-desc">【組数限定◎】A5和牛の自家製生ハムから始まる、遊び心と満足感を兼ね備えた全7品。アイスのような見た目のポテトサラダや、本場仕込みのよだれ鶏、山葵香る鴨わさなど個性豊かな逸品が並びます。メインは炭火で香ばしく焼き上げた信玄鶏のもも焼き。濃厚な“トリプル白湯”で仕立てる雑炊まで楽しめる、価格以上の贅沢感を味わえるコースです。</p>
@@ -405,7 +410,7 @@
 
     <div class="crs-card">
       <span class="crs-tag">全7品＋3時間飲み放題</span>
-      <h3 class="crs-name">成金コース〈3時間飲み放題付き〉</h3>
+      <h3 class="crs-name"><span class="seg">成金コース</span><span class="seg">〈3時間飲み放題付き〉</span></h3>
       <p class="crs-price"><span class="strike">¥6,500</span>¥5,500<small>（税込）</small></p>
       <p class="crs-meta">【月〜木限定】</p>
       <p class="crs-desc">【組数限定◎】A5和牛の自家製生ハムから始まる、遊び心と満足感を兼ね備えた全7品。アイスのような見た目のポテトサラダや、本場仕込みのよだれ鶏、山葵香る鴨わさなど個性豊かな逸品が並びます。メインは炭火で香ばしく焼き上げた信玄鶏のもも焼き。濃厚な“トリプル白湯”で仕立てる雑炊まで楽しめる、価格以上の贅沢感を味わえるコースです。</p>
@@ -415,7 +420,7 @@
 
     <div class="crs-card">
       <span class="crs-tag">席のみ予約＋飲み放題</span>
-      <h3 class="crs-name">２時間飲み放題単品プラン《席だけのご予約》</h3>
+      <h3 class="crs-name"><span class="seg">２時間飲み放題</span><span class="seg">単品プラン</span><span class="seg">《席だけのご予約》</span></h3>
       <p class="crs-price">¥2,000<small>（税込）</small></p>
       <p class="crs-meta">席だけのご予約｜ドリンク全40種以上</p>
       <p class="crs-desc">【急な飲み会に最適です】生ビールも選べる単品飲み放題プラン。ドリンクは種類豊富な全40種以上からお選びいただけます。お料理はアラカルトで当日お好きなメニューをご注文ください。</p>
@@ -423,7 +428,7 @@
 
     <div class="crs-card">
       <span class="crs-tag">電話予約必須</span>
-      <h3 class="crs-name">Ａ５和牛の生ハム 殿サイズ単品</h3>
+      <h3 class="crs-name"><span class="seg">Ａ５和牛の生ハム</span> <span class="seg">殿サイズ単品</span></h3>
       <p class="crs-price">¥5,000<small>（税込）</small></p>
       <p class="crs-meta">事前電話予約でお付け可能♪（席のみ）</p>
       <p class="crs-desc">ご予約可能か2日前までにお電話で事前確認お願い致します。席のみ予約で受付可能です♪</p>
@@ -442,10 +447,8 @@
 <section class="fin rev">
   <div class="wrap">
     <span class="eyebrow">Entertainment</span>
-    <h2>コースの間も、<em>演出は止まらない</em>。</h2>
-    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。<br>
-    おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。<br>
-    伝統組子個室で、宴会も記念日も「億万長者」級に。</p>
+    <h2><span class="seg">コースの間も、</span><span class="seg"><em>演出は止まらない</em>。</span></h2>
+    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。伝統組子個室で、宴会も記念日も「億万長者」級に。</p>
     <div class="cv-row">
       <a class="btn-g" href="#" data-ebica>席を予約する</a>
       <a class="btn-o" href="menu.html">お品書きを見る</a>
