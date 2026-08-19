@@ -291,6 +291,8 @@
   /* ===== テキスト改行最適化（改行ガイドライン準拠 2026/08/19） ===== */
   /* 本文：固定<br>を廃し、ブラウザの文節解析による自然折返し（Chromium系で有効・非対応ブラウザは従来どおり） */
   .lead,.mnote,.mi-n,.crs-desc,.crs-meta,.crs-note,.rv p{word-break:auto-phrase}
+  /* 改行優先順位: ①句点（文単位=.sent） ②文節（.seg／auto-phrase） ③禁則処理 */
+  .sent{display:inline-block}
   /* 見出しキャッチ：文節を塊で折り返す（index.htmlと同一方式） */
   .seg{white-space:nowrap}
 </style>
@@ -329,7 +331,7 @@
   <div class="wrap">
     <span class="eyebrow">Course</span>
     <h2 class="rev"><span class="seg">宴も、</span><span class="seg">味も、</span><span class="seg"><em>「億万長者」級</em>。</span></h2>
-    <p class="lead rev">Ａ５和牛の生ハムから始まる、豪華絢爛のコース仕立て。歓送迎会・宴会・記念日は、コースでまるごと億万長者体験を。</p>
+    <p class="lead rev"><span class="sent">Ａ５和牛の生ハムから始まる、豪華絢爛のコース仕立て。</span><span class="sent">歓送迎会・宴会・記念日は、コースでまるごと億万長者体験を。</span></p>
   </div>
 </section>
 
@@ -448,7 +450,7 @@
   <div class="wrap">
     <span class="eyebrow">Entertainment</span>
     <h2><span class="seg">コースの間も、</span><span class="seg"><em>演出は止まらない</em>。</span></h2>
-    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。伝統組子個室で、宴会も記念日も「億万長者」級に。</p>
+    <p class="lead"><span class="sent">『億万長者様』と呼ばれて乾杯する非日常。</span><span class="sent">おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。</span><span class="sent">伝統組子個室で、宴会も記念日も「億万長者」級に。</span></p>
     <div class="cv-row">
       <a class="btn-g" href="#" data-ebica>席を予約する</a>
       <a class="btn-o" href="menu.html">お品書きを見る</a>
