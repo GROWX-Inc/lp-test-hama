@@ -467,6 +467,11 @@
   .gr-pop-foot{padding:12px 20px 14px;border-top:1px solid var(--line-2);
     display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
   .gr-pop-attr{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+
+  /* ===== テキスト改行最適化（改行ガイドライン準拠 2026/08/19） ===== */
+  /* 改行優先順位: ①句点（文単位=.sent） ②文節（.seg／auto-phrase） ③禁則処理 */
+  .sent{display:inline-block}
+  .lead,.rv p,.card-b p{word-break:auto-phrase}
 </style>
 </head>
 <body>
@@ -548,9 +553,7 @@
         <div class="cost-tag" aria-hidden="true">で居酒屋<br>建ててみた</div>
       </div>
     </div>
-    <p class="lead rev"><span class="seg">外観、</span><span class="seg">内観、</span><span class="seg">料理、</span><span class="seg">接客まで──</span><span class="seg">すべてが</span><span class="seg">億万長者仕様。</span><br>
-    <span class="seg">一歩</span><span class="seg">足を</span><span class="seg">踏み入れれば、</span><span class="seg">そこは</span><span class="seg">金色に</span><span class="seg">輝く</span><span class="seg">非日常。</span><br>
-    <span class="seg">上品な</span><span class="seg">和空間を</span><span class="seg">感じる</span><span class="seg">伝統組子の</span><span class="seg">個室で、</span><span class="seg">今宵、</span><span class="seg">あなたは</span><span class="seg">『億万長者様』として</span><span class="seg">もてなされる。</span></p>
+    <p class="lead rev"><span class="sent"><span class="seg">外観、</span><span class="seg">内観、</span><span class="seg">料理、</span><span class="seg">接客まで──</span><span class="seg">すべてが</span><span class="seg">億万長者仕様。</span></span><span class="sent"><span class="seg">一歩</span><span class="seg">足を</span><span class="seg">踏み入れれば、</span><span class="seg">そこは</span><span class="seg">金色に</span><span class="seg">輝く</span><span class="seg">非日常。</span></span><span class="sent"><span class="seg">上品な</span><span class="seg">和空間を</span><span class="seg">感じる</span><span class="seg">伝統組子の</span><span class="seg">個室で、</span><span class="seg">今宵、</span><span class="seg">あなたは</span><span class="seg">『億万長者様』として</span><span class="seg">もてなされる。</span></span></p>
     <div class="gallery">
       <figure><img src="assets/gallery_hall.webp" alt="金の設えのテーブル席" loading="lazy"></figure>
       <figure><img src="assets/gallery_neon.webp" alt="億万鳥者の縦看板" loading="lazy"></figure>
@@ -581,7 +584,7 @@
       <figure><img src="assets/menu_burger.webp" alt="億万バーガー" loading="lazy"></figure>
       <div class="card-b">
         <h3>億万バーガー</h3>
-        <p><span class="seg">肉塊と</span><span class="seg">ベーコンが</span><span class="seg">羽ばたく、</span><span class="seg">規格外の</span><span class="seg">億万級バーガー。</span></p>
+        <p><span class="sent"><span class="seg">肉塊と</span><span class="seg">ベーコンが</span><span class="seg">羽ばたく、</span><span class="seg">規格外の</span><span class="seg">億万級バーガー。</span></span></p>
         <span class="price">¥1,880</span>
       </div>
     </article>
@@ -589,7 +592,7 @@
       <figure><img src="assets/menu_namaham.webp" alt="Ａ５和牛の生ハムてんこ盛り" loading="lazy"></figure>
       <div class="card-b">
         <h3>Ａ５和牛の生ハムてんこ盛り</h3>
-        <p><span class="seg">卓上を</span><span class="seg">覆い尽くす、</span><span class="seg">A5和牛の</span><span class="seg">絨毯。</span><span class="seg">レギュラーサイズ。</span></p>
+        <p><span class="sent"><span class="seg">卓上を</span><span class="seg">覆い尽くす、</span><span class="seg">A5和牛の</span><span class="seg">絨毯。</span></span><span class="sent"><span class="seg">レギュラーサイズ。</span></span></p>
         <span class="price">¥2,480</span>
       </div>
     </article>
@@ -597,7 +600,7 @@
       <figure><img src="assets/menu_rebanira.webp" alt="貴族に献上するレバニラ" loading="lazy"></figure>
       <div class="card-b">
         <h3>貴族に献上するレバニラ</h3>
-        <p><span class="seg">濃厚レバーに</span><span class="seg">黄金の</span><span class="seg">卵黄を</span><span class="seg">ふたつ。</span><span class="seg">献上級の</span><span class="seg">味わい。</span></p>
+        <p><span class="sent"><span class="seg">濃厚レバーに</span><span class="seg">黄金の</span><span class="seg">卵黄を</span><span class="seg">ふたつ。</span></span><span class="sent"><span class="seg">献上級の</span><span class="seg">味わい。</span></span></p>
         <span class="price">¥1,780</span>
       </div>
     </article>
@@ -605,7 +608,7 @@
       <figure><img src="assets/menu_momo.webp" alt="もも串" loading="lazy"></figure>
       <div class="card-b">
         <h3>もも</h3>
-        <p><span class="seg">炭火が</span><span class="seg">引き出す</span><span class="seg">鶏の旨み。</span><span class="seg">一串から、</span><span class="seg">億万気分。</span></p>
+        <p><span class="sent"><span class="seg">炭火が</span><span class="seg">引き出す</span><span class="seg">鶏の旨み。</span></span><span class="sent"><span class="seg">一串から、</span><span class="seg">億万気分。</span></span></p>
         <span class="price">¥290</span>
       </div>
     </article>
@@ -613,7 +616,7 @@
       <figure><img src="assets/menu_yukke.webp" alt="A4和牛の億万長者ユッケ" loading="lazy"></figure>
       <div class="card-b">
         <h3>A4和牛の億万長者ユッケ</h3>
-        <p><span class="seg">A4和牛を</span><span class="seg">惜しみなく。</span><span class="seg">黄金に</span><span class="seg">輝く一皿。</span></p>
+        <p><span class="sent"><span class="seg">A4和牛を</span><span class="seg">惜しみなく。</span></span><span class="sent"><span class="seg">黄金に</span><span class="seg">輝く一皿。</span></span></p>
         <span class="price">¥1,680</span>
       </div>
     </article>
@@ -892,7 +895,7 @@
     var bs=Math.min(1,720/cv.clientWidth); // 背景は最大720px幅相当で十分
     bg.width=Math.round(cv.clientWidth*bs); bg.height=Math.round(cv.clientHeight*bs);
     last=-1; }
-  // ===== ②勝手にスクロール対策（2026/08/17承認・計画1） =====
+  // ===== ②勝手にスクロール対策（2026/08/17承認・計画1) =====
   // iOS Safari/Chromeはスクロール方向に応じて自身のツールバーを出し入れし、
   // そのたびに window.innerHeight が変動する。この値をフレーム計算に直接使うと
   // スクロールしていないのに表示フレームが飛ぶ（実測で最大24フレームのジャンプ）。
@@ -1194,7 +1197,6 @@
     (function walk(node){
       [].slice.call(node.childNodes).forEach(function(ch){
         if(ch.nodeType===3){
-          var frag=document.createDocumentFragment();
           ch.textContent.split('').forEach(function(c){
             if(c===' '){ frag.appendChild(document.createTextNode(' ')); return; }
             var s=document.createElement('span');
