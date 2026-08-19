@@ -293,6 +293,9 @@
   .lead,.mnote,.mi-n,.crs-desc,.crs-meta,.crs-note,.rv p{word-break:auto-phrase}
   /* 改行優先順位: ①句点（文単位=.sent） ②文節（.seg／auto-phrase） ③禁則処理 */
   .sent{display:inline-block}
+  /* 注記を行全体の幅で表示（2026/08/19: 名前列内に閉じ込められ不要な折返しが出ていた問題の修正。
+     .miの1行目（名前｜点線｜価格）は従来どおり折返しなし・価格は必ず1行目右端） */
+  .mi + small{display:block;margin:-9px 0 0;padding:0 0 9px;font-size:15px;color:var(--muted);line-height:1.7;word-break:auto-phrase}
   /* 見出しキャッチ：文節を塊で折り返す（index.htmlと同一方式） */
   .seg{white-space:nowrap}
 </style>
@@ -349,13 +352,13 @@
       <p class="crs-desc">A5和牛の自家製生ハムから始まる、遊び心と満足感を兼ね備えた全7品。アイスのような見た目のポテトサラダや、本場仕込みのよだれ鶏、山葵香る鴨わさなど個性豊かな逸品が並びます。メインは炭火で香ばしく焼き上げた信玄鶏のもも焼き。濃厚な“トリプル白湯”で仕立てる雑炊まで楽しめる、価格以上の贅沢感を味わえるコースです。</p>
       <div class="crs-items">
         <span class="crs-items-t">お品書き</span>
-        <div class="mi"><span class="mi-n">【先付け】A5和牛の生ハム<small>満足感ある食べ応えと上品な味わいの和牛生ハムは長時間熟成の自家製</small></span></div>
-        <div class="mi"><span class="mi-n">【葉物】億万鳥者のポテトサラダ？？<small>まるでアイスクリーム？？一風変わった見た目な当店自慢のポテトサラダ</small></span></div>
-        <div class="mi"><span class="mi-n">【逸品】よだれ鶏<small>本場の味わいを実現したピリ辛ラー油がクセになる逸品</small></span></div>
-        <div class="mi"><span class="mi-n">【逸品】鴨わさ ～山葵と山椒の香り<small>炭火で焼き上げた鴨と山葵の絶品料理</small></span></div>
-        <div class="mi"><span class="mi-n">【メイン】信玄鶏のもも焼き<small>地鶏を炭火で焼き上げ、外はカリッと中はジューシーに仕上げた極上の逸品</small></span></div>
-        <div class="mi"><span class="mi-n">【食事】貴族の鶏白湯雑炊<small>鶏×豚×牛の三種の白湯(トリプル白湯)味玉と食べる濃厚雑炊</small></span></div>
-        <div class="mi"><span class="mi-n">【甘味】深煎りほうじ茶アイス<small>深みのあるほうじ茶の味わいをお食事の締めとして</small></span></div>
+        <div class="mi"><span class="mi-n"><span class="seg">【先付け】</span><span class="seg">A5和牛の</span><span class="seg">生ハム</span></span></div><small><span class="seg">満足感ある</span><span class="seg">食べ応えと</span><span class="seg">上品な</span><span class="seg">味わいの</span><span class="seg">和牛生ハムは</span><span class="seg">長時間熟成の</span><span class="seg">自家製</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【葉物】</span><span class="seg">億万鳥者の</span><span class="seg">ポテトサラダ？？</span></span></div><small><span class="seg">まるで</span><span class="seg">アイスクリーム？？</span><span class="seg">一風変わった</span><span class="seg">見た目な</span><span class="seg">当店自慢の</span><span class="seg">ポテトサラダ</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【逸品】</span><span class="seg">よだれ鶏</span></span></div><small><span class="seg">本場の</span><span class="seg">味わいを</span><span class="seg">実現した</span><span class="seg">ピリ辛ラー油が</span><span class="seg">クセになる</span><span class="seg">逸品</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【逸品】</span><span class="seg">鴨わさ</span> <span class="seg">～山葵と</span><span class="seg">山椒の香り</span></span></div><small><span class="seg">炭火で</span><span class="seg">焼き上げた</span><span class="seg">鴨と</span><span class="seg">山葵の</span><span class="seg">絶品料理</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【メイン】</span><span class="seg">信玄鶏の</span><span class="seg">もも焼き</span></span></div><small><span class="seg">地鶏を</span><span class="seg">炭火で</span><span class="seg">焼き上げ、</span><span class="seg">外は</span><span class="seg">カリッと</span><span class="seg">中は</span><span class="seg">ジューシーに</span><span class="seg">仕上げた</span><span class="seg">極上の</span><span class="seg">逸品</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【食事】</span><span class="seg">貴族の</span><span class="seg">鶏白湯雑炊</span></span></div><small><span class="seg">鶏×豚×牛の</span><span class="seg">三種の</span><span class="seg">白湯(トリプル白湯)</span><span class="seg">味玉と</span><span class="seg">食べる</span><span class="seg">濃厚雑炊</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【甘味】</span><span class="seg">深煎り</span><span class="seg">ほうじ茶アイス</span></span></div><small><span class="seg">深みのある</span><span class="seg">ほうじ茶の</span><span class="seg">味わいを</span><span class="seg">お食事の</span><span class="seg">締めとして</span></small>
       </div>
     </div>
 
@@ -368,14 +371,14 @@
       <p class="crs-desc">A5和牛の自家製生ハムや人気の和牛ユッケを楽しめる、満足度抜群の全8品。砂肝の土佐酢和えやとうもろこしの天ぷらで季節感を添え、炭火香る鴨わさへと続きます。メインは外は香ばしく中はジューシーに焼き上げた信玄鶏のもも焼き。食事には濃厚な卵黄を絡めるそぼろ飯、食後には京都ほうじ茶アイスをご用意したおすすめコースです。</p>
       <div class="crs-items">
         <span class="crs-items-t">お品書き</span>
-        <div class="mi"><span class="mi-n">【先付け】A5和牛の生ハム<small>満足感ある食べ応えと上品な味わいの和牛生ハムは長時間熟成の自家製</small></span></div>
-        <div class="mi"><span class="mi-n">【酢 物】砂肝土佐酢和え<small>砂肝の炭焼きに韮の土佐酢お浸し</small></span></div>
-        <div class="mi"><span class="mi-n">【揚 物】とうもろこしの天ぷら<small>大人気なとうもろこしのメニューは冬らしく天ぷらに仕上げました。抹茶塩と相性抜群です。</small></span></div>
-        <div class="mi"><span class="mi-n">【逸 品】鴨わさ ～山葵と山椒の香り<small>炭火で焼き上げた鴨と山葵の絶品料理</small></span></div>
-        <div class="mi"><span class="mi-n">【和 牛】A4和牛の億万長者ユッケ<small>上質な和牛をユッケとして。当店大人気メニュー</small></span></div>
-        <div class="mi"><span class="mi-n">【焼 物】信玄鶏のもも焼き<small>地鶏を炭火で焼き上げ、外はカリッと中はジューシーに仕上げた極上の逸品</small></span></div>
-        <div class="mi"><span class="mi-n">【食事】信玄鶏のそぼろ飯<small>ふわふわジューシーなそぼろに卵黄を崩してコクとまろやかな味わい</small></span></div>
-        <div class="mi"><span class="mi-n">【甘味】京都ほうじ茶アイス<small>深みのあるほうじ茶の味わいをお食事の締めとして</small></span></div>
+        <div class="mi"><span class="mi-n"><span class="seg">【先付け】</span><span class="seg">A5和牛の</span><span class="seg">生ハム</span></span></div><small><span class="seg">満足感ある</span><span class="seg">食べ応えと</span><span class="seg">上品な</span><span class="seg">味わいの</span><span class="seg">和牛生ハムは</span><span class="seg">長時間熟成の</span><span class="seg">自家製</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【酢 物】</span><span class="seg">砂肝</span><span class="seg">土佐酢和え</span></span></div><small><span class="seg">砂肝の</span><span class="seg">炭焼きに</span><span class="seg">韮の</span><span class="seg">土佐酢お浸し</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【揚 物】</span><span class="seg">とうもろこしの</span><span class="seg">天ぷら</span></span></div><small><span class="sent"><span class="seg">大人気な</span><span class="seg">とうもろこしの</span><span class="seg">メニューは</span><span class="seg">冬らしく</span><span class="seg">天ぷらに</span><span class="seg">仕上げました。</span></span><span class="sent"><span class="seg">抹茶塩と</span><span class="seg">相性抜群です。</span></span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【逸 品】</span><span class="seg">鴨わさ</span> <span class="seg">～山葵と</span><span class="seg">山椒の香り</span></span></div><small><span class="seg">炭火で</span><span class="seg">焼き上げた</span><span class="seg">鴨と</span><span class="seg">山葵の</span><span class="seg">絶品料理</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【和 牛】</span><span class="seg">A4和牛の</span><span class="seg">億万長者ユッケ</span></span></div><small><span class="sent"><span class="seg">上質な</span><span class="seg">和牛を</span><span class="seg">ユッケとして。</span></span><span class="sent"><span class="seg">当店大人気メニュー</span></span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【焼 物】</span><span class="seg">信玄鶏の</span><span class="seg">もも焼き</span></span></div><small><span class="seg">地鶏を</span><span class="seg">炭火で</span><span class="seg">焼き上げ、</span><span class="seg">外は</span><span class="seg">カリッと</span><span class="seg">中は</span><span class="seg">ジューシーに</span><span class="seg">仕上げた</span><span class="seg">極上の</span><span class="seg">逸品</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【食事】</span><span class="seg">信玄鶏の</span><span class="seg">そぼろ飯</span></span></div><small><span class="seg">ふわふわ</span><span class="seg">ジューシーな</span><span class="seg">そぼろに</span><span class="seg">卵黄を</span><span class="seg">崩して</span><span class="seg">コクと</span><span class="seg">まろやかな</span><span class="seg">味わい</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【甘味】</span><span class="seg">京都ほうじ茶アイス</span></span></div><small><span class="seg">深みのある</span><span class="seg">ほうじ茶の</span><span class="seg">味わいを</span><span class="seg">お食事の</span><span class="seg">締めとして</span></small>
       </div>
     </div>
 
@@ -388,15 +391,15 @@
       <p class="crs-desc">人気のおばんざい6種盛りから始まる、贅沢尽くしの全9品。A5和牛のタルタルトーストや、とろける旨みの贅沢とろたくで華やかに展開します。香ばしい炭焼きサムギョプサルでは、肉の旨みを存分に堪能。選べる締めは“幸せのひとくち和牛”かさっぱり冷製億麺かその日の気分で選択可能。食後には塩バニラと熟成みりんの奥深い甘みをご用意した、豪華絢爛なコースです。</p>
       <div class="crs-items">
         <span class="crs-items-t">お品書き</span>
-        <div class="mi"><span class="mi-n">【先付け】6種のおばんざい盛り合わせ<small>人気の逸品を6種詰め込んだおばんざい</small></span></div>
-        <div class="mi"><span class="mi-n">【焼 物】玉座の炭焼きサムギョプサル<small>香ばしい炭焼きと特製塩ダレが染み込んだ豚バラを薬味とサンチュに包んで</small></span></div>
-        <div class="mi"><span class="mi-n">【和 牛】A5和牛のタルタルトースト<small>ガーリックトーストの上にA4和牛の自家製タルタルを乗せました</small></span></div>
-        <div class="mi"><span class="mi-n">【海 鮮】贅沢とろたく<small>とろっとたくあん!ヘイお待ち!!</small></span></div>
-        <div class="mi"><span class="mi-n">【揚 物】とうもろこしの天ぷら<small>大人気なとうもろこしのメニューは冬らしく天ぷらに仕上げました。抹茶塩と相性抜群です。</small></span></div>
-        <div class="mi"><span class="mi-n">【焼 物】信玄鳥のもも焼き<small>地鶏を炭火で焼き上げ、外はカリッと中はジューシーに仕上げた極上の逸品</small></span></div>
-        <div class="mi"><span class="mi-n">【選べる食事】幸せのひとくち和牛+ライス<small>A4和牛を炭でレアに焼き、自家製のつけだれと卵黄で食べていただく。ひとくちで幸せをお届けします。</small></span></div>
-        <div class="mi"><span class="mi-n">or 【選べる食事】冷製 億麺<small>コシもあり、つるっとしたさっぱり冷麺</small></span></div>
-        <div class="mi"><span class="mi-n">【甘 味】塩バニラと熟成みりん<small>極上バニラアイスに雪塩をふりかけ、熟成のみりんと共に味わってもらう一品。深みあるみりんの味わい、奥行きをお楽しみください。</small></span></div>
+        <div class="mi"><span class="mi-n"><span class="seg">【先付け】</span><span class="seg">6種の</span><span class="seg">おばんざい</span><span class="seg">盛り合わせ</span></span></div><small><span class="seg">人気の</span><span class="seg">逸品を</span><span class="seg">6種</span><span class="seg">詰め込んだ</span><span class="seg">おばんざい</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【焼 物】</span><span class="seg">玉座の</span><span class="seg">炭焼き</span><span class="seg">サムギョプサル</span></span></div><small><span class="seg">香ばしい</span><span class="seg">炭焼きと</span><span class="seg">特製塩ダレが</span><span class="seg">染み込んだ</span><span class="seg">豚バラを</span><span class="seg">薬味と</span><span class="seg">サンチュに</span><span class="seg">包んで</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【和 牛】</span><span class="seg">A5和牛の</span><span class="seg">タルタルトースト</span></span></div><small><span class="seg">ガーリックトーストの</span><span class="seg">上に</span><span class="seg">A4和牛の</span><span class="seg">自家製タルタルを</span><span class="seg">乗せました</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【海 鮮】</span><span class="seg">贅沢</span><span class="seg">とろたく</span></span></div><small><span class="sent"><span class="seg">とろっと</span><span class="seg">たくあん!</span></span><span class="sent"><span class="seg">ヘイお待ち!!</span></span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【揚 物】</span><span class="seg">とうもろこしの</span><span class="seg">天ぷら</span></span></div><small><span class="sent"><span class="seg">大人気な</span><span class="seg">とうもろこしの</span><span class="seg">メニューは</span><span class="seg">冬らしく</span><span class="seg">天ぷらに</span><span class="seg">仕上げました。</span></span><span class="sent"><span class="seg">抹茶塩と</span><span class="seg">相性抜群です。</span></span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【焼 物】</span><span class="seg">信玄鳥の</span><span class="seg">もも焼き</span></span></div><small><span class="seg">地鶏を</span><span class="seg">炭火で</span><span class="seg">焼き上げ、</span><span class="seg">外は</span><span class="seg">カリッと</span><span class="seg">中は</span><span class="seg">ジューシーに</span><span class="seg">仕上げた</span><span class="seg">極上の</span><span class="seg">逸品</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【選べる食事】</span><span class="seg">幸せの</span><span class="seg">ひとくち和牛+ライス</span></span></div><small><span class="sent"><span class="seg">A4和牛を</span><span class="seg">炭で</span><span class="seg">レアに</span><span class="seg">焼き、</span><span class="seg">自家製の</span><span class="seg">つけだれと</span><span class="seg">卵黄で</span><span class="seg">食べていただく。</span></span><span class="sent"><span class="seg">ひとくちで</span><span class="seg">幸せを</span><span class="seg">お届けします。</span></span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">or</span> <span class="seg">【選べる食事】</span><span class="seg">冷製</span> <span class="seg">億麺</span></span></div><small><span class="seg">コシもあり、</span><span class="seg">つるっとした</span><span class="seg">さっぱり冷麺</span></small>
+        <div class="mi"><span class="mi-n"><span class="seg">【甘 味】</span><span class="seg">塩バニラと</span><span class="seg">熟成みりん</span></span></div><small><span class="sent"><span class="seg">極上バニラアイスに</span><span class="seg">雪塩を</span><span class="seg">ふりかけ、</span><span class="seg">熟成の</span><span class="seg">みりんと</span><span class="seg">共に</span><span class="seg">味わってもらう</span><span class="seg">一品。</span></span><span class="sent"><span class="seg">深みある</span><span class="seg">みりんの</span><span class="seg">味わい、</span><span class="seg">奥行きを</span><span class="seg">お楽しみください。</span></span></small>
       </div>
     </div>
 
