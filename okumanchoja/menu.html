@@ -258,6 +258,12 @@
   .gr-pop-attr{font-size:15px;color:var(--muted);font-family:var(--mono)}
   .gr-glink{font-size:15px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
   .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
+
+  /* ===== テキスト改行最適化（改行ガイドライン準拠 2026/08/19） ===== */
+  /* 本文：固定<br>を廃し、ブラウザの文節解析による自然折返し（Chromium系で有効・非対応ブラウザは従来どおり） */
+  .lead,.mnote,.mi-n,.mcat-note,.shw-jp,.rv p{word-break:auto-phrase}
+  /* 見出しキャッチ：文節を塊で折り返す（index.htmlと同一方式） */
+  .seg{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -293,9 +299,8 @@
 <section class="pt">
   <div class="wrap">
     <span class="eyebrow">Menu</span>
-    <h2 class="rev">豪華すぎる、<em>和牛創作料理</em>。</h2>
-    <p class="lead rev">Ａ５和牛の生ハムに、規格外の億万バーガー。<br>
-    見た目も味も「億万長者」級の創作料理を、心ゆくまで。</p>
+    <h2 class="rev"><span class="seg">豪華すぎる、</span><span class="seg"><em>和牛創作料理</em>。</span></h2>
+    <p class="lead rev">Ａ５和牛の生ハムに、規格外の億万バーガー。見た目も味も「億万長者」級の創作料理を、心ゆくまで。</p>
   </div>
 </section>
 
@@ -476,10 +481,8 @@
 <section class="fin rev">
   <div class="wrap">
     <span class="eyebrow">Entertainment</span>
-    <h2>味の先に、<em>「億万長者」体験</em>を。</h2>
-    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。<br>
-    おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。<br>
-    宴会・記念日は、料理も体験も欲張れるコースがおすすめです。</p>
+    <h2><span class="seg">味の先に、</span><span class="seg"><em>「億万長者」体験</em>を。</span></h2>
+    <p class="lead">『億万長者様』と呼ばれて乾杯する非日常。おみくじで大きさが変わる運試しサワーに、豪華絢爛な演出の数々。宴会・記念日は、料理も体験も欲張れるコースがおすすめです。</p>
     <div class="cv-row">
       <a class="btn-g" href="course.html">コースを見る</a>
       <a class="btn-o" href="index.html">トップへ戻る</a>
