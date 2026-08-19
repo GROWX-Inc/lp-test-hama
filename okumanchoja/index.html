@@ -895,7 +895,7 @@
     var bs=Math.min(1,720/cv.clientWidth); // 背景は最大720px幅相当で十分
     bg.width=Math.round(cv.clientWidth*bs); bg.height=Math.round(cv.clientHeight*bs);
     last=-1; }
-  // ===== ②勝手にスクロール対策（2026/08/17承認・計画1) =====
+  // ===== ②勝手にスクロール対策（2026/08/17承認・計画1） =====
   // iOS Safari/Chromeはスクロール方向に応じて自身のツールバーを出し入れし、
   // そのたびに window.innerHeight が変動する。この値をフレーム計算に直接使うと
   // スクロールしていないのに表示フレームが飛ぶ（実測で最大24フレームのジャンプ）。
@@ -1197,6 +1197,7 @@
     (function walk(node){
       [].slice.call(node.childNodes).forEach(function(ch){
         if(ch.nodeType===3){
+          var frag=document.createDocumentFragment();
           ch.textContent.split('').forEach(function(c){
             if(c===' '){ frag.appendChild(document.createTextNode(' ')); return; }
             var s=document.createElement('span');
