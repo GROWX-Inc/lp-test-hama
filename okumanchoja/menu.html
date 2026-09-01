@@ -219,48 +219,79 @@
   .cvbar .btn-g,.cvbar .btn-o{flex:1;max-width:230px;text-align:center;padding:13px 10px;font-size:15px}
   @media (prefers-reduced-motion: reduce){ header,.cvbar{transition:none} }
 
-  /* ===== GR: 口コミポップアップ（index.html共通・コンプラ必須①〜⑤準拠） ===== */
-  .reviews{display:grid;gap:12px}
-  .rv{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:18px 20px}
-  .rv .stars{color:var(--gold);letter-spacing:.2em;font-size:15px}
-  .rv p{font-size:15px;line-height:1.9;margin:8px 0}
-  .rv cite{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--muted)}
-  .gr-num{font-family:var(--mono);font-weight:700;font-size:clamp(30px,7.5vw,38px);color:var(--gold-2);line-height:1}
-  .gr-glyph{color:var(--gold);letter-spacing:.16em;font-size:15px}
-  .gr-cnt{font-size:16px;color:var(--muted);font-family:var(--mono)}
-  .gr-pop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;
-    padding:var(--pad-x)}
-  .gr-pop[hidden]{display:none}
-  .gr-pop-bg{position:absolute;inset:0;background:rgba(6,4,2,.78)}
-  .gr-pop-panel{position:relative;width:min(100%,560px);max-height:min(78vh,720px);
-    display:flex;flex-direction:column;
-    background:var(--panel);border:1px solid rgba(217,174,82,.55);border-radius:14px;
-    box-shadow:0 24px 70px -20px rgba(0,0,0,.9);
-    animation:grPopIn .3s ease}
-  @keyframes grPopIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion: reduce){ .gr-pop-panel{animation:none} }
-  .gr-pop-head{padding:16px 20px 12px;border-bottom:1px solid var(--line-2);position:relative}
-  .gr-pop-title{font-family:var(--disp);font-size:17px;color:var(--cream);margin:0 34px 4px 0}
-  .gr-pop-note{font-size:15px;color:var(--muted);margin:0}
-  .gr-pop-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:8px 0 6px}
-  .gr-pop-sum .gr-num{font-size:clamp(26px,6vw,32px)}
-  #hdCta.gr-mode{cursor:pointer;
-    flex-direction:column;align-items:center;gap:1px;
-    padding:6px 16px;border-radius:14px;line-height:1.25}
+
+  /* ===== gRev v2.0（KAMAKURA版kit gRev_v2_styles.css を無改変で転記 2026/08/31） ===== */
+/* ===== gRev: Googleクチコミ B案 (badge + popup) ===== */
+.grv-badge{position:fixed;right:10px;top:104px;z-index:59;display:none;flex-direction:column;gap:6px}
+.grv-badge.show{display:flex}
+.grv-badge{transition:opacity .28s ease, transform .28s ease}
+.grv-badge.gb-hide{opacity:0;transform:translateY(-10px);pointer-events:none}
+
+.gb-chip{background:#fff;border:1px solid rgba(169,136,70,.55);padding:8px 12px 7px;color:var(--ink);cursor:pointer;box-shadow:0 1px 0 rgba(169,136,70,.25);text-align:left;width:172px;box-sizing:border-box}
+.gb-chip .gb-l1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:10px;letter-spacing:.14em;color:var(--ochre-deep);margin-bottom:2px}
+.gb-chip .gb-l2{display:grid;grid-template-columns:52px auto 1fr;align-items:baseline;column-gap:6px}
+.gb-chip .gb-shop{font-family:'Noto Serif JP',serif;font-size:11px;letter-spacing:.06em;white-space:nowrap}
+.gb-chip .gb-stars{color:var(--ochre-deep);font-size:9px;letter-spacing:1.3px}
+.gb-chip .gb-num{font-family:'Cormorant Garamond',serif;font-size:15px;line-height:1;justify-self:end}
+.gb-chip .gb-l3{display:flex;justify-content:space-between;align-items:baseline;font-size:9px;letter-spacing:.08em;color:var(--sub);margin-top:3px;font-family:'Noto Serif JP',serif}
+.gb-chip .gb-more{color:var(--ochre-deep);white-space:nowrap;margin-left:8px}
+.grv-ov{position:fixed;inset:0;z-index:90;background:rgba(23,19,15,.55);display:none;align-items:flex-end;justify-content:center}
+.grv-ov.open{display:flex}
+.grv-panel{background:#fff;border:1px solid rgba(169,136,70,.4);width:100%;max-width:420px;max-height:78vh;overflow-y:auto;padding:24px 22px calc(20px + env(safe-area-inset-bottom))}
+.grv-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.grv-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ochre-deep);letter-spacing:.12em}
+.grv-close{background:none;border:none;font-size:20px;color:var(--sub);padding:4px 8px;cursor:pointer;line-height:1}
+.grv-tabs{display:flex;gap:1px;margin:10px 0 14px}
+.grv-tab{flex:1;text-align:center;padding:9px 0;font-size:12px;letter-spacing:.14em;font-family:'Noto Serif JP',serif;border:1px solid rgba(169,136,70,.55);background:none;color:var(--ink);cursor:pointer}
+.grv-tab.on{background:var(--ink);border-color:var(--ink);color:#FAF6EE}
+.grv-score{display:flex;align-items:baseline;gap:10px;margin:6px 0 2px}
+.grv-score .num{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--ochre-deep)}
+.grv-score .cnt{font-size:11px;color:var(--sub)}
+.grv-stars{color:var(--ochre-deep);font-size:13px;letter-spacing:2px}
+.grv-sum{font-size:12px;line-height:1.9;margin:10px 0 4px}
+.grv-rv{border-top:1px solid rgba(169,136,70,.25);padding:12px 0}
+.grv-rv .au{font-size:11px;color:var(--sub);margin-bottom:4px;display:flex;justify-content:space-between}
+.grv-rv .tx{font-size:12px;line-height:1.9}
+.grv-empty{font-size:11px;color:var(--sub);padding:12px 0;border-top:1px solid rgba(169,136,70,.25)}
+.grv-map{display:block;text-align:center;border:1px solid rgba(169,136,70,.55);padding:12px 0;margin-top:14px;font-size:12px;letter-spacing:.14em;font-family:'Noto Serif JP',serif;color:var(--ink);text-decoration:none}
+.grv-note{font-size:9px;color:var(--sub);margin-top:10px;text-align:center}
+
+
+/* gRev v2.0 追加: 帰属・投稿者・読込表示 */
+.grv-attr{font-size:13px;color:#5E5E5E;letter-spacing:.02em;margin:2px 0 4px;font-family:Arial,Helvetica,sans-serif}
+.grv-loading{font-size:12px;color:var(--sub);padding:22px 0;text-align:center}
+.grv-rv .auline{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.grv-rv .av{width:28px;height:28px;border-radius:50%;flex:0 0 28px;object-fit:cover;background:#EFEAE0}
+.grv-rv .auname{font-size:11px;color:var(--ink);text-decoration:none;border-bottom:1px solid rgba(169,136,70,.4)}
+.grv-rv .aumeta{font-size:10px;color:var(--sub);margin-left:auto;text-align:right;white-space:nowrap}
+.grv-rv .rvstars{color:var(--ochre-deep);font-size:10px;letter-spacing:1.2px;margin-bottom:3px}
+.grv-trans{display:inline-block;font-size:9px;color:var(--sub);border:1px solid rgba(169,136,70,.35);padding:1px 6px;margin-bottom:4px}
+.grv-rvlink{display:inline-block;font-size:10px;color:var(--ochre-deep);text-decoration:none;border-bottom:1px solid rgba(169,136,70,.4);margin-top:6px}
+.gb-chip .gb-cta{display:flex;justify-content:space-between;align-items:baseline;margin-top:3px}
+.gb-chip .gb-shop2{font-family:'Noto Serif JP',serif;font-size:11px;letter-spacing:.06em}
+.gb-chip .gb-go{font-size:9px;letter-spacing:.08em;color:var(--ochre-deep);font-family:'Noto Serif JP',serif;white-space:nowrap}
+
+  /* ===== gRev v2.0 億万向け調整（kit CSSは無改変。後置きの上書きのみ／README 3-3準拠） ===== */
+  /* kit CSSが参照するKAMAKURA側変数(--ink/--sub/--ochre/--ochre-deep)を、白背景パネル上で可読となる値で定義。
+     ポップアップ白背景(.grv-panel)・帰属テキスト(.grv-attr #5E5E5E/13px)は kit のまま不変 */
+  .grv-badge,.grv-ov{--ink:#1A1408;--sub:#6E6558;--ochre:#B98F3E;--ochre-deep:#8A6D34}
+  /* 億万のbody文字色はクリーム(--cream)のため、白背景パネル内の継承文字色を暗色(--ink)に固定（KAMAKURAではbody色=--inkで不要だった差分） */
+  .grv-panel{color:var(--ink)}
+  /* バッジ(.gb-chip)の色・フォントのみ億万トーン(暗色パネル+金)へ。★や件数の静的数値は書き込まない */
+  .gb-chip{background:var(--panel);border-color:rgba(217,174,82,.7);color:var(--cream);box-shadow:0 1px 0 rgba(217,174,82,.35)}
+  .gb-chip .gb-l1{font-family:var(--mono);font-style:normal;color:var(--gold-2)}
+  .gb-chip .gb-shop2{font-family:var(--body);font-weight:700;color:var(--cream)}
+  .gb-chip .gb-go{font-family:var(--body);color:var(--gold)}
+  /* ポップアップ内フォントを億万のフォントへ（濱田判断④ 2026-08-31）。帰属 .grv-attr(Arial/#5E5E5E/13px) は不変 */
+  .grv-title{font-family:var(--mono);font-style:normal}
+  .grv-score .num{font-family:var(--mono);font-weight:700}
+  .grv-tab,.grv-map{font-family:var(--body)}
+  /* ヘッダー/ドロワーの「Google口コミ」ボタン（旧実装から流用・数値なし2段表示。濱田判断③） */
+  #hdCta.gr-mode{cursor:pointer;flex-direction:column;align-items:center;gap:1px;padding:6px 16px;border-radius:14px;line-height:1.25}
   .gr-cta-num{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:.02em}
   .gr-cta-num .gr-cta-star{font-size:15px;margin-right:1px}
   .gr-cta-act{font-size:15px;font-weight:700;letter-spacing:.06em;opacity:.85}
-  .gr-pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;
-    display:inline-flex;align-items:center;justify-content:center;
-    background:transparent;border:1px solid var(--line-2);border-radius:9px;
-    color:var(--gold-2);font-size:17px;line-height:1;cursor:pointer}
-  .gr-pop-x:hover,.gr-pop-x:focus-visible{border-color:rgba(217,174,82,.9);background:rgba(217,174,82,.12)}
-  .gr-pop-body{padding:14px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}
-  .gr-pop-foot{padding:12px 20px 14px;border-top:1px solid var(--line-2);
-    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
-  .gr-pop-attr{font-size:15px;color:var(--muted);font-family:var(--mono)}
-  .gr-glink{font-size:15px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
-  .gr-glink:hover,.gr-glink:focus-visible{color:var(--gold-2)}
+
 
   /* ===== テキスト改行最適化（改行ガイドライン準拠 2026/08/19） ===== */
   /* 本文：固定<br>を廃し、ブラウザの文節解析による自然折返し（Chromium系で有効・非対応ブラウザは従来どおり） */
@@ -279,7 +310,7 @@
 <header id="hd">
   <div class="brand"><a href="index.html">億万鳥者</a></div>
   <div class="hd-right">
-    <a class="hd-cta gr-mode" href="#" id="hdCta" target="_blank" rel="noopener"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- GR: 2026/08/18改修 初期から数値なし2段表示（切替を目立たせない）。取得成功時は上段のみ実数値へ差し替え／失敗時はこのまま（Maps直リンク・数値ハードコード禁止） -->
+    <a class="hd-cta gr-mode" href="#" id="hdCta" role="button"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- gRev v2.0: タップで末尾のgRevバッジ(.gb-chip)と同じ挙動（LINK=Maps直遷移／FULL=ポップアップ）。数値は表示しない -->
     <button type="button" class="hbg" id="hbgBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="dw"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -298,7 +329,7 @@
     <div class="dw-ctas">
       <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
       <a class="btn-o" href="#" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
-      <a class="btn-o gr-mode" href="#" id="dwGr" target="_blank" rel="noopener"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- GR: 2026/08/18改修 初期から数値なし2段表示（index/menu/course共通） -->
+      <a class="btn-o gr-mode" href="#" id="dwGr" role="button"><span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span> Google口コミ</span><span class="gr-cta-act">Googleレビューを見る</span></a><!-- gRev v2.0: ドロワーを閉じてからgRevバッジ(.gb-chip)と同じ挙動 -->
     </div>
   </nav>
 </div>
@@ -505,28 +536,6 @@
   </div>
 </footer>
 
-<!-- GR: 口コミポップアップ（index.htmlと同一・コンプラ必須①〜⑤準拠） -->
-<div class="gr-pop" id="grPop" hidden>
-  <div class="gr-pop-bg" id="grPopBg"></div>
-  <div class="gr-pop-panel" role="dialog" aria-modal="true" aria-labelledby="grPopTitle">
-    <div class="gr-pop-head">
-      <p class="gr-pop-title" id="grPopTitle">Google口コミ</p>
-      <div class="gr-pop-sum"><!-- GR: rating/userRatingCountを無加工表示（コンプラ必須①） -->
-        <span class="gr-num" id="grPopNum"></span>
-        <span class="gr-glyph" id="grPopGlyph" aria-hidden="true"></span>
-        <span class="gr-cnt">Google口コミ <span id="grPopCnt"></span>件</span>
-      </div>
-      <p class="gr-pop-note">星4以上の口コミを抜粋して表示しています</p><!-- コンプラ必須② -->
-      <button type="button" class="gr-pop-x" id="grPopX" aria-label="閉じる">×</button>
-    </div>
-    <div class="gr-pop-body reviews" id="grPopList"></div>
-    <div class="gr-pop-foot">
-      <span class="gr-pop-attr">レビュー提供元：Google</span><!-- コンプラ必須③ -->
-      <a class="gr-glink" id="grPopGLink" href="#" target="_blank" rel="noopener">Googleで口コミを見る</a><!-- コンプラ必須⑤ -->
-    </div>
-  </div>
-</div>
-
 <div class="cvbar" id="cvbar">
   <a class="btn-g" href="#" data-ebica><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m8.5 15 2.4 2.4L15.8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>席を予約する</a>
   <a class="btn-o" href="tel:0000000000" data-tel><svg class="btn-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 3.5h3l1.7 4.2-2.1 1.7a13.6 13.6 0 0 0 6.5 6.5l1.7-2.1 4.2 1.7v3a2 2 0 0 1-2.2 2A17.4 17.4 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>電話で予約する</a>
@@ -538,10 +547,7 @@
   // ===== 設定（index.htmlと同一値・一元管理） =====
   var CONFIG={
     EBICA_URL:'https://booking.ebica.jp/webrsv/search/e014094701/29223?affiid=sc01',
-    TEL:'0367099757',
-    // GR: Googleレビュー表示（B'案）。GAS公開URL（index.htmlと同一）
-    REVIEW_API_URL:'https://script.google.com/macros/s/AKfycbxSKvRVtFLGkPcU7HIvfBXJp5H-AAhTfGNYN6GiuoFjlVtFgLy4lHQaS1EkFAyWzkAp/exec',
-    REVIEW_STORE_NAME:'億万鳥者 新宿本殿'
+    TEL:'0367099757'
   };
   document.querySelectorAll('[data-ebica]').forEach(function(a){ a.href=CONFIG.EBICA_URL; });
   document.querySelectorAll('[data-tel]').forEach(function(a){ a.href='tel:'+CONFIG.TEL; });
@@ -564,12 +570,6 @@
     bx.addEventListener('click',close);
     bg.addEventListener('click',close);
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!dw.hidden){ close(); } });
-    // GRボタン初期値：ヘッダー・ドロワーともMaps検索直リンク（フェイルセーフ。数値は一切表示しない）
-    var gmUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME);
-    var g=document.getElementById('dwGr');
-    if(g){ g.setAttribute('href',gmUrl); }
-    var hc=document.getElementById('hdCta');
-    if(hc){ hc.setAttribute('href',gmUrl); }
   })();
 
   // ===== ヘッダー/CVバーのスクロール連動（index.htmlの制御からFV境界を除いた版） =====
@@ -710,86 +710,176 @@
     });
   })();
 
-  // ===== GR: Googleレビュー（B'案・index.htmlと同一ロジックのmenu.html版） =====
-  // menu.htmlにはページ内レビューセクションが無いため、ヘッダー/ドロワーCTAとポップアップのみ更新
-  // フェイルセーフ: 取得失敗時はヘッダー/ドロワーをMaps直リンクの「Googleレビューを見る」に統一（数値なし）
+</script>
+<!-- ===== gRev v2.0: Googleクチコミ表示（KAMAKURA版kitを移植 2026/08/31。旧B'案(GAS)実装は撤去。ヘッダー/ドロワーのボタンは本バッジへ連動） ===== -->
+<div class="grv-badge" id="grvBadge"></div>
+<div class="grv-ov" id="grvOv"><div class="grv-panel">
+  <div class="grv-head"><div class="grv-title">Google Reviews</div><button class="grv-close" id="grvClose" aria-label="閉じる">×</button></div>
+  <div class="grv-tabs" id="grvTabs"></div>
+  <div id="grvBody"></div>
+  <div class="grv-note" id="grvNote">Googleマップのクチコミを関連度順に取得し、そのうち星4以上のものを表示しています。★の平均評価と件数は全クチコミの集計値です。「自動翻訳」表記のクチコミは原文から翻訳されたものです。</div>
+</div></div>
+<script>
+/* gRev v2.0: Googleクチコミ ライブ表示 (PHP中継/タップ時取得)
+   濱田側リスク指摘v2.0 (2026-08-27) チェックリスト準拠
+   - 取得はタップ時のみ。結果はJSメモリ内変数にのみ保持(Storage API書き込み禁止)
+   - MODE="LINK": バッジのみ・API不使用・タップでGoogleマップへ
+   - MODE="FULL": タップでポップアップ・PHP中継からライブ取得
+   - PHP側が {"mode":"link"} を返した場合(枠到達・未設定等)は自動でリンク挙動へ */
+(function(){
+  var CONFIG={
+    MODE:"LINK",
+    PROXY_URL:"gr/reviews-proxy.php",
+    MIN_RATING:4,               /* クライアント要件: 星4以上のみ表示 */
+    FETCH_TIMEOUT_MS:10000,
+    STORES:[
+      /* 億万は1店舗。placeIdは濱田側取得分（2026-09-01） */
+      {label:"新宿本殿", key:"okuman", name:"億万鳥者 新宿本殿", placeId:"ChIJj2p-viSNGGARJajVhtqMIb0"}
+    ]
+  };
+  var state={tab:0,cache:{},pending:{}}; /* cache: メモリ内のみ。リロードで破棄される */
+  function stars(r){var f=Math.round(Number(r)||0);f=Math.max(0,Math.min(5,f));return "★★★★★".slice(0,f)+"☆☆☆☆☆".slice(0,5-f);}
+  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+  function escAttr(t){return esc(t).replace(/"/g,'&quot;');}
+  function safeHttp(u){u=String(u==null?'':u);return (u.indexOf('https://')===0)?u:'';}
+  function mapsUrl(st){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(st.name)+'&query_place_id='+encodeURIComponent(st.placeId);}
+
+  /* ---- バッジ: 数値なし(静的数値の埋め込みは規約上不可) ---- */
+  function showBadge(){
+    var b=document.getElementById('grvBadge');
+    b.innerHTML=CONFIG.STORES.map(function(st,i){
+      return '<div class="gb-chip" role="button" tabindex="0" data-i="'+i+'" aria-label="'+escAttr(st.label)+'のGoogleクチコミを見る">'
+        +'<div class="gb-l1">Google Reviews</div>'
+        +'<div class="gb-cta"><span class="gb-shop2">'+esc(st.label)+'</span><span class="gb-go">クチコミを見る ›</span></div></div>';
+    }).join('');
+    b.classList.add('show');
+  }
+
+  /* ---- ポップアップ描画 ---- */
+  function attrHtml(){return '<div class="grv-attr" translate="no">Google Maps</div>';}
+  function renderTabs(){
+    document.getElementById('grvTabs').innerHTML=CONFIG.STORES.map(function(st,i){
+      return '<button class="grv-tab'+(i===state.tab?' on':'')+'" data-i="'+i+'">'+esc(st.label)+'</button>';
+    }).join('');
+  }
+  function renderLoading(){
+    renderTabs();
+    document.getElementById('grvBody').innerHTML=attrHtml()+'<div class="grv-loading">クチコミを読み込んでいます…</div>';
+  }
+  function renderLinkOnly(st){
+    renderTabs();
+    document.getElementById('grvBody').innerHTML=attrHtml()
+      +'<div class="grv-empty">ただいまクチコミの表示が混み合っています。Googleマップで直接ご覧ください。</div>'
+      +'<a class="grv-map" href="'+escAttr(mapsUrl(st))+'" target="_blank" rel="noopener">Googleマップで開く</a>';
+  }
+  function renderData(st,d){
+    renderTabs();
+    var h=attrHtml();
+    h+='<div class="grv-score"><span class="num">'+esc(d.rating)+'</span><span class="grv-stars">'+stars(d.rating)+'</span><span class="cnt">'+esc(d.count)+'件のクチコミ</span></div>';
+    var rs=(d.reviews||[]).filter(function(r){return Number(r.rating)>=CONFIG.MIN_RATING;});
+    if(rs.length){
+      h+=rs.map(function(r){
+        var au=r.author||{};
+        var av=safeHttp(au.photo)?'<img class="av" src="'+escAttr(au.photo)+'" alt="" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">':'';
+        var nm=esc(au.name||'Google ユーザー');
+        var auUri=safeHttp(au.uri);
+        var name=auUri?'<a class="auname" href="'+escAttr(auUri)+'" target="_blank" rel="noopener">'+nm+'</a>':'<span class="auname">'+nm+'</span>';
+        var o='<div class="grv-rv"><div class="auline">'+av+name+'<span class="aumeta">'+esc(r.relativeTime||'')+'</span></div>';
+        o+='<div class="rvstars">'+stars(r.rating)+'</div>';
+        if(r.translated){o+='<span class="grv-trans">自動翻訳</span>';}
+        o+='<div class="tx">'+esc(r.text)+'</div>';
+        var mu=safeHttp(r.mapsUri);
+        if(mu){o+='<a class="grv-rvlink" href="'+escAttr(mu)+'" target="_blank" rel="noopener">Googleマップでこのクチコミを見る</a>';}
+        return o+'</div>';
+      }).join('');
+    }else{
+      h+='<div class="grv-empty">星4以上のクチコミは現在表示できません。Googleマップで全てのクチコミをご覧いただけます。</div>';
+    }
+    var top=safeHttp(d.mapsUri)||mapsUrl(st);
+    h+='<a class="grv-map" href="'+escAttr(top)+'" target="_blank" rel="noopener">Googleマップで開く</a>';
+    document.getElementById('grvBody').innerHTML=h;
+  }
+
+  /* ---- 取得: タップ時のみ・メモリ内キャッシュ・タイムアウト・失敗時リンク表示 ---- */
+  function loadStore(i){
+    var st=CONFIG.STORES[i], key=st.key;
+    if(state.cache[key]){renderData(st,state.cache[key]);return;}
+    renderLoading();
+    if(state.pending[key])return;
+    state.pending[key]=true;
+    var ctl=('AbortController' in window)?new AbortController():null;
+    var tm=setTimeout(function(){if(ctl)ctl.abort();},CONFIG.FETCH_TIMEOUT_MS);
+    fetch(CONFIG.PROXY_URL+'?store='+encodeURIComponent(key),ctl?{signal:ctl.signal}:{})
+      .then(function(r){clearTimeout(tm);if(!r.ok)throw 0;return r.json();})
+      .then(function(j){
+        state.pending[key]=false;
+        if(j&&j.ok&&j.mode==='full'&&j.store&&j.store.rating!=null){
+          state.cache[key]=j.store; /* JSメモリ内のみ。localStorage等への書き込みは行わない */
+          if(state.tab===i)renderData(st,j.store);
+        }else{ if(state.tab===i)renderLinkOnly(st); }
+      })
+      .catch(function(){clearTimeout(tm);state.pending[key]=false;if(state.tab===i)renderLinkOnly(st);});
+  }
+  function openPopup(i){state.tab=i;document.getElementById('grvOv').classList.add('open');loadStore(i);}
+
+  /* ---- イベント ---- */
+  document.getElementById('grvBadge').addEventListener('click',function(e){
+    var c=e.target.closest('.gb-chip'); if(!c) return;
+    var i=+c.dataset.i, st=CONFIG.STORES[i];
+    if(CONFIG.MODE==='FULL'){ openPopup(i); }
+    else{ window.open(mapsUrl(st),'_blank','noopener'); } /* LINK: Googleマップへ直遷移 */
+  });
+  document.getElementById('grvClose').addEventListener('click',function(){document.getElementById('grvOv').classList.remove('open');});
+  document.getElementById('grvOv').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+  document.getElementById('grvTabs').addEventListener('click',function(e){var t=e.target.closest('.grv-tab');if(t){state.tab=+t.dataset.i;loadStore(state.tab);}});
+
+  showBadge(); /* バッジはモード共通・データ取得なしで即表示 */
+
+  /* --- スクロール表示制御: #concept到達までは非表示（億万向け変更） / 以降は下スクロール中OFF・上スクロールor停止でON --- */
   (function(){
-    if(!CONFIG.REVIEW_API_URL) return;
-    var grEsc=function(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; };
-    var grCtaReview=function(url){
-      // 2026/08/18改修: 初期マークアップが数値なし2段表示のため文言の書き換えは廃止し、hrefの更新のみ行う
-      // （取得成功でポップアップ役（role=button）へ切替済みの要素は触らない）
-      var u=url||('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(CONFIG.REVIEW_STORE_NAME));
-      var c=document.getElementById('hdCta');
-      if(c&&!c.getAttribute('role')){ c.setAttribute('href',u); }
-      var g=document.getElementById('dwGr');
-      if(g&&!g.getAttribute('role')){ g.setAttribute('href',u); }
-    };
-    var grGlyphOf=function(r){ var n=Math.round(Number(r)); if(!(n>=0&&n<=5)) n=0;
-      return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); };
-    var grCard=function(rv){
-      return '<blockquote class="rv"><span class="stars">'+grGlyphOf(rv.rating)+'</span>'
-        +'<p>'+grEsc(rv.text)+'</p><cite>'+grEsc(rv.author)
-        +(rv.relativeTime?'／'+grEsc(rv.relativeTime):'')+'</cite></blockquote>';
-    };
-    var grFindStore=function(data){
-      var st=(data&&data.stores)||[];
-      for(var i=0;i<st.length;i++){ if(st[i]&&st[i].name===CONFIG.REVIEW_STORE_NAME) return st[i]; }
-      for(var j=0;j<st.length;j++){ if(st[j]&&st[j].name&&st[j].name.indexOf('新宿本殿')>=0) return st[j]; }
-      return null;
-    };
-    var grPop=document.getElementById('grPop');
-    var hdCta=document.getElementById('hdCta');
-    var grPrevOverflow='';
-    var grOpen=function(){ grPop.hidden=false; grPrevOverflow=document.body.style.overflow;
-      document.body.style.overflow='hidden'; document.getElementById('grPopX').focus(); };
-    var grClose=function(){ grPop.hidden=true; document.body.style.overflow=grPrevOverflow;
-      if(hdCta){ hdCta.focus(); } };
-    document.getElementById('grPopX').addEventListener('click',grClose);
-    document.getElementById('grPopBg').addEventListener('click',grClose);
-    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!grPop.hidden){ grClose(); } });
-    var grRender=function(data){
-      var s=grFindStore(data);
-      if(!s||s.rating==null||s.userRatingCount==null){ grCtaReview(); return; }
-      var rvs=s.reviews||[];
-      var gUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(s.name||CONFIG.REVIEW_STORE_NAME)
-        +(s.placeId?('&query_place_id='+encodeURIComponent(s.placeId)):'');
-      // コンプラ必須①: rating/userRatingCountは無加工で表示
-      document.getElementById('grPopNum').textContent=String(s.rating);
-      document.getElementById('grPopGlyph').textContent=grGlyphOf(s.rating);
-      document.getElementById('grPopCnt').textContent=String(s.userRatingCount);
-      document.getElementById('grPopGLink').href=gUrl; // コンプラ必須⑤
-      if(!rvs.length){ grCtaReview(gUrl); return; } // 星4以上0件時は空ポップアップを開かせない
-      var list=''; for(var k=0;k<rvs.length;k++){ list+=grCard(rvs[k]); }
-      document.getElementById('grPopList').innerHTML=list;
-      if(hdCta){
-        hdCta.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
-          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
-          +'<span class="gr-cta-act">Googleレビューを見る</span>';
-        hdCta.removeAttribute('data-ebica'); hdCta.removeAttribute('target'); hdCta.removeAttribute('rel'); hdCta.setAttribute('href','#');
-        hdCta.classList.add('gr-mode'); hdCta.setAttribute('role','button');
-        hdCta.addEventListener('click',function(e){ e.preventDefault(); grOpen(); });
+    var badge=document.getElementById('grvBadge');
+    var lastY=window.pageYOffset, idleTm=null, DELTA=10;
+    function revealLine(){
+      /* 億万向け変更(濱田判断② 2026-08-31): 単一ページ構成のため .page.active#pg-home 判定を撤去し、到達基準を #concept(FV直後のセクション)に変更 */
+      var el=document.getElementById('concept');
+      if(!el) return -1;
+      return el.getBoundingClientRect().top + window.pageYOffset;
+    }
+    function setHidden(h){badge.classList.toggle('gb-hide',h);}
+    function onScroll(){
+      if(!badge.classList.contains('show')) return;
+      var y=window.pageYOffset, dy=y-lastY;
+      var line=revealLine();
+      var past=(line<0)||((y+window.innerHeight*0.85)>=line);
+      if(!past){ setHidden(true); lastY=y; if(idleTm){clearTimeout(idleTm);idleTm=null;} return; }
+      if(Math.abs(dy)>=DELTA){
+        setHidden(dy>0);
+        lastY=y;
+        if(idleTm)clearTimeout(idleTm);
+        idleTm=setTimeout(function(){ idleTm=null; setHidden(false); },600);
+      }else if(dy===0 && !idleTm){
+        setHidden(false);
       }
-      var dwG=document.getElementById('dwGr');
-      if(dwG){
-        dwG.innerHTML='<span class="gr-cta-num"><span class="gr-cta-star" aria-hidden="true">★</span>'
-          +grEsc(String(s.rating))+'（'+grEsc(String(s.userRatingCount))+'件）</span>'
-          +'<span class="gr-cta-act">Googleレビューを見る</span>';
-        dwG.removeAttribute('target'); dwG.removeAttribute('rel'); dwG.setAttribute('href','#');
-        dwG.classList.add('gr-mode'); dwG.setAttribute('role','button');
-        dwG.addEventListener('click',function(e){ e.preventDefault();
-          if(typeof dwClose==='function'){ dwClose(); } grOpen(); });
-      }
-    };
-    var grCtl=(typeof AbortController!=='undefined')?new AbortController():null;
-    var grTo=setTimeout(function(){ if(grCtl){ grCtl.abort(); } },10000);
-    try{
-      fetch(CONFIG.REVIEW_API_URL,grCtl?{signal:grCtl.signal}:{})
-        .then(function(res){ if(!res.ok){ throw new Error('bad status'); } return res.json(); })
-        .then(function(data){ clearTimeout(grTo); grRender(data); })
-        .catch(function(){ clearTimeout(grTo); grCtaReview(); });
-    }catch(e){ clearTimeout(grTo); grCtaReview(); }
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    setInterval(onScroll,700);
+    onScroll();
   })();
+})();
+</script>
+<script>
+/* 億万向け(kit無改変): ヘッダー #hdCta / ドロワー #dwGr の「Google口コミ」ボタンを gRev バッジ(.gb-chip)に連動。
+   LINK=Googleマップへ直遷移 / FULL=ポップアップ。ドロワーからは先に閉じる(#dwX)。 */
+(function(){
+  function go(e){
+    e.preventDefault();
+    var dw=document.getElementById('dw'), x=document.getElementById('dwX');
+    if(dw&&!dw.hidden&&x){ x.click(); }
+    var c=document.querySelector('#grvBadge .gb-chip'); if(c){ c.click(); }
+  }
+  ['hdCta','dwGr'].forEach(function(id){ var a=document.getElementById(id); if(a){ a.addEventListener('click',go); } });
+})();
 </script>
 </body>
 </html>
