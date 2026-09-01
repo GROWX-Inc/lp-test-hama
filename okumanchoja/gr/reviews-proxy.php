@@ -33,8 +33,8 @@ const ALLOWED_ORIGINS = array(
 
 /* place_id: 規約上、保存が許可されている唯一の例外フィールド */
 const PLACES = array(
-  /* 億万は1店舗。place_idは濱田側取得分に差し替える（下記はプレースホルダ。差し替え前に設置しない） */
-  'okuman' => array('place_id' => 'PLACEHOLDER_PLACE_ID', 'expect' => '億万鳥者'),
+  /* 億万は1店舗。place_idは濱田側取得分（2026-09-01） */
+  'okuman' => array('place_id' => 'ChIJj2p-viSNGGARJajVhtqMIb0', 'expect' => '億万鳥者'),
 );
 
 /* ガード閾値 */
