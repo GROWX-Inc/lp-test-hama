@@ -97,6 +97,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     transition:color .25s ease}
   .dw-nav a:hover,.dw-nav a:focus-visible{color:var(--gold-2)}
   .dw-nav a.cur{color:var(--gold-2)}
+  /* 食べログ外部リンク（2026-10 メニュー・コースは食べログへ外部遷移） */
+  .dw-nav a[data-tabelog]{display:flex;align-items:center;gap:.5em;flex-wrap:wrap}
+  .dw-ext{font-size:.85em;letter-spacing:0;color:var(--gold-2)}
+  .dw-ext-note{margin-left:auto;font-family:inherit;font-weight:700;font-size:14px;letter-spacing:.06em;opacity:.85}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .dw-ctas{display:flex;flex-direction:column;gap:12px;margin-top:28px}
   .dw-ctas .btn-g,.dw-ctas .btn-o{width:100%;text-align:center;padding:13px 10px;font-size:15px}
   #dwGr.gr-mode{cursor:pointer;flex-direction:column;align-items:center;gap:1px;line-height:1.25;padding:9px 10px}
@@ -535,8 +540,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button type="button" class="dw-x" id="dwX" aria-label="メニューを閉じる">×</button>
     <div class="dw-nav">
       <a href="#top" id="dwTop" class="cur" aria-current="page">トップ</a>
-      <a href="menu.html">メニュー</a>
-      <a href="course.html">コース</a>
+      <a href="https://tabelog.com/tokyo/A1304/A130401/13270920/dtlmenu/" id="dwMenu" target="_blank" rel="noopener" data-tabelog="menu">メニュー<span class="dw-ext" aria-hidden="true">↗</span><span class="dw-ext-note">食べログ</span><span class="sr-only">（食べログが新しいタブで開きます）</span></a>
+      <a href="https://tabelog.com/tokyo/A1304/A130401/13270920/party/" id="dwCourse" target="_blank" rel="noopener" data-tabelog="course">コース<span class="dw-ext" aria-hidden="true">↗</span><span class="dw-ext-note">食べログ</span><span class="sr-only">（食べログが新しいタブで開きます）</span></a>
       <a href="#access" id="dwAccess">アクセス</a>
     </div>
     <div class="dw-ctas">
@@ -1069,8 +1074,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     bx.addEventListener('click',close);
     bg.addEventListener('click',close);
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!dw.hidden){ close(); } });
-    // ページ内リンク（トップ/アクセス）はドロワーを閉じてからスクロール
-    ['dwTop','dwAccess'].forEach(function(id){
+    // ページ内リンク（トップ/アクセス）はドロワーを閉じてからスクロール／食べログ（メニュー/コース）は新規タブで開きドロワーは閉じる
+    ['dwTop','dwAccess','dwMenu','dwCourse'].forEach(function(id){
       var a=document.getElementById(id);
       if(a){ a.addEventListener('click',function(){ close(); }); }
     });

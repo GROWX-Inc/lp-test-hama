@@ -1,4 +1,4 @@
-/* gMeas: 計測dataLayer標準実装 v1.1 億万鳥者版（2026/09/01）
+/* gMeas: 計測dataLayer標準実装 v1.2 億万鳥者版（2026/09/01・2026/10 食べログ外部遷移の計測を追加）
    KAMAKURA gMeas v1（GROWX計測標準）準拠。差分は次の3点のみ：
      1) 仮想page_viewは実装しない（物理3ページのためGA4自動page_viewに任せる。二重計上防止）
      2) 店舗識別を brand（okumanchoja/kamakura）× store（shinjuku/kinshicho）の2次元に分離し、
@@ -47,6 +47,9 @@
           push(base({event:"cta_click", cta_type:"reserve", cta_label:label(a)}));
         }else if(h.indexOf("google.com/maps")>=0 || h.indexOf("maps.app.goo.gl")>=0){
           push(base({event:"outbound_click", link_type:"map", url:h}));
+        }else if(h.indexOf("tabelog.com")>=0 || a.hasAttribute("data-tabelog")){
+          /* 食べログ（メニュー/コース）への外部遷移。2026-10追加 */
+          push(base({event:"outbound_click", link_type:"tabelog", url:h}));
         }else if(h.indexOf("instagram.com")>=0 || a.hasAttribute("data-insta")){
           push(base({event:"outbound_click", link_type:"sns", url:h}));
         }
