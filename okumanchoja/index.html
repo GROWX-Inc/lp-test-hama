@@ -111,13 +111,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
     transition:opacity .6s;pointer-events:none}
   #loader.done{opacity:0}
-  #loader .lg{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:.2em;color:var(--gold-2)}
+  #loader .lg{display:block;width:auto;height:clamp(120px,22vh,180px)}
   #loader .bar{width:min(180px,56vw);height:2px;background:var(--line-2);overflow:hidden;border-radius:2px}
   #loader .bar i{display:block;height:100%;width:0%;background:var(--gold);transition:width .2s}
   #loader .pct{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
 
   /* ===== FVスクラブ（指示書準拠：sticky + canvas） ===== */
-  .scrub-wrap{height:560vh;position:relative}
+  .scrub-wrap{height:840vh;position:relative}/* 2026/10/09 動画差し替え(約19.5秒)に合わせ560vh→840vh */
   .scrub-sticky{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
   .scrub-sticky canvas{position:absolute;inset:0;width:100%;height:100%}
   /* PC時のアンビエント背景：CSSガウスぼかし（GPU合成）。scaleでぼかしの縁滲みを画面外へ */
@@ -299,6 +299,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   /* フッター＋固定CVバー */
   footer{padding:56px 0 130px;text-align:center}
   .f-brand{font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:.14em}
+  .f-brand img{display:block;margin:0 auto 14px;width:auto;height:clamp(110px,18vh,150px)}
   .f-brand small{display:block;font-size:10px;letter-spacing:.3em;color:var(--gold-2);margin-top:6px}
   .f-copy{font-size:12px;color:#fff;margin:14px 0 20px}
   .f-note{font-family:var(--mono);font-size:10px;color:#6d6250;line-height:1.8}
@@ -553,7 +554,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <div id="loader">
-  <div class="lg">億万鳥者</div>
+  <img class="lg" src="assets/logo.webp" alt="億万鳥者 新宿本殿" width="240" height="433">
   <div class="bar"><i id="ldBar"></i></div>
   <div class="pct" id="ldPct">0%</div>
 </div>
@@ -573,19 +574,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <!-- Stage3 0.38-0.54：内装・料理シーン -->
-    <div class="stage st-v" data-in="0.38" data-out="0.54">
+    <!-- 2026/10/09 動画差し替えに合わせて場面ごとに再配置
+         動画の場面（進行率）：襖0-0.11／宴会0.12-0.38／通路0.39-0.57／個室0.58-0.65／ユッケ0.66-0.74／招き猫0.75-0.90／サワー乾杯0.91-1.0 -->
+    <!-- Stage3 0.42-0.72：通路・個室・料理シーン -->
+    <div class="stage st-v" data-in="0.42" data-out="0.72">
       <div class="in">料理も空間も、<br><em>億万長者仕様。</em></div>
     </div>
 
-    <!-- Stage4 0.62-0.78：スパークラー・乾杯シーン -->
-    <div class="stage st-v" data-in="0.62" data-out="0.78">
-      <div class="in">『億万長者様』と<br>呼ばれて、<em>乾杯。</em></div>
+    <!-- Stage4 0.77-0.88：招き猫・料理シーン -->
+    <div class="stage st-v" data-in="0.77" data-out="0.88">
+      <div class="in">今までにない、<br><em>「億万長者」体験</em>を。</div>
     </div>
 
-    <!-- Stage5 0.86-1.0：クロージング -->
-    <div class="stage st-v" data-in="0.86" data-out="1.01">
-      <div class="in">今までにない、<br><em>「億万長者」体験</em>を。</div>
+    <!-- Stage5 0.92-1.0：サワー乾杯シーン（クロージング） -->
+    <div class="stage st-v" data-in="0.92" data-out="1.01">
+      <div class="in">『億万長者様』と<br>呼ばれて、<em>乾杯。</em></div>
     </div>
 
     <div class="cue" id="cue"><span>SCROLL</span><i></i></div>
@@ -685,7 +688,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="xp-wrap" id="xpWrap">
   <div class="xp-sticky">
     <div class="xp-clip" id="xpClip">
-      <img src="assets/gallery_room.webp" alt="伝統組子の個室" id="xpImg">
+      <img src="assets/gallery_room.webp" alt="伝統組子の個室" id="xpImg" loading="lazy" decoding="async">
     </div>
     <div class="xp-frame" id="xpFrame"></div>
     <div class="xp-scrim" id="xpScrim"></div>
@@ -725,7 +728,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ===== 9. フッター ===== -->
 <footer>
   <div class="wrap">
-    <div class="f-brand">億万鳥者<small>OKUMANCHO-JA SHINJUKU HONDEN</small></div>
+    <div class="f-brand"><img src="assets/logo.webp" alt="億万鳥者 新宿本殿" width="240" height="433" loading="lazy" decoding="async"><small>OKUMANCHO-JA SHINJUKU HONDEN</small></div>
     <p class="f-copy">今までにない「億万長者」気分を味わえるアミューズメント居酒屋</p>
     <div class="flinks"><a href="terms.html">利用規約</a><span>|</span><a href="privacy.html">プライバシーポリシー</a></div>
     <small class="f-note">© IFREADINING Inc.</small>
@@ -755,7 +758,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // 端末に応じてフレームセットを選択（スマホ=720px幅／PC・タブレット=1080px幅=元動画原寸）
   var FRAME_DIR=(window.innerWidth<=560)?'frames720':'frames1080';
   var SCRUB_FRAMES=[];
-  for(var i=0;i<N;i++){ var srcNo=Math.min(i*2,234); SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(srcNo).padStart(3,'0')+'.webp'); }
+  // 2026/10/09 動画差し替え：使用する118コマだけを f_000〜f_117 として書き出し（間引き済み）
+  // 2026/10/09 容量削減：AVIF（約半分の容量）に対応する端末はAVIF、未対応の古い端末はWebPを読む
+  function buildFrameList(ext){
+    SCRUB_FRAMES.length=0;
+    for(var i=0;i<N;i++){ SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(i).padStart(3,'0')+'.'+ext); }
+  }
+  buildFrameList('webp');
 
   var wrap=document.getElementById('scrubWrap'),cv=document.getElementById('scrubCv');
   var ctx=cv.getContext('2d');
@@ -807,7 +816,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else { blobCache[i]=null; onFetched(); } // 2回失敗：先へ進む（表示は隣接コマで代替）
     });
   }
-  (function(){
+  function startPrefetch(){
     var q=[]; // 取得順：先頭ウィンドウ→アンカー→残り（見始めに必要な順）
     for(var w=0;w<=WINDOW;w++) q.push(w);
     for(var a=0;a<N;a+=ANCHOR_STRIDE){ if(q.indexOf(a)===-1) q.push(a); }
@@ -818,6 +827,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var origOnFetched=onFetched;
     onFetched=function(){ origOnFetched(); if(next<q.length){ prefetch(q[next++]); } };
     for(var k0=0;k0<CONC && next<q.length;k0++){ prefetch(q[next++]); }
+  }
+  // AVIF対応判定（2x2pxの極小AVIFを実際に読み込めるかで判定。判定は数ミリ秒で終わる）
+  (function(){
+    var t=new Image(), decided=false;
+    function go(ext){ if(decided) return; decided=true; buildFrameList(ext); startPrefetch(); }
+    t.onload=function(){ go(t.width>0?'avif':'webp'); };
+    t.onerror=function(){ go('webp'); };
+    setTimeout(function(){ go('webp'); },1500); // 万一判定が返らない場合の保険
+    t.src='data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAJwAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAgAAAAIAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAL21kYXQSAAoIGAA2iAhoNCAyGRlHh4Yhh5555oAAAJBAyRxgsRnHdCThW4A=';
   })();
   // 保持してよいフレームか（アンカー or 現在ウィンドウ＋マージン内）
   function keep(i){ return isAnchor(i) || Math.abs(i-center)<=WINDOW+EVICT_MARGIN; }
@@ -1049,7 +1067,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     //   ミュート自動再生ループの「動く映像」としての表示に特化する仕様（案2の合意事項）
     if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
       +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&playlist='+CONFIG.YOUTUBE_ID
-      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
+      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
       +'<div class="movie-cover" aria-hidden="true"></div>'; }
   }
   // ============================================================
