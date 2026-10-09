@@ -688,7 +688,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="xp-wrap" id="xpWrap">
   <div class="xp-sticky">
     <div class="xp-clip" id="xpClip">
-      <img src="assets/gallery_room.webp" alt="伝統組子の個室" id="xpImg">
+      <img src="assets/gallery_room.webp" alt="伝統組子の個室" id="xpImg" loading="lazy" decoding="async">
     </div>
     <div class="xp-frame" id="xpFrame"></div>
     <div class="xp-scrim" id="xpScrim"></div>
@@ -759,7 +759,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var FRAME_DIR=(window.innerWidth<=560)?'frames720':'frames1080';
   var SCRUB_FRAMES=[];
   // 2026/10/09 動画差し替え：使用する118コマだけを f_000〜f_117 として書き出し（間引き済み）
-  for(var i=0;i<N;i++){ var srcNo=i; SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(srcNo).padStart(3,'0')+'.webp'); }
+  // 2026/10/09 容量削減：AVIF（約半分の容量）に対応する端末はAVIF、未対応の古い端末はWebPを読む
+  function buildFrameList(ext){
+    SCRUB_FRAMES.length=0;
+    for(var i=0;i<N;i++){ SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(i).padStart(3,'0')+'.'+ext); }
+  }
+  buildFrameList('webp');
 
   var wrap=document.getElementById('scrubWrap'),cv=document.getElementById('scrubCv');
   var ctx=cv.getContext('2d');
@@ -811,7 +816,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else { blobCache[i]=null; onFetched(); } // 2回失敗：先へ進む（表示は隣接コマで代替）
     });
   }
-  (function(){
+  function startPrefetch(){
     var q=[]; // 取得順：先頭ウィンドウ→アンカー→残り（見始めに必要な順）
     for(var w=0;w<=WINDOW;w++) q.push(w);
     for(var a=0;a<N;a+=ANCHOR_STRIDE){ if(q.indexOf(a)===-1) q.push(a); }
@@ -822,6 +827,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var origOnFetched=onFetched;
     onFetched=function(){ origOnFetched(); if(next<q.length){ prefetch(q[next++]); } };
     for(var k0=0;k0<CONC && next<q.length;k0++){ prefetch(q[next++]); }
+  }
+  // AVIF対応判定（2x2pxの極小AVIFを実際に読み込めるかで判定。判定は数ミリ秒で終わる）
+  (function(){
+    var t=new Image(), decided=false;
+    function go(ext){ if(decided) return; decided=true; buildFrameList(ext); startPrefetch(); }
+    t.onload=function(){ go(t.width>0?'avif':'webp'); };
+    t.onerror=function(){ go('webp'); };
+    setTimeout(function(){ go('webp'); },1500); // 万一判定が返らない場合の保険
+    t.src='data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAJwAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAgAAAAIAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAL21kYXQSAAoIGAA2iAhoNCAyGRlHh4Yhh5555oAAAJBAyRxgsRnHdCThW4A=';
   })();
   // 保持してよいフレームか（アンカー or 現在ウィンドウ＋マージン内）
   function keep(i){ return isAnchor(i) || Math.abs(i-center)<=WINDOW+EVICT_MARGIN; }
@@ -1053,7 +1067,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     //   ミュート自動再生ループの「動く映像」としての表示に特化する仕様（案2の合意事項）
     if(mf){ mf.innerHTML='<iframe src="https://www.youtube.com/embed/'+CONFIG.YOUTUBE_ID
       +'?rel=0&autoplay=1&mute=1&playsinline=1&loop=1&controls=0&playlist='+CONFIG.YOUTUBE_ID
-      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
+      +'" title="億万鳥者 店舗PV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen tabindex="-1"></iframe>'
       +'<div class="movie-cover" aria-hidden="true"></div>'; }
   }
   // ============================================================
