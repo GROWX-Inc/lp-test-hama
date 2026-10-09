@@ -755,8 +755,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   //        透明度ブレンドで重ねるため、見た目の滑らかさは維持しつつ転送量を半減。
   //        ファイル自体は従来のまま（偶数番＋最終234番のみを取得する。再アップロード不要）
   var N=118;
-  // 端末に応じてフレームセットを選択（スマホ=720px幅／PC・タブレット=1080px幅=元動画原寸）
-  var FRAME_DIR=(window.innerWidth<=560)?'frames720':'frames1080';
+  // 端末に応じてフレームセットを選択（2026/10/09 PCの読み込み短縮のため判定を変更）
+  // 横長画面（PC）は動画を画面の高さに合わせて中央表示するため、必要な解像度は「画面の高さ×画素密度」。
+  // それが小画質版(640×1138)で足りる一般的なPCは小画質版、高精細画面(Retina等)とタブレットのみ高画質版を読む。
+  var FRAME_DIR=(function(){
+    var w=window.innerWidth, h=window.innerHeight, dpr=window.devicePixelRatio||1;
+    if(w<=560) return 'frames720';                       // スマホ
+    if(w>h*1.05 && h*dpr<=1200) return 'frames720';      // 一般的なPC（必要な高さ1200px以下）
+    return 'frames1080';                                 // 高精細PC・タブレット
+  })();
   var SCRUB_FRAMES=[];
   // 2026/10/09 動画差し替え：使用する118コマだけを f_000〜f_117 として書き出し（間引き済み）
   // 2026/10/09 容量削減：AVIF（約半分の容量）に対応する端末はAVIF、未対応の古い端末はWebPを読む
