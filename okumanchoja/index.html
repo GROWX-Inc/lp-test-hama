@@ -415,9 +415,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   /* ===== E4: 小判アンビエント（背面固定レイヤー・無限ループ） ===== */
   .koban{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
-  .kb{position:absolute;top:-80px;width:44px;height:30px;opacity:0;
+  .kb{position:absolute;top:-80px;width:32px;height:52px;opacity:0;
     animation:kbfall var(--dur,7s) linear var(--dly,0s) infinite}
-  .kb svg{width:100%;height:100%;filter:drop-shadow(0 4px 10px rgba(217,174,82,.35))}
+  .kb img{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 10px rgba(217,174,82,.35))}
   @keyframes kbfall{
     0%{opacity:0;transform:translateY(0) rotate(0) rotateY(0)}
     6%{opacity:var(--op,.5)}
@@ -1447,12 +1447,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ===== E4: 小判アンビエント（背面固定・無限ループ） =====
   var kbWrap=document.getElementById('koban');
   if(kbWrap && !reduced){
-    var KBSVG='<svg viewBox="0 0 44 30" xmlns="http://www.w3.org/2000/svg">'
-      +'<ellipse cx="22" cy="15" rx="21" ry="14" fill="#D9AE52"/>'
-      +'<ellipse cx="22" cy="15" rx="21" ry="14" fill="none" stroke="#EBCB84" stroke-width="1.6"/>'
-      +'<ellipse cx="22" cy="15" rx="14" ry="8.6" fill="none" stroke="#B98F3E" stroke-width="1.2"/>'
-      +'<rect x="19.5" y="6" width="5" height="6" rx="1" fill="#B98F3E"/>'
-      +'</svg>';
+    // 2026/10/09 小判をコード描画(横長楕円)から写真素材(縦長・透過)へ差し替え
+    var KBIMG='<img src="assets/koban.webp" alt="" width="160" height="260" decoding="async">';
     for(var i=0;i<12;i++){
       (function(){
         var d=document.createElement('i'); d.className='kb';
@@ -1463,9 +1459,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         d.style.setProperty('--dur',(6+ (1-depth)*8 +Math.random()*3)+'s'); // 奥ほどゆっくり
         d.style.setProperty('--rot',(120+Math.random()*260)+'deg');
         d.style.setProperty('--op',(0.22+depth*0.33).toFixed(2));           // 奥ほど薄く
-        var sc=0.35+depth*0.85; d.style.width=(44*sc)+'px'; d.style.height=(30*sc)+'px';
+        var sc=0.35+depth*0.85; d.style.width=(32*sc)+'px'; d.style.height=(52*sc)+'px';
         if(depth<0.45){ d.style.filter='blur('+((0.45-depth)*3).toFixed(1)+'px)'; } // 奥はぼかして被写界深度
-        d.innerHTML=KBSVG;
+        d.innerHTML=KBIMG;
         d.addEventListener('animationiteration',rnd); // 周回ごとに横位置を変えて単調さを回避
         kbWrap.appendChild(d);
       })();
