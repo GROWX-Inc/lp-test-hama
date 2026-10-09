@@ -767,15 +767,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var SCRUB_FRAMES=[];
   // 2026/10/09 動画差し替え：使用する118コマだけを f_000〜f_117 として書き出し（間引き済み）
   // 2026/10/09 容量削減：AVIF（約半分の容量）に対応する端末はAVIF、未対応の古い端末はWebPを読む
+  // 2026/10/09 表示までの時間短縮：全118コマの低画質版（幅240px）を4枚のまとめ画像（frames_lq/s0〜s3、計約0.5MB）
+  // で先に読み、揃った時点で表示開始。高画質版は表示後に裏で読み、届いたコマから同じコマのまま差し替える。
+  // ※別の場面で代用することはない（どのスクロール位置でも必ずその位置の場面が表示される）
+  // ※118枚を個別に取ると通信の往復回数で遅くなるため、まとめ画像（6列×5段=30コマ/枚）にしている
+  var LQ_W=240, LQ_H=427, LQ_COLS=6, LQ_PER=30, LQ_N=Math.ceil(N/LQ_PER);
+  var LQ_SHEETS=[];
   function buildFrameList(ext){
-    SCRUB_FRAMES.length=0;
+    SCRUB_FRAMES.length=0; LQ_SHEETS.length=0;
     for(var i=0;i<N;i++){ SCRUB_FRAMES.push(FRAME_DIR+'/f_'+String(i).padStart(3,'0')+'.'+ext); }
+    for(var n=0;n<LQ_N;n++){ LQ_SHEETS.push('frames_lq/s'+n+'.'+ext); }
   }
   buildFrameList('webp');
 
   var wrap=document.getElementById('scrubWrap'),cv=document.getElementById('scrubCv');
   var ctx=cv.getContext('2d');
   var bmps=new Array(N);
+  var bmpHi=new Array(N); // 展開済みコマが高画質版か
   var useBmp=('createImageBitmap' in window);
 
   // ===== メモリ管理：スライディングウィンドウ方式（2026/08/17 案1承認・08/18改修） =====
@@ -794,17 +802,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   var loaderHidden=false;
 
   // ローディング進捗＝全コマの先読み完了率。全コマ到着＋先頭コマ表示でローダー消灯
-  var fetched=0, blobCache=new Array(N);
-  function onFetched(){
+  var fetched=0, blobCache=new Array(N), sheets=new Array(LQ_N);
+  function onLowFetched(){
     fetched++;
-    var p=Math.min(100,Math.round(fetched/N*100));
+    var p=Math.min(100,Math.round(fetched/LQ_N*100));
     if(ldBar){ldBar.style.width=p+'%';}
     if(ldPct){ldPct.textContent=p+'%';}
-    if(fetched>=N){ pump(); maybeStart(); }
+    if(fetched>=LQ_N){ pump(); maybeStart(); startHiPrefetch(); }
   }
+  function onFetched(){} // 高画質版の到着（差し替えはprefetch内で行う）
   function maybeStart(){
     if(loaderHidden) return;
-    if(fetched>=N && renderedOnce){
+    if(fetched>=LQ_N && renderedOnce){
       loaderHidden=true;
       loader.classList.add('done');
       setTimeout(function(){loader.style.display='none';},700);
@@ -816,24 +825,63 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if(!r.ok) throw new Error('bad status');
       return r.blob();
     }).then(function(b){
-      blobCache[i]=b; onFetched();
-      if(i===0||isAnchor(i)||i<=WINDOW) pump(); // 初期表示に必要なコマは到着し次第デコード
+      blobCache[i]=b; onFetched(); upgrade(i);
     }).catch(function(){
       if((attempt||0)<2){ setTimeout(function(){prefetch(i,(attempt||0)+1);},600); }
-      else { blobCache[i]=null; onFetched(); } // 2回失敗：先へ進む（表示は隣接コマで代替）
+      else { onFetched(); } // 2回失敗：低画質版のまま表示を続ける
     });
   }
-  function startPrefetch(){
-    var q=[]; // 取得順：先頭ウィンドウ→アンカー→残り（見始めに必要な順）
-    for(var w=0;w<=WINDOW;w++) q.push(w);
-    for(var a=0;a<N;a+=ANCHOR_STRIDE){ if(q.indexOf(a)===-1) q.push(a); }
-    if(q.indexOf(N-1)===-1) q.push(N-1);
-    for(var r=0;r<N;r++){ if(q.indexOf(r)===-1) q.push(r); }
-    // 同時6本を維持：1本完了するたびに次の1本を投入する
+  // まとめ画像を取得→展開して保持（各コマはここから切り出して使う）
+  function prefetchLow(n,attempt){
+    fetch(LQ_SHEETS[n]).then(function(r){
+      if(!r.ok) throw new Error('bad status');
+      return r.blob();
+    }).then(function(b){
+      return new Promise(function(res,rej){
+        if(useBmp){ createImageBitmap(b).then(res).catch(rej); return; }
+        var im=new Image(), u=URL.createObjectURL(b);
+        im.onload=function(){URL.revokeObjectURL(u);res(im);}; im.onerror=rej; im.src=u;
+      });
+    }).then(function(img){
+      sheets[n]=img; onLowFetched(); pump();
+    }).catch(function(){
+      if((attempt||0)<2){ setTimeout(function(){prefetchLow(n,(attempt||0)+1);},600); }
+      else { sheets[n]=null; onLowFetched(); }
+    });
+  }
+  function hasLow(i){ return !!sheets[Math.floor(i/LQ_PER)]; }
+  // まとめ画像から1コマ分を切り出す
+  function cutLow(i){
+    var sh=sheets[Math.floor(i/LQ_PER)], k=i%LQ_PER;
+    var sx=(k%LQ_COLS)*LQ_W, sy=Math.floor(k/LQ_COLS)*LQ_H;
+    if(useBmp) return createImageBitmap(sh,sx,sy,LQ_W,LQ_H);
+    var c=document.createElement('canvas'); c.width=LQ_W; c.height=LQ_H;
+    c.getContext('2d').drawImage(sh,sx,sy,LQ_W,LQ_H,0,0,LQ_W,LQ_H);
+    return Promise.resolve(c);
+  }
+  // 高画質版が届いたコマ：展開済みなら裏で高画質を展開し、揃った瞬間に入れ替える（空白・代用なし）
+  function upgrade(i){
+    if(!bmps[i] || bmpHi[i] || !keep(i)) return;
+    var done=function(nb){
+      if(!nb) return;
+      if(!keep(i) || !bmps[i]){ if(typeof nb.close==='function'){try{nb.close();}catch(e){}} return; }
+      var old=bmps[i]; bmps[i]=nb; bmpHi[i]=true;
+      if(old && typeof old.close==='function'){ try{old.close();}catch(e){} }
+      if(Math.abs(i-cur)<2) render(cur,true);
+    };
+    if(useBmp){ createImageBitmap(blobCache[i]).then(done).catch(function(){}); }
+    else { var im=new Image(), u=URL.createObjectURL(blobCache[i]); im.onload=function(){URL.revokeObjectURL(u);done(im);}; im.src=u; }
+  }
+  // 高画質版は同時6本を維持：1本完了するたびに次の1本を投入する
+  function startPrefetch(){ // 低画質版（まとめ画像4枚を同時取得）
+    for(var n=0;n<LQ_N;n++){ prefetchLow(n); }
+  }
+  var hiStarted=false;
+  function startHiPrefetch(){ // 高画質版（表示開始後。スクロールは先頭から進むので先頭から順に）
+    if(hiStarted) return; hiStarted=true;
     var next=0, CONC=6;
-    var origOnFetched=onFetched;
-    onFetched=function(){ origOnFetched(); if(next<q.length){ prefetch(q[next++]); } };
-    for(var k0=0;k0<CONC && next<q.length;k0++){ prefetch(q[next++]); }
+    onFetched=function(){ if(next<N){ prefetch(next++); } };
+    for(var k0=0;k0<CONC && next<N;k0++){ prefetch(next++); }
   }
   // AVIF対応判定（2x2pxの極小AVIFを実際に読み込めるかで判定。判定は数ミリ秒で終わる）
   (function(){
@@ -850,7 +898,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function release(i){
     var b=bmps[i];
     if(b && typeof b.close==='function'){ try{b.close();}catch(e){} }
-    bmps[i]=undefined;
+    bmps[i]=undefined; bmpHi[i]=false;
   }
   // 同時デコード数の上限（1:1追従化に合わせ6→8に拡大）。
   // 圧縮データは手元にあるため、1コマの展開は数ミリ秒〜十数ミリ秒で完了する
@@ -859,8 +907,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function load(i){
     if(i<0||i>=N)return;
     if(bmps[i]!==undefined)return;
-    if(blobCache[i]===undefined)return; // まだ到着していない（先読み中）→到着時にpumpされる
-    if(blobCache[i]===null)return;      // 取得失敗コマ：隣接コマで代替表示
+    var isHi=!!blobCache[i];
+    if(!isHi && !hasLow(i))return; // まだ到着していない（先読み中）→到着時にpumpされる
+    var src=blobCache[i];
     bmps[i]=null; // 展開中マーカー
     inflight++;
     function done(){ inflight--; pump(); }
@@ -869,24 +918,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         if(b && typeof b.close==='function'){ try{b.close();}catch(e){} }
         bmps[i]=undefined;
       } else {
-        bmps[i]=b;
+        bmps[i]=b; bmpHi[i]=isHi;
+        if(!isHi && blobCache[i]) upgrade(i); // 展開中に高画質版が届いていた場合
         if(i===0){ render(0,true); }
         maybeStart();
       }
       done();
     }
-    if(useBmp){
-      createImageBitmap(blobCache[i]).then(commit).catch(function(){
+    if(!isHi){
+      cutLow(i).then(commit).catch(function(){ bmps[i]=undefined; done(); });
+    } else if(useBmp){
+      createImageBitmap(src).then(commit).catch(function(){
         // blobからの展開に失敗した稀なケース：<img>経由でフォールバック
         var im=new Image();
-        var url=URL.createObjectURL(blobCache[i]);
+        var url=URL.createObjectURL(src);
         im.onload=function(){ URL.revokeObjectURL(url); commit(im); };
         im.onerror=function(){ URL.revokeObjectURL(url); bmps[i]=undefined; done(); };
         im.src=url;
       });
     } else {
       var im=new Image();
-      var url=URL.createObjectURL(blobCache[i]);
+      var url=URL.createObjectURL(src);
       im.onload=function(){ URL.revokeObjectURL(url); commit(im); };
       im.onerror=function(){ URL.revokeObjectURL(url); bmps[i]=undefined; done(); };
       im.src=url;
